@@ -6,6 +6,11 @@ export { typography, getResponsiveText, textStyles } from './typography';
 export { spacing, getResponsivePadding, getResponsiveMargin, layouts } from './spacing';
 export { effects, animations, patterns, getGlassEffect, getBorderEffect, getGradientText, effectCombinations } from './effects';
 
+// Import for internal use
+import { textStyles } from './typography';
+import { layouts } from './spacing';
+import { effectCombinations } from './effects';
+
 // Combined utility functions for common use cases
 export const designTokens = {
   // Hero section tokens
