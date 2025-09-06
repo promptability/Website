@@ -1,0 +1,29 @@
+import Pricing from "../components/Pricing";
+
+export const metadata = {
+  title: "Pricing | Promptability AI",
+  description: "Choose the plan that fits your workflow.",
+};
+
+export default function PricingPage() {
+  return (
+    <main className="min-h-screen text-white relative overflow-x-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 opacity-[0.3]">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 relative z-40">
+        <Pricing />
+      </div>
+    </main>
+  );
+}
