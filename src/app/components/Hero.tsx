@@ -9,10 +9,10 @@ export default function Hero() {
   const words = ["Use", "The", "Full", "Power", "Of", "AI"];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32 pt-16 md:pt-0">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
           <motion.div
             variants={staggerContainer}
@@ -22,7 +22,7 @@ export default function Hero() {
           >
 
             {/* Word-by-word animated headline */}
-            <div className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 md:mb-6 leading-tight">
               {words.map((word, index) => (
                 <motion.span
                   key={index}
@@ -30,12 +30,12 @@ export default function Hero() {
                   initial="initial"
                   animate="animate"
                   transition={{ delay: index * 0.3 }}
-                  className={`inline-block mr-4 ${
+                  className={`inline-block mr-2 sm:mr-4 ${
                     word === "Use" || word === "The" ? "text-white" :
                     word === "Full" ? "bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" :
                     word === "Power" ? "text-purple-400" :
                     word === "Of" ? "text-white" :
-                    "bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent text-8xl"
+                    "bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
                   }`}
                   style={{ transformOrigin: 'center bottom' }}
                 >
@@ -47,17 +47,17 @@ export default function Hero() {
 
             <motion.p
               variants={fadeInUp}
-              className="text-xl text-gray-300 mb-8 max-w-2xl"
+              className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 md:mb-8 max-w-2xl px-4 sm:px-0"
             >
               The Chrome extension that watches how you write prompts and 
-              automatically optimizes them. <br></br>
+              automatically optimizes them. <br />
               Getting you 10x better AI responses 
               without the guesswork.
             </motion.p>
 
             <motion.div
               variants={fadeInUp}
-              className="flex flex-col sm:flex-row gap-4 mb-12"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 md:mb-12 px-4 sm:px-0"
             >
               <motion.a
                 href="/signup"
@@ -65,20 +65,20 @@ export default function Hero() {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-3 text-lg shadow border border-blue-200"
+                className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg shadow border border-blue-200"
               >
-                <Play className="w-6 h-6" />
+                <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                 Start Free
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </motion.a>
 
               <motion.a
                 href="/chrome-extension"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-3 text-lg hover:bg-white/20 transition-colors"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg hover:bg-white/20 transition-colors"
               >
-                <Chrome className="w-5 h-5" />
+                <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
                 Install Extension
               </motion.a>
             </motion.div>
@@ -91,7 +91,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="relative flex items-center justify-center"
+            className="relative flex items-center justify-center mt-8 lg:mt-0 px-4 sm:px-0"
           >
             {/* Background Glow Effects */}
             <div className="absolute inset-0 scale-110">
@@ -134,7 +134,7 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="relative z-10"
             >
-              <div className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl max-w-sm sm:max-w-md lg:max-w-lg">
                 {/* Enhanced backdrop */}
                 <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 z-10 pointer-events-none"></div>
                 
@@ -154,7 +154,7 @@ export default function Hero() {
                 <img 
                   src="/hero-animation.gif" 
                   alt="Promptability AI Demo"
-                  className="relative z-20 w-full h-auto max-w-lg brightness-110 contrast-110 saturate-110"
+                  className="relative z-20 w-full h-auto brightness-110 contrast-110 saturate-110"
                   style={{ 
                     filter: 'brightness(1.2) contrast(1.15) saturate(1.1) drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))',
                     transform: 'scale(1.05)'
@@ -174,7 +174,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
