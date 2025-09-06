@@ -3,16 +3,34 @@
 import { motion } from 'framer-motion';
 import { Chrome, Play, ArrowRight } from 'lucide-react';
 import { wordAnimation, buttonHover, staggerContainer, fadeInUp } from '@/lib/animations';
+import { designTokens, getGradientText } from '@/design-system';
 
 export default function Hero() {
 
   const words = ["Use", "The", "Full", "Power", "Of", "AI"];
 
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32 pt-16 md:pt-0">
+  const getWordStyle = (word: string) => {
+    switch (word) {
+      case "Use":
+      case "The":
+      case "Of":
+        return "text-white";
+      case "Full":
+        return getGradientText('blue-cyan');
+      case "Power":
+        return "text-purple-400";
+      case "AI":
+        return `${getGradientText('purple-blue')} ${designTokens.hero.aiWord}`;
+      default:
+        return "text-white";
+    }
+  };
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+  return (
+    <section className={designTokens.hero.container}>
+
+      <div className={designTokens.components.pageContainer}>
+        <div className={designTokens.hero.grid}>
           {/* Left Content */}
           <motion.div
             variants={staggerContainer}
@@ -22,7 +40,7 @@ export default function Hero() {
           >
 
             {/* Word-by-word animated headline */}
-            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 md:mb-6 leading-tight">
+            <div className={designTokens.hero.title}>
               {words.map((word, index) => (
                 <motion.span
                   key={index}
@@ -30,13 +48,7 @@ export default function Hero() {
                   initial="initial"
                   animate="animate"
                   transition={{ delay: index * 0.3 }}
-                  className={`inline-block mr-2 sm:mr-4 ${
-                    word === "Use" || word === "The" ? "text-white" :
-                    word === "Full" ? "bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" :
-                    word === "Power" ? "text-purple-400" :
-                    word === "Of" ? "text-white" :
-                    "bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
-                  }`}
+                  className={`inline-block mr-2 sm:mr-4 ${getWordStyle(word)}`}
                   style={{ transformOrigin: 'center bottom' }}
                 >
                   {word}
@@ -47,7 +59,7 @@ export default function Hero() {
 
             <motion.p
               variants={fadeInUp}
-              className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 md:mb-8 max-w-2xl px-4 sm:px-0"
+              className={`${designTokens.hero.subtitle} px-4 sm:px-0`}
             >
               The Chrome extension that watches how you write prompts and 
               automatically optimizes them. <br />
@@ -65,7 +77,7 @@ export default function Hero() {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg shadow border border-blue-200"
+                className={`${designTokens.hero.buttonPrimary} gap-2 sm:gap-3`}
               >
                 <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                 Start Free
@@ -76,7 +88,7 @@ export default function Hero() {
                 href="/chrome-extension"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg hover:bg-white/20 transition-colors"
+                className={`${designTokens.hero.buttonSecondary} gap-2 sm:gap-3`}
               >
                 <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
                 Install Extension
@@ -134,7 +146,7 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="relative z-10"
             >
-              <div className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl max-w-sm sm:max-w-md lg:max-w-lg">
+              <div className={`${designTokens.components.heroImage} max-w-sm sm:max-w-md lg:max-w-lg`}>
                 {/* Enhanced backdrop */}
                 <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 z-10 pointer-events-none"></div>
                 
