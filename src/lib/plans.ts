@@ -3,8 +3,8 @@ export const PLANS = {
   free: {
     name: 'Free',
     limits: {
-      promptsPerMonth: 10,
-      promptsPerDay: null, // No daily limit for free, just monthly
+      promptsPerMonth: 300, // 10 per day * 30 days
+      promptsPerDay: 10,    // 10 requests per day
       features: {
         basicPromptEnhancement: true,
         advancedOptimization: false,
