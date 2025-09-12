@@ -7,10 +7,15 @@ export interface EmailTemplate {
 }
 
 export async function sendEmail(template: EmailTemplate) {
-  // For now, just log the email since we're skipping email setup
-  console.log('📧 Email would be sent:');
-  console.log('To:', template.to);
-  console.log('Subject:', template.subject);
+  // Email service not configured - silent success for production
+  // TODO: Configure SMTP service (Gmail, SendGrid, etc.) for production
+  
+  // Only log in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📧 Email would be sent:');
+    console.log('To:', template.to);
+    console.log('Subject:', template.subject);
+  }
   
   return { success: true, messageId: 'mock-id' };
 }

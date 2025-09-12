@@ -13,8 +13,8 @@ export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   
   // TODO: Replace with actual auth state from Firebase
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [user, setUser] = useState({ name: 'John Doe', email: 'john@example.com', avatar: null });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
