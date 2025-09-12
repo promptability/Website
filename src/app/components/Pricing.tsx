@@ -55,8 +55,8 @@ const plans = [
   },
   {
     name: 'Team',
-    price: '$99',
-    period: 'per month',
+    price: '$49',
+    period: 'per user/month',
     description: 'Enterprise-grade solution for larger teams',
     features: [
       'Everything in Pro',

@@ -89,8 +89,8 @@ export default function EnhancedFAQ() {
   const toggleItem = (id: string) => {
     setOpenItems(prev => 
       prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+        ? [] // Close all items if clicking on the open one
+        : [id] // Open only the clicked item, close all others
     );
   };
 
@@ -120,7 +120,7 @@ export default function EnhancedFAQ() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-5xl md:text-6xl font-bold mb-6 text-white"
+            className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
           >
             Frequently Asked
             <span className="block text-white/80">
@@ -185,7 +185,7 @@ export default function EnhancedFAQ() {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-6"
+          className="grid md:grid-cols-2 gap-6 items-start"
         >
           <AnimatePresence>
             {filteredFAQs.map((faq, index) => {
@@ -280,7 +280,7 @@ export default function EnhancedFAQ() {
           className="mt-16 text-center"
         >
           <div>
-            <h3 className="text-2xl font-bold text-white mb-4">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4">
               Still Have Questions?
             </h3>
             <p className="text-gray-300 mb-6">

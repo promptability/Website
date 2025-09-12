@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { Chrome, Play, ArrowRight } from 'lucide-react';
 import { wordAnimation, buttonHover, staggerContainer, fadeInUp } from '@/lib/animations';
-import { designTokens, getGradientText } from '@/design-system';
 
 export default function Hero() {
 
@@ -16,31 +15,31 @@ export default function Hero() {
       case "Of":
         return "text-white";
       case "Full":
-        return getGradientText('blue-cyan');
+        return "bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent";
       case "Power":
         return "text-purple-400";
       case "AI":
-        return `${getGradientText('purple-blue')} ${designTokens.hero.aiWord}`;
+        return "bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-8xl font-bold";
       default:
         return "text-white";
     }
   };
 
   return (
-    <section className={designTokens.hero.container}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-0 sm:pt-0 sm:-mt-20 pb-16">
 
-      <div className={designTokens.components.pageContainer}>
-        <div className={designTokens.hero.grid}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[600px] lg:min-h-[700px]">
           {/* Left Content */}
           <motion.div
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="text-center lg:text-left"
+            className="text-center lg:text-left order-1"
           >
 
             {/* Word-by-word animated headline */}
-            <div className={designTokens.hero.title}>
+            <div className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
               {words.map((word, index) => (
                 <motion.span
                   key={index}
@@ -48,7 +47,7 @@ export default function Hero() {
                   initial="initial"
                   animate="animate"
                   transition={{ delay: index * 0.3 }}
-                  className={`inline-block mr-2 sm:mr-4 ${getWordStyle(word)}`}
+                  className={`inline-block mr-2 sm:mr-3 ${getWordStyle(word)}`}
                   style={{ transformOrigin: 'center bottom' }}
                 >
                   {word}
@@ -59,7 +58,7 @@ export default function Hero() {
 
             <motion.p
               variants={fadeInUp}
-              className={`${designTokens.hero.subtitle} px-4 sm:px-0`}
+              className="text-base sm:text-lg md:text-xl font-normal leading-normal px-4 sm:px-0 mt-6 mb-0"
             >
               The Chrome extension that watches how you write prompts and 
               automatically optimizes them. <br />
@@ -69,7 +68,7 @@ export default function Hero() {
 
             <motion.div
               variants={fadeInUp}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 md:mb-12 px-4 sm:px-0"
+              className="hidden lg:flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 md:mb-16 px-4 sm:px-0 mt-8"
             >
               <motion.a
                 href="/signup"
@@ -77,7 +76,7 @@ export default function Hero() {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className={`${designTokens.hero.buttonPrimary} gap-2 sm:gap-3`}
+                className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold rounded-lg shadow border border-blue-200 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
               >
                 <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                 Start Free
@@ -88,7 +87,7 @@ export default function Hero() {
                 href="/chrome-extension"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`${designTokens.hero.buttonSecondary} gap-2 sm:gap-3`}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white font-semibold rounded-lg transition-all hover:scale-105 px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
               >
                 <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
                 Install Extension
@@ -103,7 +102,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="relative flex items-center justify-center mt-8 lg:mt-0 px-4 sm:px-0"
+            className="relative flex items-center justify-center my-8 lg:my-0 lg:mt-0 px-4 sm:px-0 order-2 lg:order-2"
           >
             {/* Background Glow Effects */}
             <div className="absolute inset-0 scale-110">
@@ -146,7 +145,7 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="relative z-10"
             >
-              <div className={`${designTokens.components.heroImage} max-w-sm sm:max-w-md lg:max-w-lg`}>
+              <div className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl max-w-sm sm:max-w-md lg:max-w-lg">
                 {/* Enhanced backdrop */}
                 <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 z-10 pointer-events-none"></div>
                 
@@ -177,6 +176,37 @@ export default function Hero() {
               {/* Additional Glow Layer */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-cyan-500/10 to-purple-500/20 blur-xl scale-110 -z-10"></div>
             </motion.div>
+          </motion.div>
+
+          {/* Mobile Buttons - Show only on mobile, after GIF */}
+          <motion.div
+            variants={fadeInUp}
+            initial="initial"
+            animate="animate"
+            className="flex lg:hidden flex-col sm:flex-row gap-4 w-full order-3 px-4 sm:px-0"
+          >
+            <motion.a
+              href="/signup"
+              variants={buttonHover}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold rounded-lg shadow border border-blue-200 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
+            >
+              <Play className="w-5 h-5 sm:w-6 sm:h-6" />
+              Start Free
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </motion.a>
+
+            <motion.a
+              href="/chrome-extension"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white font-semibold rounded-lg transition-all hover:scale-105 px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
+            >
+              <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
+              Install Extension
+            </motion.a>
           </motion.div>
         </div>
       </div>

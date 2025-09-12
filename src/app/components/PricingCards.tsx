@@ -4,9 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star, Zap, Crown, Building2 } from 'lucide-react';
 import { cardTilt, liquidButton, fadeInUp, staggerContainer, buttonHover } from '@/lib/animations';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 interface PricingPlan {
   name: string;
@@ -29,11 +26,12 @@ const plans: PricingPlan[] = [
     period: 'forever',
     description: 'Perfect for trying out Promptability AI',
     features: [
-      '10 prompts per day',
-      'Basic optimization',
-      'Chrome extension',
-      'Community support',
-      'Basic analytics'
+      '10 AI-optimized prompts daily',
+      'Works with all major AI platforms',
+      'Auto-Optimize Mode (basic optimization)',
+      'Multi-AI Broadcasting',
+      'AI Chat Enhancement',
+      'Project Memory'
     ],
     cta: 'Get Started Free',
     gradient: 'from-white/20 to-white/10',
@@ -46,14 +44,15 @@ const plans: PricingPlan[] = [
     period: 'per month',
     description: 'Ideal for professionals and content creators',
     features: [
-      '150 prompts per day',
-      'Advanced AI learning',
-      'Project memory & context',
-      'Success analytics in account',
-      'Priority support',
-      'Custom prompt templates',
+      '150 daily prompt optimizations',
+      'Works with all major AI platforms',
+      'Auto-Optimize Mode (advanced optimization)',
+      'Multi-AI Broadcasting',
+      'AI Chat Enhancement',
+      'Learns Your Style',
+      'Project Memory (5 active projects)',
       'Export capabilities',
-      'API access (limited)'
+      'Priority support'
     ],
     popular: false,
     cta: 'Get Started',
@@ -68,15 +67,15 @@ const plans: PricingPlan[] = [
     period: 'per month',
     description: 'For teams and power users',
     features: [
-      'Unlimited prompts',
-      'Team collaboration',
-      'Advanced analytics & insights',
-      'Custom AI model training',
-      'Full API access',
-      'White-label options',
-      'Dedicated account manager',
-      'SSO integration',
-      'Custom integrations'
+      'UNLIMITED prompt optimizations',
+      'Works with all major AI platforms',
+      'Auto-Optimize Mode (expert optimization)',
+      'Multi-AI Broadcasting',
+      'AI Chat Enhancement',
+      'Learns Your Style',
+      'Project Memory (unlimited projects)',
+      'Export capabilities',
+      'Priority support'
     ],
     popular: true,
     cta: 'Get Started',
@@ -87,20 +86,20 @@ const plans: PricingPlan[] = [
   },
   {
     name: 'Team',
-    price: '$99',
-    period: 'per month',
+    price: '$49',
+    period: 'per user/month',
     description: 'Enterprise-grade solution for larger teams',
     features: [
-      'Everything in Pro',
-      'Unlimited team members',
-      'SSO & advanced security',
-      'Custom integrations',
-      'SLA guarantees',
-      'On-premise deployment',
-      'Dedicated training sessions',
-      'Custom AI workflows',
-      'Priority roadmap input',
-      'Quarterly business reviews'
+      'UNLIMITED prompt optimizations',
+      'Works with all major AI platforms',
+      'Auto-Optimize Mode (expert optimization)',
+      'Multi-AI Broadcasting',
+      'AI Chat Enhancement',
+      'Learns Your Style',
+      'Project Memory (unlimited projects)',
+      'Team Collaboration & sharing',
+      'Export capabilities',
+      'Priority support'
     ],
     popular: false,
     cta: 'Contact Enterprise',
@@ -115,6 +114,7 @@ export default function PricingCards() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [teamSeats, setTeamSeats] = useState(5); // Default 5 seats for team plan
 
   const getAnnualPrice = (monthlyPrice: string) => {
     if (monthlyPrice === '$0') return '$0';
@@ -145,36 +145,16 @@ export default function PricingCards() {
 
     setIsLoading(plan.name);
     
-    try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          planType: plan.planType,
-          billingCycle: isAnnual ? 'yearly' : 'monthly',
-        }),
-      });
-
-      const { sessionId, url } = await response.json();
-      
-      if (url) {
-        // Redirect to Stripe Checkout
-        window.location.href = url;
-      } else {
-        // Fallback to Stripe.js redirect
-        const stripe = await stripePromise;
-        if (stripe && sessionId) {
-          await stripe.redirectToCheckout({ sessionId });
-        }
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Something went wrong. Please try again.');
-    } finally {
-      setIsLoading(null);
-    }
+    // Redirect to custom checkout page with plan details
+    const params = new URLSearchParams({
+      plan: plan.planType || '',
+      billing: isAnnual ? 'yearly' : 'monthly',
+      ...(plan.planType === 'team' ? { seats: teamSeats.toString() } : {})
+    });
+    
+    window.location.href = `/payment/checkout?${params.toString()}`;
+    
+    setIsLoading(null);
   };
 
   return (
@@ -190,7 +170,7 @@ export default function PricingCards() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-5xl md:text-6xl font-bold mb-6 text-white"
+            className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
           >
             Simple, Transparent
             <span className="block text-white/90">
@@ -274,7 +254,7 @@ export default function PricingCards() {
                 )}
 
                 <div className={`
-                  relative bg-white/5 backdrop-blur-xl border rounded-2xl p-6 h-full transition-all duration-300
+                  relative bg-white/5 backdrop-blur-xl border rounded-2xl p-6 h-full transition-all duration-300 flex flex-col
                   ${isPopular 
                     ? 'border-white/30' 
                     : 'border-white/10 hover:border-white/20'
@@ -293,8 +273,16 @@ export default function PricingCards() {
                     
                     <div className="mb-3">
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl font-bold text-white">{displayPrice}</span>
-                        <span className="text-gray-400 text-sm">/{displayPeriod}</span>
+                        <span className="text-3xl font-bold text-white">
+                          {plan.planType === 'team' && plan.price !== '$0' 
+                            ? `$${parseInt(displayPrice.replace('$', '')) * teamSeats}` 
+                            : displayPrice}
+                        </span>
+                        <span className="text-gray-400 text-sm">
+                          {plan.planType === 'team' 
+                            ? `for ${teamSeats} users/${isAnnual ? 'year' : 'month'}` 
+                            : `/${displayPeriod}`}
+                        </span>
                       </div>
                       {savings && (
                         <motion.div
@@ -319,7 +307,7 @@ export default function PricingCards() {
                   </div>
 
                   {/* Features */}
-                  <div className="space-y-3 mb-6 flex-1">
+                  <div className="space-y-3 mb-6 flex-grow">
                     {plan.features.map((feature, featureIndex) => (
                       <motion.div
                         key={featureIndex}
@@ -336,6 +324,41 @@ export default function PricingCards() {
                     ))}
                   </div>
 
+                  {/* Team Seat Selector */}
+                  {plan.planType === 'team' && (
+                    <div className="mb-4">
+                      <label className="text-sm text-gray-400 block mb-2">Number of team members:</label>
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          onClick={() => setTeamSeats(Math.max(3, teamSeats - 1))}
+                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          value={teamSeats}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value) || 3;
+                            setTeamSeats(Math.min(100, Math.max(3, value)));
+                          }}
+                          className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center focus:outline-none focus:border-blue-400"
+                          min="3"
+                          max="100"
+                        />
+                        <button
+                          onClick={() => setTeamSeats(Math.min(100, teamSeats + 1))}
+                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2 text-center">
+                        ${plan.planType === 'team' ? (isAnnual ? '950' : '99') : '0'} per user
+                      </div>
+                    </div>
+                  )}
+
                   {/* CTA Button */}
                   <motion.button
                     variants={plan.cta === 'Contact Enterprise' ? buttonHover : liquidButton}
@@ -345,13 +368,13 @@ export default function PricingCards() {
                     onClick={() => handleCheckout(plan)}
                     disabled={isLoading === plan.name}
                     className={`
-                      w-full font-semibold py-2.5 px-5 rounded-lg transition-all duration-300 relative overflow-hidden
+                      w-full font-semibold py-3 px-5 rounded-lg transition-all duration-300 relative overflow-hidden text-white
                       ${plan.cta === 'Contact Enterprise'
-                        ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                        ? 'bg-purple-500 hover:bg-purple-600'
                         : (
                           isPopular 
-                            ? 'bg-white text-black hover:bg-white/90' 
-                            : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
+                            ? 'bg-blue-500 hover:bg-blue-600' 
+                            : 'bg-white/10 hover:bg-white/20 border border-white/20'
                         )
                       }
                       ${isLoading === plan.name ? 'opacity-75 cursor-wait' : ''}

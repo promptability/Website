@@ -391,6 +391,7 @@ export const getPlatformOptions = () => {
   return aiPlatforms.map(platform => ({
     value: platform.id,
     label: platform.name,
-    category: platform.category
+    category: platform.category,
+    color: platform.color
   }));
 };

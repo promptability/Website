@@ -1,19 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Lock, Shield, CreditCard, Star, CheckCircle, ChevronDown,
   HelpCircle, MessageSquare, ArrowLeft, Users, Crown,
-  Smartphone, Globe, Calendar, AlertCircle, Info
+  Calendar, AlertCircle
 } from 'lucide-react';
 import { staggerContainer, fadeInUp } from '@/lib/animations';
 import FloatingCard from '@/components/ui/FloatingCard';
 import Link from 'next/link';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
 
-export default function CheckoutPage() {
-  const [selectedPlan, setSelectedPlan] = useState<'pro' | 'team'>('pro');
-  const [billingCycle, setBillingCycle] = useState('monthly');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+function CheckoutForm() {
+  const searchParams = useSearchParams();
+  const stripe = useStripe();
+  const elements = useElements();
+  
+  const planType = searchParams.get('plan') || 'pro';
+  const billingCycle = searchParams.get('billing') || 'monthly';
+  const seats = parseInt(searchParams.get('seats') || '1');
+  
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'team'>(planType as any);
+  const [selectedBilling, setSelectedBilling] = useState(billingCycle);
+  const [teamSeats, setTeamSeats] = useState(seats);
   const [showPromoCode, setShowPromoCode] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -24,53 +43,65 @@ export default function CheckoutPage() {
     address: '',
     city: '',
     zip: '',
-    cardNumber: '',
-    expiry: '',
-    cvc: '',
     saveCard: false,
     agreeTerms: false
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
   const [isProcessing, setIsProcessing] = useState(false);
 
   const plans = {
-    pro: {
-      name: 'Pro Plan',
-      monthlyPrice: 19.99,
-      yearlyPrice: 199.99,
+    starter: {
+      name: 'Starter Plan',
+      monthlyPrice: 9,
+      yearlyPrice: 86,
       savings: 20,
       features: [
-        'Unlimited optimizations',
+        '150 daily optimizations',
         'All AI platforms',
-        'Advanced modes',
-        'Custom templates',
+        'Advanced optimization',
+        'Export capabilities',
         'Priority support',
-        'API access'
+        '5 active projects'
+      ]
+    },
+    pro: {
+      name: 'Pro Plan',
+      monthlyPrice: 32,
+      yearlyPrice: 307,
+      savings: 20,
+      features: [
+        'UNLIMITED optimizations',
+        'All AI platforms',
+        'Expert optimization',
+        'Export capabilities',
+        'Priority support',
+        'Unlimited projects'
       ]
     },
     team: {
       name: 'Team Plan',
-      monthlyPrice: 49.99,
-      yearlyPrice: 499.99,
-      savings: 17,
+      monthlyPrice: 99,
+      yearlyPrice: 950,
+      savings: 20,
       features: [
         'Everything in Pro',
-        'Up to 10 team members',
-        'Team workspace',
-        'Shared templates',
+        'Team collaboration',
+        'Shared workspace',
         'Admin dashboard',
-        'SSO ready'
+        'Priority support',
+        'Custom integrations'
       ]
     }
   };
 
   const currentPlan = plans[selectedPlan];
-  const currentPrice = billingCycle === 'monthly' ? currentPlan.monthlyPrice : currentPlan.yearlyPrice;
-  const savings = billingCycle === 'yearly' ? currentPlan.savings : 0;
+  const basePrice = selectedBilling === 'monthly' ? currentPlan.monthlyPrice : currentPlan.yearlyPrice;
+  const currentPrice = selectedPlan === 'team' ? basePrice * teamSeats : basePrice;
+  const savings = selectedBilling === 'yearly' ? currentPlan.savings : 0;
 
   const progressSteps = [
-    { name: 'Account', completed: true },
     { name: 'Plan', completed: true },
+    { name: 'Details', current: true },
     { name: 'Payment', current: true },
     { name: 'Confirmation', completed: false }
   ];
@@ -98,28 +129,92 @@ export default function CheckoutPage() {
     },
     {
       question: 'Is my data secure?',
-      answer: 'Yes. We use 256-bit SSL encryption and never store your payment details.'
+      answer: 'Yes. We use 256-bit SSL encryption and Stripe for secure payment processing.'
     }
   ];
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const validateCardNumber = (number: string) => {
-    // Basic Luhn algorithm
-    const digits = number.replace(/\D/g, '');
-    return digits.length >= 13 && digits.length <= 19;
+  const validateForm = () => {
+    const newErrors: any = {};
+    
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email address';
+    }
+    
+    if (!formData.firstName) newErrors.firstName = 'First name is required';
+    if (!formData.lastName) newErrors.lastName = 'Last name is required';
+    if (!formData.address) newErrors.address = 'Address is required';
+    if (!formData.city) newErrors.city = 'City is required';
+    if (!formData.zip) newErrors.zip = 'ZIP code is required';
+    if (!formData.agreeTerms) newErrors.agreeTerms = 'You must agree to the terms';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    if (!stripe || !elements) return;
+    
     setIsProcessing(true);
     
-    // Simulate payment processing
-    setTimeout(() => {
-      window.location.href = '/payment/success';
-    }, 3000);
+    try {
+      // Create payment intent on the server
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planType: selectedPlan,
+          billingCycle: selectedBilling,
+          quantity: selectedPlan === 'team' ? teamSeats : 1,
+          email: formData.email,
+          metadata: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            company: formData.company,
+          }
+        }),
+      });
+
+      const { clientSecret, subscriptionId } = await response.json();
+
+      // Confirm payment with Stripe
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) throw new Error('Card element not found');
+
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            address: {
+              line1: formData.address,
+              city: formData.city,
+              postal_code: formData.zip,
+              country: formData.country,
+            }
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Payment error:', error);
+        alert(error.message);
+      } else if (paymentIntent?.status === 'succeeded') {
+        // Redirect to success page
+        window.location.href = `/payment/success?session_id=${subscriptionId}`;
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -142,12 +237,7 @@ export default function CheckoutPage() {
       <header className="border-b border-white/10 px-4 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="Promptability AI logo"
-              className="w-8 h-8 object-contain"
-            />
-            <span className="text-white font-semibold text-lg">Promptability</span>
+            <span className="text-white font-semibold text-lg">Promptability AI</span>
           </Link>
           
           <div className="flex items-center gap-2">
@@ -203,11 +293,13 @@ export default function CheckoutPage() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all ${
+                        errors.email ? 'border-red-500/50' : 'border-white/10'
+                      }`}
                       placeholder="your@email.com"
                       required
                     />
-                    <p className="text-xs text-gray-500 mt-1">This will be your account email</p>
+                    {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                   </div>
 
                   {/* Name */}
@@ -220,7 +312,9 @@ export default function CheckoutPage() {
                         type="text"
                         value={formData.firstName}
                         onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                        className={`w-full px-4 py-3 bg-white/5 border rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all ${
+                          errors.firstName ? 'border-red-500/50' : 'border-white/10'
+                        }`}
                         required
                       />
                     </div>
@@ -232,48 +326,17 @@ export default function CheckoutPage() {
                         type="text"
                         value={formData.lastName}
                         onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                        className={`w-full px-4 py-3 bg-white/5 border rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all ${
+                          errors.lastName ? 'border-red-500/50' : 'border-white/10'
+                        }`}
                         required
                       />
                     </div>
                   </div>
 
-                  {/* Company */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Company (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.company}
-                      onChange={(e) => setFormData({...formData, company: e.target.value})}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                      placeholder="Add company name for invoice"
-                    />
-                  </div>
-
-                  {/* Country */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Country *
-                    </label>
-                    <select
-                      value={formData.country}
-                      onChange={(e) => setFormData({...formData, country: e.target.value})}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                      required
-                    >
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.code} className="bg-black">
-                          {country.flag} {country.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
                   {/* Address */}
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="md:col-span-2">
+                  <div className="space-y-4">
+                    <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Address *
                       </label>
@@ -286,18 +349,49 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        ZIP Code *
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.zip}
-                        onChange={(e) => setFormData({...formData, zip: e.target.value})}
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                        placeholder="12345"
-                        required
-                      />
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          City *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.city}
+                          onChange={(e) => setFormData({...formData, city: e.target.value})}
+                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          ZIP Code *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.zip}
+                          onChange={(e) => setFormData({...formData, zip: e.target.value})}
+                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                          placeholder="12345"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Country *
+                        </label>
+                        <select
+                          value={formData.country}
+                          onChange={(e) => setFormData({...formData, country: e.target.value})}
+                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                          required
+                        >
+                          {countries.map((country) => (
+                            <option key={country.code} value={country.code} className="bg-black">
+                              {country.flag} {country.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -308,121 +402,35 @@ export default function CheckoutPage() {
                 <h2 className="text-2xl font-bold text-white mb-6">Payment Method</h2>
                 
                 <div className="space-y-6">
-                  {/* Payment Tabs */}
-                  <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
-                    <button
-                      type="button"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-500/20 text-blue-400 rounded-lg font-medium"
-                    >
-                      <CreditCard className="w-4 h-4" />
-                      Credit Card
-                    </button>
-                    <button
-                      type="button"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-gray-400 hover:text-white transition-colors"
-                    >
-                      PayPal
-                    </button>
-                  </div>
-
-                  {/* Card Details */}
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Card number *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={formData.cardNumber}
-                          onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
-                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                          placeholder="1234 5678 9012 3456"
-                          required
-                        />
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex gap-1">
-                          <Shield className="w-4 h-4 text-green-400" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Expiry date *
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.expiry}
-                          onChange={(e) => setFormData({...formData, expiry: e.target.value})}
-                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                          placeholder="MM/YY"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                          CVC *
-                          <HelpCircle className="w-3 h-3 text-gray-400" />
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.cvc}
-                          onChange={(e) => setFormData({...formData, cvc: e.target.value})}
-                          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                          placeholder="123"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {/* Save Card */}
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.saveCard}
-                        onChange={(e) => setFormData({...formData, saveCard: e.target.checked})}
-                        className="w-4 h-4 text-blue-500 bg-white/5 border-white/20 rounded focus:ring-blue-500/20"
-                      />
-                      <span className="text-gray-300">Save card for future payments</span>
+                  {/* Card Element */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Card details *
                     </label>
+                    <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
+                      <CardElement
+                        options={{
+                          style: {
+                            base: {
+                              fontSize: '16px',
+                              color: '#ffffff',
+                              '::placeholder': {
+                                color: '#9ca3af',
+                              },
+                            },
+                            invalid: {
+                              color: '#ef4444',
+                            },
+                          },
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                      <Shield className="w-3 h-3 text-green-400" />
+                      <span>Your payment info is encrypted and secure</span>
+                    </div>
                   </div>
                 </div>
-              </FloatingCard>
-
-              {/* Promo Code */}
-              <FloatingCard className="p-6">
-                <button
-                  type="button"
-                  onClick={() => setShowPromoCode(!showPromoCode)}
-                  className="flex items-center justify-between w-full text-left"
-                >
-                  <span className="text-lg font-semibold text-white">Have a promo code?</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showPromoCode ? 'rotate-180' : ''}`} />
-                </button>
-
-                <AnimatePresence>
-                  {showPromoCode && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="mt-4 flex gap-3"
-                    >
-                      <input
-                        type="text"
-                        className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                        placeholder="Enter promo code"
-                      />
-                      <button
-                        type="button"
-                        className="px-6 py-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors"
-                      >
-                        Apply
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </FloatingCard>
 
               {/* Terms */}
@@ -439,22 +447,12 @@ export default function CheckoutPage() {
                     I agree to the <a href="#" className="text-blue-400 hover:text-blue-300">Terms of Service</a> and <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
                   </span>
                 </label>
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-500 bg-white/5 border-white/20 rounded focus:ring-blue-500/20 mt-0.5"
-                    required
-                  />
-                  <span className="text-gray-300 text-sm">
-                    I understand this is a recurring subscription that can be cancelled anytime
-                  </span>
-                </label>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={!formData.agreeTerms || isProcessing}
+                disabled={!formData.agreeTerms || isProcessing || !stripe}
                 className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
               >
                 {isProcessing ? (
@@ -466,6 +464,7 @@ export default function CheckoutPage() {
                   <>
                     <Lock className="w-5 h-5" />
                     Complete Purchase - ${currentPrice.toFixed(2)}
+                    {selectedPlan === 'team' && ` for ${teamSeats} users`}
                   </>
                 )}
               </button>
@@ -480,46 +479,54 @@ export default function CheckoutPage() {
 
                 {/* Plan Selection */}
                 <div className="space-y-4 mb-6">
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPlan('pro')}
-                      className={`flex-1 p-4 rounded-lg border transition-all ${
-                        selectedPlan === 'pro' 
-                          ? 'border-blue-500/50 bg-blue-500/10' 
-                          : 'border-white/10 bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <Crown className="w-5 h-5 text-blue-400" />
-                        <span className="font-semibold text-white">Pro</span>
+                  <select
+                    value={selectedPlan}
+                    onChange={(e) => setSelectedPlan(e.target.value as any)}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50"
+                  >
+                    <option value="starter" className="bg-black">Starter Plan</option>
+                    <option value="pro" className="bg-black">Pro Plan</option>
+                    <option value="team" className="bg-black">Team Plan</option>
+                  </select>
+
+                  {/* Team Seats Selector */}
+                  {selectedPlan === 'team' && (
+                    <div>
+                      <label className="text-sm text-gray-400 block mb-2">Number of team members:</label>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setTeamSeats(Math.max(3, teamSeats - 1))}
+                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          value={teamSeats}
+                          onChange={(e) => setTeamSeats(Math.min(100, Math.max(3, parseInt(e.target.value) || 3)))}
+                          className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center"
+                          min="3"
+                          max="100"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setTeamSeats(Math.min(100, teamSeats + 1))}
+                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
+                        >
+                          +
+                        </button>
                       </div>
-                      <div className="text-sm text-gray-400">Perfect for individuals</div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPlan('team')}
-                      className={`flex-1 p-4 rounded-lg border transition-all ${
-                        selectedPlan === 'team' 
-                          ? 'border-blue-500/50 bg-blue-500/10' 
-                          : 'border-white/10 bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <Users className="w-5 h-5 text-blue-400" />
-                        <span className="font-semibold text-white">Team</span>
-                      </div>
-                      <div className="text-sm text-gray-400">For teams & companies</div>
-                    </button>
-                  </div>
+                    </div>
+                  )}
 
                   {/* Billing Cycle */}
                   <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
                     <button
                       type="button"
-                      onClick={() => setBillingCycle('monthly')}
+                      onClick={() => setSelectedBilling('monthly')}
                       className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
-                        billingCycle === 'monthly' 
+                        selectedBilling === 'monthly' 
                           ? 'bg-blue-500/20 text-blue-400' 
                           : 'text-gray-400 hover:text-white'
                       }`}
@@ -528,21 +535,14 @@ export default function CheckoutPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setBillingCycle('yearly')}
+                      onClick={() => setSelectedBilling('yearly')}
                       className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
-                        billingCycle === 'yearly' 
+                        selectedBilling === 'yearly' 
                           ? 'bg-blue-500/20 text-blue-400' 
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
-                      <div className="flex items-center justify-center gap-2">
-                        Yearly
-                        {savings > 0 && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
-                            Save {savings}%
-                          </span>
-                        )}
-                      </div>
+                      Yearly {savings > 0 && <span className="text-xs">(Save {savings}%)</span>}
                     </button>
                   </div>
                 </div>
@@ -550,127 +550,57 @@ export default function CheckoutPage() {
                 {/* Pricing Breakdown */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-white/10">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">{currentPlan.name} ({billingCycle})</span>
+                    <span className="text-gray-400">
+                      {currentPlan.name} ({selectedBilling})
+                      {selectedPlan === 'team' && ` × ${teamSeats} users`}
+                    </span>
                     <span className="text-white font-semibold">${currentPrice.toFixed(2)}</span>
                   </div>
-                  {savings > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Discount</span>
-                      <span className="text-green-400">-${((currentPlan.monthlyPrice * 12) - currentPlan.yearlyPrice).toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Tax</span>
-                    <span className="text-white">Calculated at checkout</span>
-                  </div>
                   <div className="flex justify-between text-lg font-bold">
-                    <span className="text-white">Today's Total</span>
-                    <span className="text-white">${currentPrice.toFixed(2)}</span>
+                    <span className="text-white">Total</span>
+                    <span className="text-white">${currentPrice.toFixed(2)}/{selectedBilling === 'monthly' ? 'mo' : 'yr'}</span>
                   </div>
-                </div>
-
-                {/* Recurring Notice */}
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Calendar className="w-4 h-4 text-blue-400" />
-                    <span className="text-blue-400 font-medium">Recurring Subscription</span>
-                  </div>
-                  <p className="text-sm text-gray-300">
-                    Next billing: {new Date(Date.now() + (billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000).toLocaleDateString()}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">Cancel anytime from your account</p>
                 </div>
 
                 {/* What's Included */}
                 <div className="mb-6">
                   <h4 className="font-semibold text-white mb-3">What's Included</h4>
                   <div className="space-y-2">
-                    {currentPlan.features.slice(0, 6).map((feature, index) => (
+                    {currentPlan.features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
                         <span className="text-gray-300">{feature}</span>
                       </div>
                     ))}
-                    <button className="text-blue-400 hover:text-blue-300 text-sm">
-                      View all features →
-                    </button>
                   </div>
                 </div>
 
                 {/* Trust Elements */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Lock className="w-3 h-3" />
-                      <span>SSL Secured</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Shield className="w-3 h-3" />
-                      <span>Stripe Powered</span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
-                      <CheckCircle className="w-4 h-4" />
-                      30-day money-back guarantee
-                    </div>
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
+                    <CheckCircle className="w-4 h-4" />
+                    30-day money-back guarantee
                   </div>
                 </div>
               </FloatingCard>
-
-              {/* FAQ Accordion */}
-              <FloatingCard className="p-6">
-                <h4 className="font-semibold text-white mb-4">Frequently Asked Questions</h4>
-                <div className="space-y-3">
-                  {faqItems.map((item, index) => (
-                    <details key={index} className="group">
-                      <summary className="flex items-center justify-between cursor-pointer text-gray-300 hover:text-white transition-colors py-2">
-                        <span className="text-sm font-medium">{item.question}</span>
-                        <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform" />
-                      </summary>
-                      <div className="mt-2 pb-2 text-sm text-gray-400">
-                        {item.answer}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </FloatingCard>
-
-              {/* Support */}
-              <div className="text-center">
-                <p className="text-gray-400 text-sm mb-2">Need help?</p>
-                <button className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm">
-                  <MessageSquare className="w-4 h-4" />
-                  Chat with support
-                </button>
-              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Processing Overlay */}
-      <AnimatePresence>
-        {isProcessing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
-          >
-            <FloatingCard className="p-8 text-center max-w-md">
-              <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Processing Payment</h3>
-              <p className="text-gray-400 mb-4">Please don't refresh the page</p>
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                <Shield className="w-4 h-4" />
-                <span>Secured by Stripe</span>
-              </div>
-            </FloatingCard>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-white">Loading checkout...</div>
+        </div>
+      }>
+        <CheckoutForm />
+      </Suspense>
+    </Elements>
   );
 }

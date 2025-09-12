@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { 
   User, Settings, CreditCard, BarChart3, Download, Crown, 
@@ -11,6 +12,7 @@ import Link from 'next/link';
 import { fadeInUp, staggerContainer, glassCard } from '@/lib/animations';
 
 export default function AccountPage() {
+  const { user, userProfile, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [notifications, setNotifications] = useState({
@@ -19,14 +21,35 @@ export default function AccountPage() {
     marketing: false
   });
 
-  // Mock user data
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: null,
-    joinDate: 'March 2024',
-    plan: 'Pro',
-    status: 'Active'
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user || !userProfile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="text-center">
+          <h1 className="text-2xl mb-4">Please sign in to view your account</h1>
+          <Link href="/signin" className="text-blue-400 hover:text-blue-300">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Use actual user data from Firebase
+  const userData = {
+    name: userProfile.displayName || `${userProfile.firstName} ${userProfile.lastName}` || 'User',
+    email: userProfile.email,
+    avatar: user.photoURL || null,
+    joinDate: userProfile.createdAt?.toDate().toLocaleDateString() || 'Recently',
+    plan: 'Pro', // TODO: Get from subscription data
+    status: 'Active' // TODO: Get from subscription data
   };
 
   const usage = {
@@ -128,15 +151,15 @@ export default function AccountPage() {
                       <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <User className="w-10 h-10 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-white">{user.name}</h3>
-                      <p className="text-gray-400">{user.email}</p>
+                      <h3 className="text-xl font-bold text-white">{userData.name}</h3>
+                      <p className="text-gray-400">{userData.email}</p>
                       <div className="mt-3 flex items-center justify-center gap-2">
                         <div className="flex items-center gap-1">
                           <Crown className="w-4 h-4 text-yellow-400" />
-                          <span className="text-sm font-medium text-yellow-400">{user.plan} Plan</span>
+                          <span className="text-sm font-medium text-yellow-400">{userData.plan} Plan</span>
                         </div>
                         <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="text-sm text-green-400">{user.status}</span>
+                        <span className="text-sm text-green-400">{userData.status}</span>
                       </div>
                     </div>
                     <button
@@ -188,7 +211,7 @@ export default function AccountPage() {
                       <div className="flex items-center gap-3">
                         <Crown className="w-6 h-6 text-yellow-400" />
                         <div>
-                          <div className="text-white font-semibold">{user.plan} Plan</div>
+                          <div className="text-white font-semibold">{userData.plan} Plan</div>
                           <div className="text-gray-400 text-sm">Unlimited prompts • Advanced features</div>
                         </div>
                       </div>
@@ -209,7 +232,7 @@ export default function AccountPage() {
                           <Calendar className="w-5 h-5 text-green-400" />
                           <span className="text-sm text-gray-400">Member Since</span>
                         </div>
-                        <div className="text-lg font-bold text-white">{user.joinDate}</div>
+                        <div className="text-lg font-bold text-white">{userData.joinDate}</div>
                         <div className="text-xs text-gray-400">8 months ago</div>
                       </div>
                     </div>
@@ -237,7 +260,7 @@ export default function AccountPage() {
                         <div className="flex items-center gap-3 mb-4">
                           <Crown className="w-6 h-6 text-yellow-400" />
                           <div>
-                            <div className="text-lg font-semibold text-white">{user.plan} Plan</div>
+                            <div className="text-lg font-semibold text-white">{userData.plan} Plan</div>
                             <div className="text-sm text-gray-400">{billing.amount}/month</div>
                           </div>
                         </div>
@@ -253,8 +276,21 @@ export default function AccountPage() {
                       </div>
                     </div>
                     <div className="mt-6 flex gap-4">
-                      <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg transition-colors">
-                        Update Payment Method
+                      <button 
+                        onClick={async () => {
+                          const response = await fetch('/api/create-portal-session', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                              userId: user.uid,
+                              email: userProfile.email 
+                            }),
+                          });
+                          const { url } = await response.json();
+                          if (url) window.location.href = url;
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                        Manage Subscription
                       </button>
                       <Link
                         href="/pricing"
@@ -383,7 +419,7 @@ export default function AccountPage() {
                           <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
                           <input
                             type="text"
-                            value={user.name}
+                            value={userData.name}
                             className="w-full bg-black/40 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                             disabled={!isEditingProfile}
                           />
@@ -392,7 +428,7 @@ export default function AccountPage() {
                           <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                           <input
                             type="email"
-                            value={user.email}
+                            value={userData.email}
                             className="w-full bg-black/40 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                             disabled={!isEditingProfile}
                           />

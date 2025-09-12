@@ -63,7 +63,7 @@ export default function Features() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-4xl md:text-5xl font-bold mb-6 text-white"
+            className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
           >
             Why Your Current Prompts
             <span className="block bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
@@ -74,8 +74,9 @@ export default function Features() {
             variants={fadeInUp}
             className="text-xl text-gray-300 max-w-3xl mx-auto"
           >
-            Stop wasting time rewriting the same prompts. Our AI learns from your edits 
-            and automatically improves your prompts before you even send them.
+            Most people write 5-word prompts and wonder why AI disappoints. 
+            Promptability automatically adds the context, structure, and 
+            instructions that make AI actually useful.
           </motion.p>
         </motion.div>
 
@@ -141,7 +142,7 @@ export default function Features() {
           className="text-center mt-16"
         >
           <p className="text-gray-400 text-sm mb-4">See these features in action</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
               href="/chrome-extension"
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-5 py-2.5 rounded-xl hover:bg-white/20 transition-all duration-300 text-sm"

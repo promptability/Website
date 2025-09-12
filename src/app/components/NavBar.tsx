@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, BookOpen, ArrowRight, User, Settings, LogOut } from "lucide-react";
 
 export default function NavBar() {
@@ -10,10 +10,21 @@ export default function NavBar() {
   const [guidesOpen, setGuidesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   
   // TODO: Replace with actual auth state from Firebase
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [user, setUser] = useState({ name: 'John Doe', email: 'john@example.com', avatar: null });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20;
+      setScrolled(isScrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleMouseEnter = () => {
     if (hoverTimeout) {
@@ -61,7 +72,9 @@ export default function NavBar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+      scrolled ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+    }`}>
       <div className="mx-auto max-w-7xl px-4">
         <div className="h-20 flex items-center justify-between">
           {/* Brand */}
@@ -253,7 +266,9 @@ export default function NavBar() {
 
       {/* Mobile panel */}
       {open && (
-        <div className="md:hidden">
+        <div className={`md:hidden transition-all duration-300 ${
+          scrolled ? 'bg-black/95 backdrop-blur-md' : 'bg-black/90'
+        }`}>
           <nav className="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-2">
             {navItems.map((item) => (
               <Link

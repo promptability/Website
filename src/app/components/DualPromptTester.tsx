@@ -177,6 +177,15 @@ export default function DualPromptTester() {
     setIsOpen: (open: boolean) => void; 
   }) => {
     const selectedPlatform = platformOptions.find(p => p.value === value);
+    // Get only the first 6 popular platforms for mobile
+    const mobilePlatforms = [
+      { value: 'chatgpt', label: 'ChatGPT', category: 'Chat AI', color: '#10A37F' },
+      { value: 'claude', label: 'Claude', category: 'Chat AI', color: '#D97706' },
+      { value: 'gemini', label: 'Gemini', category: 'Chat AI', color: '#4285F4' },
+      { value: 'perplexity', label: 'Perplexity', category: 'Chat AI', color: '#1FB6FF' },
+      { value: 'mistral', label: 'Mistral', category: 'Chat AI', color: '#FF6B35' },
+      { value: 'llama', label: 'Llama', category: 'Chat AI', color: '#1877F2' }
+    ];
     
     return (
       <div className="relative">
@@ -184,7 +193,15 @@ export default function DualPromptTester() {
           onClick={() => setIsOpen(!isOpen)}
           className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-left text-white hover:bg-white/10 transition-colors flex items-center justify-between"
         >
-          <span>{selectedPlatform?.label}</span>
+          <div className="flex items-center gap-3">
+            {selectedPlatform && (
+              <div 
+                className="w-4 h-4 rounded-full border border-white/20"
+                style={{ backgroundColor: selectedPlatform.color || '#6B7280' }}
+              />
+            )}
+            <span>{selectedPlatform?.label}</span>
+          </div>
           <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         
@@ -196,19 +213,62 @@ export default function DualPromptTester() {
               exit={{ opacity: 0, y: -10 }}
               className="absolute top-full left-0 right-0 mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto"
             >
-              {platformOptions.map((platform) => (
-                <button
-                  key={platform.value}
-                  onClick={() => {
-                    onChange(platform.value);
-                    setIsOpen(false);
-                  }}
-                  className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+              {/* Mobile: Show first 6 platforms */}
+              <div className="md:hidden">
+                {mobilePlatforms.map((platform) => (
+                  <button
+                    key={platform.value}
+                    onClick={() => {
+                      onChange(platform.value);
+                      setIsOpen(false);
+                    }}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
+                  >
+                    <div 
+                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
+                      style={{ backgroundColor: platform.color || '#6B7280' }}
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium">{platform.label}</div>
+                      <div className="text-xs text-gray-400">{platform.category}</div>
+                    </div>
+                  </button>
+                ))}
+                
+                {/* "See All" button on mobile */}
+                <a
+                  href="/platforms"
+                  className="w-full px-4 py-3 text-left text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors border-t border-white/10 flex items-center gap-3 font-medium"
                 >
-                  <div className="font-medium">{platform.label}</div>
-                  <div className="text-xs text-gray-400">{platform.category}</div>
-                </button>
-              ))}
+                  <div className="w-4 h-4 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  </div>
+                  <span>See All {platformOptions.length} Platforms →</span>
+                </a>
+              </div>
+
+              {/* Desktop: Show all platforms */}
+              <div className="hidden md:block">
+                {platformOptions.map((platform) => (
+                  <button
+                    key={platform.value}
+                    onClick={() => {
+                      onChange(platform.value);
+                      setIsOpen(false);
+                    }}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
+                  >
+                    <div 
+                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
+                      style={{ backgroundColor: platform.color || '#6B7280' }}
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium">{platform.label}</div>
+                      <div className="text-xs text-gray-400">{platform.category}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -217,7 +277,7 @@ export default function DualPromptTester() {
   };
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-12 md:py-24 px-4 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -225,16 +285,18 @@ export default function DualPromptTester() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white">
-            Test Your Prompts
-            <span className="block bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              Live Demo
-            </span>
+          <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-3 sm:mb-4 md:mb-8">
+            <span className="text-white">Test Your </span>
+            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Prompts</span>
+            <br />
+            <span className="text-white">Online and </span>
+            <span className="text-purple-400">Free!</span>
           </h2>
-          <p className="text-xl text-white max-w-4xl mx-auto leading-relaxed">
-            Experience the power of AI-driven prompt optimization with our interactive demo. Optimize weak prompts or analyze existing ones for strength in real-time.
+          <p className="text-base sm:text-lg md:text-xl font-normal leading-normal text-white max-w-4xl mx-auto mt-6">
+            Experience the power of AI-driven prompt optimization with our interactive demo. <br />
+            Optimize weak prompts or analyze existing ones for strength in real-time.
           </p>
           
           {/* Blue spotlight effects */}
@@ -245,7 +307,7 @@ export default function DualPromptTester() {
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 relative">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-12 relative">
           {/* Central connecting element */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-px h-32 bg-gradient-to-b from-transparent via-blue-400/50 to-transparent z-10 hidden lg:block"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full z-20 hidden lg:block animate-pulse"></div>
@@ -256,20 +318,20 @@ export default function DualPromptTester() {
             whileInView="animate"
             whileHover="hover"
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-xl shadow-blue-500/10 hover:shadow-blue-500/25 transition-all duration-500"
+            className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl shadow-blue-500/10 hover:shadow-blue-500/25 transition-all duration-500"
           >
-            <div className="flex items-center gap-4 mb-8 relative">
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shadow-lg shadow-white/10 relative border border-white/20">
-                <Zap className="w-8 h-8 text-white" />
+            <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-8 relative">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-white/10 relative border border-white/20">
+                <Zap className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-1">Prompt Optimizer</h3>
-                <p className="text-gray-300 font-medium">Transform weak prompts into powerful ones</p>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 md:mb-1">Prompt Optimizer</h3>
+                <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium">Transform weak prompts into powerful ones</p>
               </div>
             </div>
 
             {/* Platform Selector */}
-            <div className="mb-4">
+            <div className="mb-2 md:mb-4">
               <label className="block text-sm font-medium text-gray-300 mb-2">AI Platform</label>
               <PlatformDropdown
                 value={optimizerPlatform}
@@ -298,7 +360,7 @@ export default function DualPromptTester() {
               whileTap="tap"
               onClick={handleOptimize}
               disabled={!optimizerInput.trim() || isOptimizing}
-              className="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white font-bold py-5 px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-8 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 text-lg"
+              className="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 text-white font-bold py-4 sm:py-5 px-6 sm:px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6 sm:mb-8 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 text-base sm:text-lg"
             >
               {isOptimizing ? (
                 <>
@@ -410,20 +472,20 @@ export default function DualPromptTester() {
             whileInView="animate"
             whileHover="hover"
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 shadow-xl shadow-purple-500/10 hover:shadow-purple-500/25 transition-all duration-500"
+            className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-xl shadow-purple-500/10 hover:shadow-purple-500/25 transition-all duration-500"
           >
             <div className="flex items-center gap-4 mb-8 relative">
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center shadow-lg shadow-white/10 relative border border-white/20">
-                <Target className="w-8 h-8 text-white" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 rounded-2xl flex items-center justify-center shadow-lg shadow-white/10 relative border border-white/20">
+                <Target className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-1">Strength Checker</h3>
-                <p className="text-gray-300 font-medium">Analyze prompt effectiveness and clarity</p>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">Strength Checker</h3>
+                <p className="text-sm sm:text-base text-gray-300 font-medium">Analyze prompt effectiveness and clarity</p>
               </div>
             </div>
 
             {/* Platform Selector */}
-            <div className="mb-4">
+            <div className="mb-2 md:mb-4">
               <label className="block text-sm font-medium text-gray-300 mb-2">AI Platform</label>
               <PlatformDropdown
                 value={checkerPlatform}
@@ -452,7 +514,7 @@ export default function DualPromptTester() {
               whileTap="tap"
               onClick={handleAnalyze}
               disabled={!checkerInput.trim() || isAnalyzing}
-              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-5 px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-8 shadow-lg transition-colors duration-300 text-lg"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 sm:py-5 px-6 sm:px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6 sm:mb-8 shadow-lg transition-colors duration-300 text-base sm:text-lg"
             >
               {isAnalyzing ? (
                 <>

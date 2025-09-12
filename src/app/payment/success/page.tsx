@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle, Download, Users, BookOpen, Headphones, 
@@ -10,17 +11,20 @@ import {
 import { staggerContainer, fadeInUp } from '@/lib/animations';
 import FloatingCard from '@/components/ui/FloatingCard';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('session_id');
+  
   const [showInvoice, setShowInvoice] = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
   const [orderDetails, setOrderDetails] = useState({
-    orderId: 'PMT-2024-001234',
+    orderId: sessionId || 'PMT-2024-001234',
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString(),
     plan: 'Premium',
     amount: '$19.99',
     billing: 'Monthly',
-    nextBilling: 'February 1, 2025',
+    nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
     paymentMethod: '**** 4242',
     email: 'user@example.com'
   });
@@ -520,5 +524,17 @@ export default function PaymentSuccessPage() {
         </motion.div>
       </div>
     </main>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

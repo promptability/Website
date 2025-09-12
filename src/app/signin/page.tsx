@@ -1,14 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Eye, EyeOff, Chrome, Github, Mail, Lock, 
   Shield, Zap, Clock, ArrowRight, Check
 } from 'lucide-react';
 import Link from 'next/link';
+import { signInWithEmail, signInWithGoogle, signInWithGithub } from '@/lib/firebase/auth';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignInPage() {
+  const router = useRouter();
+  const { refreshUserProfile } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -23,16 +28,45 @@ export default function SignInPage() {
     setError('');
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await signInWithEmail(formData.email, formData.password);
+      await refreshUserProfile();
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('Signin error:', error);
+      if (error.code === 'auth/user-not-found') {
+        setError('No account found with this email');
+      } else if (error.code === 'auth/wrong-password') {
+        setError('Incorrect password');
+      } else if (error.code === 'auth/invalid-email') {
+        setError('Invalid email address');
+      } else if (error.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later');
+      } else {
+        setError(error.message || 'Failed to sign in');
+      }
+    } finally {
       setIsLoading(false);
-      window.location.href = '/account';
-    }, 2000);
+    }
   };
 
-  const handleOAuth = (provider: string) => {
+  const handleOAuth = async (provider: string) => {
     setIsLoading(true);
-    // OAuth logic here
+    setError('');
+    
+    try {
+      if (provider === 'google') {
+        await signInWithGoogle();
+      } else if (provider === 'github') {
+        await signInWithGithub();
+      }
+      await refreshUserProfile();
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('OAuth error:', error);
+      setError(error.message || 'Failed to sign in');
+      setIsLoading(false);
+    }
   };
 
   return (

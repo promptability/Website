@@ -7,6 +7,7 @@ import { glassCard, staggerContainer, fadeInUp } from '@/lib/animations';
 
 export default function PlatformsShowcase() {
   const visibleCount = 32;
+  const mobileVisibleCount = 6; // Only show 6 on mobile
 
   return (
     <section className="py-20 px-4 relative">
@@ -21,7 +22,7 @@ export default function PlatformsShowcase() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-5xl md:text-6xl font-bold mb-6 text-white"
+            className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
           >
             Works with
             <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
@@ -43,10 +44,12 @@ export default function PlatformsShowcase() {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 mb-8"
+          className="mb-8"
         >
-          <AnimatePresence mode="wait">
-            {aiPlatforms.slice(0, visibleCount).map((platform, index) => (
+          {/* Mobile Grid - Show only 6 platforms */}
+          <div className="md:hidden grid grid-cols-3 gap-3 mb-6">
+            <AnimatePresence mode="wait">
+              {aiPlatforms.slice(0, mobileVisibleCount).map((platform, index) => (
               <motion.a
                 key={platform.id}
                 href={`/platforms?platform=${platform.id}`}
@@ -65,12 +68,15 @@ export default function PlatformsShowcase() {
                 
                 {/* Platform Icon */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2">
+                  <div 
+                    className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 border border-white/20"
+                    style={{ backgroundColor: platform.color || '#6B7280' }}
+                  >
                     {platform.logo ? (
                       <img 
                         src={platform.logo} 
                         alt={`${platform.name} logo`}
-                        className="w-5 h-5 object-contain filter brightness-0 invert"
+                        className="w-5 h-5 object-contain"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -97,8 +103,81 @@ export default function PlatformsShowcase() {
                   style={{ backgroundColor: platform.color }}
                 />
               </motion.a>
-            ))}
-          </AnimatePresence>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile "See More" Button */}
+          <div className="md:hidden text-center mb-8">
+            <a
+              href="/platforms"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 font-medium"
+            >
+              See All {aiPlatforms.length} Platforms
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+
+          {/* Desktop Grid - Show more platforms */}
+          <div className="hidden md:grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            <AnimatePresence mode="wait">
+              {aiPlatforms.slice(0, visibleCount).map((platform, index) => (
+                <motion.a
+                  key={platform.id}
+                  href={`/platforms?platform=${platform.id}`}
+                  variants={glassCard}
+                  initial="initial"
+                  animate="animate"
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  whileHover="hover"
+                  transition={{ delay: index * 0.05 }}
+                  className="group bg-black/40 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:bg-black/60 hover:border-white/10 transition-all duration-300 cursor-pointer relative block"
+                >
+                  {/* External link icon on hover */}
+                  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ExternalLink className="w-3 h-3 text-white/50" />
+                  </div>
+                  
+                  {/* Platform Icon */}
+                  <div className="flex flex-col items-center text-center">
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 border border-white/20"
+                      style={{ backgroundColor: platform.color || '#6B7280' }}
+                    >
+                      {platform.logo ? (
+                        <img 
+                          src={platform.logo} 
+                          alt={`${platform.name} logo`}
+                          className="w-5 h-5 object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div 
+                        className="w-5 h-5 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                        style={{ 
+                          display: platform.logo ? 'none' : 'flex'
+                        }}
+                      >
+                        {platform.name.charAt(0)}
+                      </div>
+                    </div>
+                    <h3 className="font-medium text-white text-xs truncate w-full">{platform.name}</h3>
+                  </div>
+
+                  {/* Hover Glow Effect */}
+                  <div 
+                    className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl pointer-events-none"
+                    style={{ backgroundColor: platform.color }}
+                  />
+                </motion.a>
+              ))}
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         {/* Subtle CTA after platforms */}

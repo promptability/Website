@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Eye, EyeOff, Check, X, Chrome, Github, 
@@ -8,8 +9,12 @@ import {
 } from 'lucide-react';
 import { fadeInUp, staggerContainer, liquidButton } from '@/lib/animations';
 import Link from 'next/link';
+import { signUpWithEmail, signInWithGoogle, signInWithGithub } from '@/lib/firebase/auth';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const { refreshUserProfile } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -32,17 +37,50 @@ export default function SignUpPage() {
     e.preventDefault();
     if (!agreedToTerms) return;
     
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setErrors({ confirmPassword: "Passwords don't match" });
+      return;
+    }
+
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    setErrors({});
+    
+    try {
+      await signUpWithEmail(formData.email, formData.password);
+      await refreshUserProfile();
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        setErrors({ email: 'Email already in use' });
+      } else if (error.code === 'auth/weak-password') {
+        setErrors({ password: 'Password is too weak' });
+      } else {
+        setErrors({ general: error.message || 'Failed to create account' });
+      }
+    } finally {
       setIsLoading(false);
-      window.location.href = '/signup/verify';
-    }, 2000);
+    }
   };
 
-  const handleOAuth = (provider: string) => {
+  const handleOAuth = async (provider: string) => {
     setIsLoading(true);
-    // OAuth logic here
+    setErrors({});
+    
+    try {
+      if (provider === 'google') {
+        await signInWithGoogle();
+      } else if (provider === 'github') {
+        await signInWithGithub();
+      }
+      await refreshUserProfile();
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('OAuth error:', error);
+      setErrors({ general: error.message || 'Failed to sign in' });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -167,6 +205,13 @@ export default function SignUpPage() {
 
                 {/* Email Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* General Error Display */}
+                  {errors.general && (
+                    <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-3">
+                      <p className="text-red-400 text-sm">{errors.general}</p>
+                    </div>
+                  )}
+                  
                   {/* Email Field */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
