@@ -180,11 +180,11 @@ export async function POST(req: Request) {
             planType,
             billingCycle,
             quantity: subscription.items.data[0].quantity || 1,
-            currentPeriodStart: subscription.current_period_start ? 
-              Timestamp.fromDate(new Date(subscription.current_period_start * 1000)) : 
+            currentPeriodStart: (subscription as any).current_period_start ? 
+              Timestamp.fromDate(new Date((subscription as any).current_period_start * 1000)) : 
               Timestamp.now(),
-            currentPeriodEnd: subscription.current_period_end ? 
-              Timestamp.fromDate(new Date(subscription.current_period_end * 1000)) : 
+            currentPeriodEnd: (subscription as any).current_period_end ? 
+              Timestamp.fromDate(new Date((subscription as any).current_period_end * 1000)) : 
               Timestamp.now(),
             cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
           };
@@ -236,7 +236,7 @@ export async function POST(req: Request) {
       case 'invoice.payment_succeeded': {
         const invoice = event.data.object as Stripe.Invoice;
         
-        if (invoice.subscription && invoice.payment_intent) {
+        if ((invoice as any).subscription && (invoice as any).payment_intent) {
           const customer = await stripe.customers.retrieve(invoice.customer as string) as Stripe.Customer;
           const user = await getOrCreateUser(customer.id, customer.email);
           
@@ -245,18 +245,18 @@ export async function POST(req: Request) {
             await createPayment({
               id: '', // Firestore will generate this
               userId: user.uid,
-              stripePaymentIntentId: invoice.payment_intent as string,
-              amount: invoice.amount_paid,
+              stripePaymentIntentId: (invoice as any).payment_intent as string,
+              amount: (invoice as any).amount_paid,
               currency: invoice.currency,
               status: 'succeeded',
-              description: `Subscription payment for ${invoice.period_start ? new Date(invoice.period_start * 1000).toLocaleDateString() : 'N/A'}`
+              description: `Subscription payment for ${(invoice as any).period_start ? new Date((invoice as any).period_start * 1000).toLocaleDateString() : 'N/A'}`
             });
             
             // Send receipt email
             const amount = new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: invoice.currency.toUpperCase()
-            }).format(invoice.amount_paid / 100);
+            }).format((invoice as any).amount_paid / 100);
             
             const emailTemplate = emailTemplates.invoiceReceipt(
               user.firstName || 'Customer',
@@ -278,8 +278,8 @@ export async function POST(req: Request) {
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
         
-        if (invoice.subscription) {
-          const sub = await getSubscriptionByStripeId(invoice.subscription as string);
+        if ((invoice as any).subscription) {
+          const sub = await getSubscriptionByStripeId((invoice as any).subscription as string);
           
           if (sub) {
             // Update subscription status

@@ -201,7 +201,7 @@ export const getUserPayments = async (userId: string): Promise<FirebasePayment[]
 };
 
 // Webhook Event Operations
-export const createWebhookEvent = async (eventData: Omit<FirebaseWebhookEvent, 'createdAt'>): Promise<string> => {
+export const createWebhookEvent = async (eventData: Omit<FirebaseWebhookEvent, 'id' | 'createdAt'>): Promise<string> => {
   const eventsRef = collection(db, COLLECTIONS.WEBHOOK_EVENTS);
   const docRef = await addDoc(eventsRef, {
     ...eventData,

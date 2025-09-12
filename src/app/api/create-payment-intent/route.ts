@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
     // Get the payment intent from the expanded invoice
     const expandedInvoice = subscription.latest_invoice as Stripe.Invoice;
-    const paymentIntent = expandedInvoice?.payment_intent as Stripe.PaymentIntent;
+    const paymentIntent = (expandedInvoice as any)?.payment_intent as Stripe.PaymentIntent;
 
     if (!paymentIntent || !paymentIntent.client_secret) {
       console.error('Payment intent details:', {
