@@ -1,5 +1,6 @@
 // Promptability AI Design System
 // Main export file for all design system tokens and utilities
+// Fixed: Import modules before using them in exports
 
 import { colors, getGradientText as getColorGradientText, colorCombinations } from './colors';
 import { typography, getResponsiveText, textStyles } from './typography';
