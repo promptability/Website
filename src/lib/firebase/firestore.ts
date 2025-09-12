@@ -83,6 +83,7 @@ export const createUser = async (uid: string, userData: Partial<FirebaseUser>): 
   const userRef = doc(db, COLLECTIONS.USERS, uid);
   await setDoc(userRef, {
     uid,
+    planType: 'free', // Default plan for new users
     ...userData,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
