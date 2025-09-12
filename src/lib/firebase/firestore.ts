@@ -34,6 +34,7 @@ export interface FirebaseUser {
   displayName?: string;
   photoURL?: string;
   stripeCustomerId?: string;
+  planType?: string; // Current plan type (free, starter, pro, team)
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

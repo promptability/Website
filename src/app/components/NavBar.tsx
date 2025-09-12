@@ -3,7 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, BookOpen, ArrowRight, User, Settings, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, BookOpen, ArrowRight, User, Settings, LogOut, Crown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -12,9 +15,8 @@ export default function NavBar() {
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [scrolled, setScrolled] = useState(false);
   
-  // TODO: Replace with actual auth state from Firebase
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  // Use real auth state from Firebase
+  const { user, userProfile, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +43,15 @@ export default function NavBar() {
     setHoverTimeout(timeout);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      setProfileOpen(false);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
@@ -49,49 +60,51 @@ export default function NavBar() {
     { href: "/faq", label: "FAQ" },
   ];
 
-  const guideCategories = {
-    "Chat AI": [
-      { href: "/guides/gpt", label: "ChatGPT/GPT-4" },
-      { href: "/guides/claude", label: "Claude 3" },
-      { href: "/guides/gemini", label: "Google Gemini" },
-      { href: "#", label: "Perplexity", comingSoon: true },
-    ],
-    "Image AI": [
-      { href: "#", label: "Midjourney", comingSoon: true },
-      { href: "#", label: "DALL-E 3", comingSoon: true },
-      { href: "#", label: "Stable Diffusion", comingSoon: true },
-    ],
-    "Code AI": [
-      { href: "#", label: "GitHub Copilot", comingSoon: true },
-      { href: "#", label: "Cursor", comingSoon: true },
-    ],
-    "Video AI": [
-      { href: "#", label: "Runway", comingSoon: true },
-      { href: "#", label: "Pika Labs", comingSoon: true },
-    ]
+  const guideLinks = [
+    { href: "/guides/gpt", label: "ChatGPT & GPT-4", icon: "🤖" },
+    { href: "/guides/claude", label: "Claude AI", icon: "🧠" },
+    { href: "/guides/gemini", label: "Google Gemini", icon: "✨" },
+  ];
+
+  // Get display name for the user
+  const getDisplayName = () => {
+    if (userProfile?.displayName) return userProfile.displayName;
+    if (userProfile?.firstName && userProfile?.lastName) {
+      return `${userProfile.firstName} ${userProfile.lastName}`;
+    }
+    if (user?.displayName) return user.displayName;
+    if (user?.email) return user.email.split('@')[0];
+    return 'User';
+  };
+
+  // Get user plan for display
+  const getUserPlan = () => {
+    // This would come from userProfile or subscription data
+    // For now, default to checking if they have a subscription
+    return userProfile?.planType || 'Free';
   };
 
   return (
-    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-      scrolled ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-    }`}>
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="h-20 flex items-center justify-between">
-          {/* Brand */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="Promptability AI logo"
-              width={72}
-              height={48}
-              className="w-12 h-12 object-contain"
-              priority
-            />
-            <span className="text-white font-semibold tracking-tight text-lg">Promptability</span>
+    <nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-xl">P</span>
+            </div>
+            <span className="text-white font-bold text-xl">Promptability</span>
+            <span className="text-xs text-gray-400 ml-1">AI</span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8 text-base">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -101,118 +114,104 @@ export default function NavBar() {
                 {item.label}
               </Link>
             ))}
-            
+
             {/* Guides Dropdown */}
             <div 
               className="relative"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <Link
-                href="/guides"
-                className="text-white/80 hover:text-white transition-colors flex items-center gap-1"
-              >
+              <button className="flex items-center gap-1 text-white/80 hover:text-white transition-colors">
                 <BookOpen className="w-4 h-4" />
                 Guides
-                <ChevronDown className={`w-4 h-4 transition-transform ${guidesOpen ? 'rotate-180' : ''}`} />
-              </Link>
-              
+                <ChevronDown className="w-3 h-3" />
+              </button>
+
               {guidesOpen && (
-                <div 
-                  className="absolute top-full left-0 mt-2 w-80 bg-black/90 backdrop-blur-xl border border-white/20 rounded-lg py-3 shadow-xl z-50"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <div className="px-4 py-2 border-b border-white/10 mb-2">
-                    <Link
-                      href="/guides"
-                      className="text-white font-semibold hover:text-blue-400 transition-colors flex items-center gap-2"
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      All Guides Hub
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                    <p className="text-gray-400 text-xs mt-1">Browse all 45+ platform guides</p>
-                  </div>
-                  
-                  {Object.entries(guideCategories).map(([category, items]) => (
-                    <div key={category} className="mb-3 last:mb-0">
-                      <div className="px-4 py-1">
-                        <h4 className="text-white/70 text-xs font-semibold uppercase tracking-wide">{category}</h4>
-                      </div>
-                      <div className="space-y-1">
-                        {items.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`block px-6 py-2 text-sm transition-colors ${
-                              item.comingSoon 
-                                ? 'text-white/40 cursor-not-allowed' 
-                                : 'text-white/80 hover:text-white hover:bg-white/10'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span>{item.label}</span>
-                              {item.comingSoon && (
-                                <span className="text-xs text-orange-400 bg-orange-500/20 px-2 py-0.5 rounded">
-                                  Soon
-                                </span>
-                              )}
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                <div className="absolute top-full mt-2 w-64 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                  <div className="p-3">
+                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-2 px-3">
+                      AI Platform Guides
                     </div>
-                  ))}
+                    {guideLinks.map((guide) => (
+                      <Link
+                        key={guide.href}
+                        href={guide.href}
+                        className="flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="text-lg">{guide.icon}</span>
+                        <span>{guide.label}</span>
+                        <ArrowRight className="w-3 h-3 ml-auto" />
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-            
-            {/* Auth Section */}
-            {isLoggedIn ? (
-              <div className="flex items-center gap-4">
-                {/* Profile Dropdown */}
+
+            {/* User Menu */}
+            {loading ? (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-700 rounded-full animate-pulse"></div>
+              </div>
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/chrome-extension"
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
+                >
+                  Get Extension
+                </Link>
+
                 <div className="relative">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    {user.avatar ? (
+                    {user.photoURL ? (
                       <Image
-                        src={user.avatar}
+                        src={user.photoURL}
                         alt="Profile"
                         width={32}
                         height={32}
-                        className="w-8 h-8 rounded-full border border-white/20"
+                        className="rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-medium">
+                          {getDisplayName()[0].toUpperCase()}
+                        </span>
                       </div>
                     )}
-                    <span className="text-white text-sm font-medium hidden md:block">{user.name}</span>
-                    <ChevronDown className={`w-4 h-4 text-white/60 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className="w-3 h-3 text-white/60" />
                   </button>
 
-                  {/* Profile Dropdown Menu */}
                   {profileOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-64 bg-black/90 backdrop-blur-xl border border-white/20 rounded-lg py-2 shadow-xl z-50">
+                    <div className="absolute top-full right-0 mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden">
                       <div className="px-4 py-3 border-b border-white/10">
-                        <div className="text-white font-medium">{user.name}</div>
+                        <div className="text-white font-medium">{getDisplayName()}</div>
                         <div className="text-gray-400 text-sm">{user.email}</div>
+                        <div className="flex items-center gap-1 mt-1">
+                          {getUserPlan() !== 'Free' && (
+                            <Crown className="w-3 h-3 text-yellow-400" />
+                          )}
+                          <span className="text-xs text-yellow-400">{getUserPlan()} Plan</span>
+                        </div>
                       </div>
                       
                       <Link
                         href="/account"
                         className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        onClick={() => setProfileOpen(false)}
                       >
                         <User className="w-4 h-4" />
                         Account
                       </Link>
                       
                       <Link
-                        href="/settings"
+                        href="/account?tab=settings"
                         className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        onClick={() => setProfileOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
                         Settings
@@ -220,11 +219,7 @@ export default function NavBar() {
                       
                       <div className="border-t border-white/10 mt-2 pt-2">
                         <button
-                          onClick={() => {
-                            // TODO: Connect to Firebase auth.signOut()
-                            setIsLoggedIn(false);
-                            setProfileOpen(false);
-                          }}
+                          onClick={handleSignOut}
                           className="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors w-full text-left"
                         >
                           <LogOut className="w-4 h-4" />
@@ -247,146 +242,112 @@ export default function NavBar() {
                   href="/signup"
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                 >
-                  Sign Up
+                  Get Started Free
                 </Link>
               </div>
             )}
-          </nav>
+          </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <button
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 border border-white/20 text-white"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle navigation"
+            onClick={() => setOpen(!open)}
+            className="lg:hidden text-white"
           >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-      </div>
 
-      {/* Mobile panel */}
-      {open && (
-        <div className={`md:hidden transition-all duration-300 ${
-          scrolled ? 'bg-black/95 backdrop-blur-md' : 'bg-black/90'
-        }`}>
-          <nav className="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="block px-2 py-2 rounded text-white/85 hover:text-white hover:bg-white/10"
-              >
-                {item.label}
-              </Link>
-            ))}
-            
-            {/* Mobile Guides Section */}
-            <div className="border-t border-white/10 mt-2 pt-2">
-              <Link
-                href="/guides"
-                onClick={() => setOpen(false)}
-                className="text-white/60 text-sm font-medium px-2 py-2 flex items-center gap-2 hover:text-white hover:bg-white/10 rounded"
-              >
-                <BookOpen className="w-4 h-4" />
-                All Guides Hub
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-              
-              {Object.entries(guideCategories).map(([category, items]) => (
-                <div key={category} className="mb-2">
-                  <div className="px-2 py-1">
-                    <h4 className="text-white/50 text-xs font-semibold uppercase tracking-wide">{category}</h4>
-                  </div>
-                  {items.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className={`block px-4 py-2 rounded text-sm transition-colors ${
-                        item.comingSoon 
-                          ? 'text-white/40 cursor-not-allowed' 
-                          : 'text-white/75 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span>{item.label}</span>
-                        {item.comingSoon && (
-                          <span className="text-xs text-orange-400">Soon</span>
-                        )}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+        {/* Mobile Navigation */}
+        {open && (
+          <div className="lg:hidden py-4 border-t border-white/10">
+            <div className="flex flex-col gap-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                </Link>
               ))}
-            </div>
-            
-            {/* Mobile Auth Section */}
-            {isLoggedIn ? (
-              <div className="mt-2 pt-2 border-t border-white/10 space-y-2">
-                <div className="px-2 py-2 border-b border-white/10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-white text-sm font-medium">{user.name}</div>
-                      <div className="text-gray-400 text-xs">{user.email}</div>
-                    </div>
-                  </div>
+
+              <div className="border-t border-white/10 my-2 pt-2">
+                <div className="text-xs text-gray-400 uppercase tracking-wider mb-2 px-4">
+                  AI Platform Guides
                 </div>
-                
-                <Link
-                  href="/account"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-2 py-2 rounded text-white/85 hover:text-white hover:bg-white/10"
-                >
-                  <User className="w-4 h-4" />
-                  Account
-                </Link>
-                
-                <Link
-                  href="/settings"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-2 py-2 rounded text-white/85 hover:text-white hover:bg-white/10"
-                >
-                  <Settings className="w-4 h-4" />
-                  Settings
-                </Link>
-                
-                <button
-                  onClick={() => {
-                    // TODO: Connect to Firebase auth.signOut()
-                    setIsLoggedIn(false);
-                    setOpen(false);
-                  }}
-                  className="flex items-center gap-3 px-2 py-2 rounded text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors w-full text-left"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </button>
+                {guideLinks.map((guide) => (
+                  <Link
+                    key={guide.href}
+                    href={guide.href}
+                    className="flex items-center gap-3 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="text-lg">{guide.icon}</span>
+                    <span>{guide.label}</span>
+                  </Link>
+                ))}
               </div>
-            ) : (
-              <div className="mt-2 pt-2 border-t border-white/10 space-y-2">
-                <Link
-                  href="/signin"
-                  onClick={() => setOpen(false)}
-                  className="block px-2 py-2 rounded text-white/85 hover:text-white hover:bg-white/10"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setOpen(false)}
-                  className="block px-2 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-center font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
-                >
-                  Sign Up
-                </Link>
+
+              <div className="border-t border-white/10 my-2 pt-2">
+                {loading ? (
+                  <div className="px-4 py-2">
+                    <div className="w-24 h-8 bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+                ) : user ? (
+                  <>
+                    <div className="px-4 py-2 mb-2">
+                      <div className="text-white font-medium">{getDisplayName()}</div>
+                      <div className="text-gray-400 text-sm">{user.email}</div>
+                      <div className="flex items-center gap-1 mt-1">
+                        {getUserPlan() !== 'Free' && (
+                          <Crown className="w-3 h-3 text-yellow-400" />
+                        )}
+                        <span className="text-xs text-yellow-400">{getUserPlan()} Plan</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/account"
+                      className="flex items-center gap-3 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      onClick={() => setOpen(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      Account
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors w-full text-left"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/signin"
+                      className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      onClick={() => setOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="block px-4 py-2 mt-2 text-center rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold"
+                      onClick={() => setOpen(false)}
+                    >
+                      Get Started Free
+                    </Link>
+                  </>
+                )}
               </div>
-            )}
-          </nav>
-        </div>
-      )}
-    </header>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
   );
 }
