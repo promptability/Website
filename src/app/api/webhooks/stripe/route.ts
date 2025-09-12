@@ -16,6 +16,8 @@ import {
 } from '@/lib/firebase/firestore';
 import { sendEmail, emailTemplates } from '@/lib/email';
 import { Timestamp } from 'firebase/firestore';
+import { updateUserPlan } from '@/lib/usage';
+import { getPlanByPriceId } from '@/lib/plans';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-08-27.basil',
@@ -198,6 +200,13 @@ export async function POST(req: Request) {
               id: '', // Firestore will generate this
               ...subscriptionData
             });
+          }
+          
+          // Update user's usage plan based on their subscription
+          const planFromPriceId = getPlanByPriceId(priceId);
+          if (planFromPriceId && subscription.status === 'active') {
+            await updateUserPlan(user.uid, planFromPriceId);
+            console.log(`Updated user ${user.uid} to plan: ${planFromPriceId}`);
           }
         }
         
