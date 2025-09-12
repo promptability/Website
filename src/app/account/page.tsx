@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { fadeInUp, staggerContainer, glassCard } from '@/lib/animations';
+import UsageDashboard from '@/components/UsageDashboard';
 
 export default function AccountPage() {
   const { user, userProfile, loading } = useAuth();
@@ -52,14 +53,6 @@ export default function AccountPage() {
     status: 'Active' // TODO: Get from subscription data
   };
 
-  const usage = {
-    promptsUsed: 1247,
-    promptsLimit: 'Unlimited',
-    tokensUsed: 45600,
-    tokensLimit: 100000,
-    apiCalls: 89,
-    apiLimit: 1000
-  };
 
   const billing = {
     nextBilling: 'March 15, 2025',
@@ -224,7 +217,7 @@ export default function AccountPage() {
                           <Zap className="w-5 h-5 text-blue-400" />
                           <span className="text-sm text-gray-400">This Month</span>
                         </div>
-                        <div className="text-2xl font-bold text-white">{usage.promptsUsed}</div>
+                        <div className="text-2xl font-bold text-white">-</div>
                         <div className="text-xs text-gray-400">Prompts Optimized</div>
                       </div>
                       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
@@ -233,7 +226,7 @@ export default function AccountPage() {
                           <span className="text-sm text-gray-400">Member Since</span>
                         </div>
                         <div className="text-lg font-bold text-white">{userData.joinDate}</div>
-                        <div className="text-xs text-gray-400">8 months ago</div>
+                        <div className="text-xs text-gray-400">Welcome!</div>
                       </div>
                     </div>
                   </motion.div>
@@ -349,53 +342,14 @@ export default function AccountPage() {
 
               {/* Usage Tab */}
               {activeTab === 'usage' && (
-                <>
                 <motion.div
                   variants={staggerContainer}
                   initial="initial"
                   animate="animate"
-                  className="lg:col-span-3 space-y-6"
+                  className="lg:col-span-3"
                 >
-                  {/* Usage Overview */}
-                  <motion.div
-                    variants={glassCard}
-                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-                  >
-                    <h3 className="text-xl font-bold text-white mb-6">Usage This Month</h3>
-                    <div className="grid md:grid-cols-3 gap-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-400 mb-2">{usage.promptsUsed}</div>
-                        <div className="text-sm text-gray-400">Prompts Optimized</div>
-                        <div className="text-xs text-green-400 mt-1">{usage.promptsLimit}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-cyan-400 mb-2">{usage.tokensUsed.toLocaleString()}</div>
-                        <div className="text-sm text-gray-400">Tokens Used</div>
-                        <div className="text-xs text-gray-400 mt-1">of {usage.tokensLimit.toLocaleString()}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-purple-400 mb-2">{usage.apiCalls}</div>
-                        <div className="text-sm text-gray-400">API Calls</div>
-                        <div className="text-xs text-gray-400 mt-1">of {usage.apiLimit}</div>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Usage Chart Placeholder */}
-                  <motion.div
-                    variants={glassCard}
-                    className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-                  >
-                    <h3 className="text-lg font-bold text-white mb-4">Usage Over Time</h3>
-                    <div className="h-48 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl flex items-center justify-center">
-                      <div className="text-center">
-                        <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-400">Usage analytics coming soon</p>
-                      </div>
-                    </div>
-                  </motion.div>
+                  <UsageDashboard />
                 </motion.div>
-                </>
               )}
 
               {/* Settings Tab */}
