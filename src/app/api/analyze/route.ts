@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkUsageLimit, incrementUsage } from '@/lib/usage';
 
 interface AnalysisResult {
   prompt: string;
@@ -15,7 +16,7 @@ interface AnalysisResult {
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, platform } = await request.json();
+    const { prompt, platform, userId } = await request.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -31,14 +32,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if userId is provided (user is authenticated)
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Authentication required. Please sign in to use this feature.' },
+        { status: 401 }
+      );
+    }
+
+    // Check usage limits
+    const usageCheck = await checkUsageLimit(userId, 'prompt');
+    
+    if (!usageCheck.allowed) {
+      return NextResponse.json(
+        { 
+          error: usageCheck.reason,
+          limitReached: true,
+          planType: usageCheck.planType,
+          remainingDaily: usageCheck.remainingDaily,
+          remainingMonthly: usageCheck.remainingMonthly
+        },
+        { status: 429 } // Too Many Requests
+      );
+    }
+
     // Simulate processing delay for realistic UX
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const result = analyzePromptStrength(prompt, platform || 'chatgpt');
 
+    // Track usage after successful analysis
+    await incrementUsage(userId, 'analysis', {
+      promptLength: prompt.length,
+      timestamp: new Date().toISOString()
+    });
+
+    // Get updated usage stats
+    const updatedUsage = await checkUsageLimit(userId, 'prompt');
+
     return NextResponse.json({
       success: true,
-      data: result
+      data: result,
+      usage: {
+        remainingDaily: updatedUsage.remainingDaily,
+        remainingMonthly: updatedUsage.remainingMonthly,
+        planType: updatedUsage.planType
+      }
     });
 
   } catch (error) {

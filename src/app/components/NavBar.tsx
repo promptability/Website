@@ -95,12 +95,15 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">P</span>
-            </div>
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="Promptability logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
             <span className="text-white font-bold text-xl">Promptability</span>
-            <span className="text-xs text-gray-400 ml-1">AI</span>
           </Link>
 
           {/* Desktop Navigation */}

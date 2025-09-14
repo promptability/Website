@@ -10,7 +10,7 @@ import InteractivePlayground from './components/InteractivePlayground';
 import ReferencesFooter from './components/ReferencesFooter';
 
 export const metadata: Metadata = {
-  title: 'Master GPT-4 & ChatGPT Prompts | Promptability AI',
+  title: 'Master GPT-4 & ChatGPT Prompts | Promptability',
   description: 'The definitive guide to prompt engineering for OpenAI\'s most powerful models. Learn advanced techniques, strategies, and best practices.',
 };
 

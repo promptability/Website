@@ -1,4 +1,17 @@
 // Plan definitions with usage limits
+export interface PlanLimits {
+  promptsPerMonth: number;
+  promptsPerDay: number;
+  features: {
+    basicPromptEnhancement: boolean;
+    advancedOptimization: boolean;
+    teamCollaboration: boolean;
+    apiAccess: boolean;
+    customBranding: boolean;
+    prioritySupport: boolean;
+  };
+}
+
 export const PLANS = {
   free: {
     name: 'Free',
@@ -72,7 +85,7 @@ export const PLANS = {
       }
     }
   }
-} as const;
+};
 
 export type PlanType = keyof typeof PLANS;
 
@@ -87,6 +100,6 @@ export function getPlanByPriceId(priceId: string): PlanType | null {
   return null;
 }
 
-export function getPlanLimits(planType: PlanType) {
+export function getPlanLimits(planType: PlanType): PlanLimits {
   return PLANS[planType].limits;
 }

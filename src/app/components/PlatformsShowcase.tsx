@@ -68,15 +68,12 @@ export default function PlatformsShowcase() {
                 
                 {/* Platform Icon */}
                 <div className="flex flex-col items-center text-center">
-                  <div 
-                    className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 border border-white/20"
-                    style={{ backgroundColor: platform.color || '#6B7280' }}
-                  >
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2">
                     {platform.logo ? (
                       <img 
                         src={platform.logo} 
                         alt={`${platform.name} logo`}
-                        className="w-5 h-5 object-contain"
+                        className="w-10 h-10 object-contain"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -86,9 +83,10 @@ export default function PlatformsShowcase() {
                       />
                     ) : null}
                     <div 
-                      className="w-5 h-5 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm border border-white/20"
                       style={{ 
-                        display: platform.logo ? 'none' : 'flex'
+                        display: platform.logo ? 'none' : 'flex',
+                        backgroundColor: platform.color || '#6B7280'
                       }}
                     >
                       {platform.name.charAt(0)}
@@ -140,15 +138,12 @@ export default function PlatformsShowcase() {
                   
                   {/* Platform Icon */}
                   <div className="flex flex-col items-center text-center">
-                    <div 
-                      className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 border border-white/20"
-                      style={{ backgroundColor: platform.color || '#6B7280' }}
-                    >
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2">
                       {platform.logo ? (
                         <img 
                           src={platform.logo} 
                           alt={`${platform.name} logo`}
-                          className="w-5 h-5 object-contain"
+                          className="w-10 h-10 object-contain"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
@@ -158,9 +153,10 @@ export default function PlatformsShowcase() {
                         />
                       ) : null}
                       <div 
-                        className="w-5 h-5 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm border border-white/20"
                         style={{ 
-                          display: platform.logo ? 'none' : 'flex'
+                          display: platform.logo ? 'none' : 'flex',
+                          backgroundColor: platform.color || '#6B7280'
                         }}
                       >
                         {platform.name.charAt(0)}

@@ -162,7 +162,7 @@ export default function GuidesHubPage() {
           />
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 py-20 relative z-40">
+      <div className="max-w-7xl mx-auto px-4 pt-32 pb-20 relative z-40">
         
         {/* Hero Section */}
         <div className="text-center mb-20">
@@ -170,9 +170,9 @@ export default function GuidesHubPage() {
             🎯 PROMPT MASTERY HUB
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white">
             Master Every
-            <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               AI Platform
             </span>
           </h1>

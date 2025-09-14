@@ -49,7 +49,7 @@ export default function AccountPage() {
     email: userProfile.email,
     avatar: user.photoURL || null,
     joinDate: userProfile.createdAt?.toDate().toLocaleDateString() || 'Recently',
-    plan: 'Pro', // TODO: Get from subscription data
+    plan: userProfile.planType || 'Free', // Get from actual user data
     status: 'Active' // TODO: Get from subscription data
   };
 

@@ -6,6 +6,7 @@ import { glassCard, liquidButton, skeletonPulse, buttonHover } from '@/lib/anima
 import { getPlatformOptions } from '@/lib/platforms';
 import { OptimizationResult } from '@/lib/promptOptimizer';
 import { ChevronDown, Zap, Loader2, Check, Copy, Target } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AnalysisResult {
   prompt: string;
@@ -30,6 +31,8 @@ const examplePrompts = [
 ];
 
 export default function DualPromptTester() {
+  const { user } = useAuth();
+  
   // Optimizer state
   const [optimizerInput, setOptimizerInput] = useState('');
   const [optimizerPlatform, setOptimizerPlatform] = useState('chatgpt');
@@ -51,6 +54,11 @@ export default function DualPromptTester() {
 
   const handleOptimize = async () => {
     if (!optimizerInput.trim()) return;
+    
+    if (!user?.uid) {
+      alert('Please sign in to use the prompt optimizer');
+      return;
+    }
 
     setIsOptimizing(true);
     setOptimizerResult(null);
@@ -59,15 +67,22 @@ export default function DualPromptTester() {
       const response = await fetch('/api/optimize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: optimizerInput, platform: optimizerPlatform }),
+        body: JSON.stringify({ 
+          prompt: optimizerInput, 
+          platform: optimizerPlatform,
+          userId: user.uid 
+        }),
       });
 
       const data = await response.json();
       if (data.success) {
         setOptimizerResult(data.data);
+      } else {
+        alert(data.error || 'Failed to optimize prompt');
       }
     } catch (error) {
       console.error('Error optimizing prompt:', error);
+      alert('Failed to optimize prompt');
     } finally {
       setIsOptimizing(false);
     }
@@ -75,6 +90,11 @@ export default function DualPromptTester() {
 
   const handleAnalyze = async () => {
     if (!checkerInput.trim()) return;
+    
+    if (!user?.uid) {
+      alert('Please sign in to use the prompt analyzer');
+      return;
+    }
 
     setIsAnalyzing(true);
     setAnalysisResult(null);
@@ -83,15 +103,22 @@ export default function DualPromptTester() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: checkerInput, platform: checkerPlatform }),
+        body: JSON.stringify({ 
+          prompt: checkerInput, 
+          platform: checkerPlatform,
+          userId: user.uid 
+        }),
       });
 
       const data = await response.json();
       if (data.success) {
         setAnalysisResult(data.data);
+      } else {
+        alert(data.error || 'Failed to analyze prompt');
       }
     } catch (error) {
       console.error('Error analyzing prompt:', error);
+      alert('Failed to analyze prompt');
     } finally {
       setIsAnalyzing(false);
     }
@@ -179,12 +206,12 @@ export default function DualPromptTester() {
     const selectedPlatform = platformOptions.find(p => p.value === value);
     // Get only the first 6 popular platforms for mobile
     const mobilePlatforms = [
-      { value: 'chatgpt', label: 'ChatGPT', category: 'Chat AI', color: '#10A37F' },
-      { value: 'claude', label: 'Claude', category: 'Chat AI', color: '#D97706' },
-      { value: 'gemini', label: 'Gemini', category: 'Chat AI', color: '#4285F4' },
-      { value: 'perplexity', label: 'Perplexity', category: 'Chat AI', color: '#1FB6FF' },
-      { value: 'mistral', label: 'Mistral', category: 'Chat AI', color: '#FF6B35' },
-      { value: 'llama', label: 'Llama', category: 'Chat AI', color: '#1877F2' }
+      { value: 'chatgpt', label: 'ChatGPT', category: 'Chat AI', color: '#10A37F', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png' },
+      { value: 'claude', label: 'Claude', category: 'Chat AI', color: '#D97706', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Claude_AI_logo.png' },
+      { value: 'gemini', label: 'Gemini', category: 'Chat AI', color: '#4285F4', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/1024px-Google_Gemini_logo.svg.png' },
+      { value: 'perplexity', label: 'Perplexity', category: 'Chat AI', color: '#1FB6FF', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Perplexity_AI_logo.svg/1024px-Perplexity_AI_logo.svg.png' },
+      { value: 'mistral', label: 'Mistral', category: 'Chat AI', color: '#FF6B35', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Mistral_AI_logo_(2025%E2%80%93).svg/1024px-Mistral_AI_logo_(2025%E2%80%93).svg.png' },
+      { value: 'llama', label: 'Llama', category: 'Chat AI', color: '#1877F2', logo: 'https://custom.typingmind.com/assets/models/llama.png' }
     ];
     
     return (
@@ -195,10 +222,18 @@ export default function DualPromptTester() {
         >
           <div className="flex items-center gap-3">
             {selectedPlatform && (
-              <div 
-                className="w-4 h-4 rounded-full border border-white/20"
-                style={{ backgroundColor: selectedPlatform.color || '#6B7280' }}
-              />
+              selectedPlatform.logo ? (
+                <img
+                  src={selectedPlatform.logo}
+                  alt={`${selectedPlatform.label} logo`}
+                  className="w-5 h-5 object-contain"
+                />
+              ) : (
+                <div 
+                  className="w-5 h-5 rounded-full border border-white/20"
+                  style={{ backgroundColor: selectedPlatform.color || '#6B7280' }}
+                />
+              )
             )}
             <span>{selectedPlatform?.label}</span>
           </div>
@@ -224,10 +259,18 @@ export default function DualPromptTester() {
                     }}
                     className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
                   >
-                    <div 
-                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
-                      style={{ backgroundColor: platform.color || '#6B7280' }}
-                    />
+                    {platform.logo ? (
+                      <img
+                        src={platform.logo}
+                        alt={`${platform.label} logo`}
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                      />
+                    ) : (
+                      <div 
+                        className="w-5 h-5 rounded-full border border-white/20 flex-shrink-0"
+                        style={{ backgroundColor: platform.color || '#6B7280' }}
+                      />
+                    )}
                     <div className="flex-1">
                       <div className="font-medium">{platform.label}</div>
                       <div className="text-xs text-gray-400">{platform.category}</div>
@@ -247,9 +290,9 @@ export default function DualPromptTester() {
                 </a>
               </div>
 
-              {/* Desktop: Show all platforms */}
+              {/* Desktop: Show same 6 popular platforms as mobile */}
               <div className="hidden md:block">
-                {platformOptions.map((platform) => (
+                {mobilePlatforms.map((platform) => (
                   <button
                     key={platform.value}
                     onClick={() => {
@@ -258,16 +301,35 @@ export default function DualPromptTester() {
                     }}
                     className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
                   >
-                    <div 
-                      className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
-                      style={{ backgroundColor: platform.color || '#6B7280' }}
-                    />
+                    {platform.logo ? (
+                      <img
+                        src={platform.logo}
+                        alt={`${platform.label} logo`}
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                      />
+                    ) : (
+                      <div 
+                        className="w-5 h-5 rounded-full border border-white/20 flex-shrink-0"
+                        style={{ backgroundColor: platform.color || '#6B7280' }}
+                      />
+                    )}
                     <div className="flex-1">
                       <div className="font-medium">{platform.label}</div>
                       <div className="text-xs text-gray-400">{platform.category}</div>
                     </div>
                   </button>
                 ))}
+                
+                {/* "See All" button on desktop */}
+                <a
+                  href="/platforms"
+                  className="w-full px-4 py-3 text-left text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors border-t border-white/10 flex items-center gap-3 font-medium"
+                >
+                  <div className="w-5 h-5 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  </div>
+                  <span>See All {platformOptions.length} Platforms →</span>
+                </a>
               </div>
             </motion.div>
           )}

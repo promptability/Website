@@ -192,14 +192,32 @@ export async function updateUserPlan(userId: string, planType: PlanType): Promis
   const usageRef = doc(db, 'usage', userId);
   const now = new Date();
   
-  await updateDoc(usageRef, {
+  // Get current usage to check if we need to reset counts
+  const currentUsage = await getOrCreateUsageRecord(userId);
+  const newLimits = PLANS[planType].limits;
+  
+  const updateData: any = {
     planType,
     planUpdatedAt: serverTimestamp(),
     // Reset period for new subscription
     currentPeriodStart: Timestamp.fromDate(now),
     currentPeriodEnd: Timestamp.fromDate(new Date(now.getFullYear(), now.getMonth() + 1, now.getDate())),
-    // Keep usage counts but they'll be subject to new limits
-  });
+  };
+  
+  // If downgrading and current usage exceeds new limits, reset counts
+  // This gives users a fresh start with their new plan
+  if (newLimits.promptsPerMonth !== -1 && currentUsage.monthlyUsage > newLimits.promptsPerMonth) {
+    updateData.monthlyUsage = 0;
+    console.log(`Reset monthly usage for user ${userId} due to plan change to ${planType}`);
+  }
+  
+  if (newLimits.promptsPerDay !== -1 && newLimits.promptsPerDay !== null && 
+      currentUsage.dailyUsage > newLimits.promptsPerDay) {
+    updateData.dailyUsage = 0;
+    console.log(`Reset daily usage for user ${userId} due to plan change to ${planType}`);
+  }
+  
+  await updateDoc(usageRef, updateData);
 }
 
 // Get usage statistics for display

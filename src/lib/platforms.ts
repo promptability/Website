@@ -392,6 +392,7 @@ export const getPlatformOptions = () => {
     value: platform.id,
     label: platform.name,
     category: platform.category,
-    color: platform.color
+    color: platform.color,
+    logo: platform.logo
   }));
 };

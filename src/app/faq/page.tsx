@@ -113,7 +113,7 @@ export default function FAQPage() {
   };
 
   return (
-    <main className="min-h-screen py-20 text-white relative overflow-x-hidden">
+    <main className="min-h-screen pt-32 pb-20 text-white relative overflow-x-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 opacity-[0.3]">
@@ -130,9 +130,9 @@ export default function FAQPage() {
       <div className="max-w-5xl mx-auto px-4 relative z-40">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white">
             Frequently Asked
-            <span className="block text-white/90">
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Questions
             </span>
           </h1>

@@ -132,7 +132,7 @@ export default function DocsPage() {
       <div className="relative z-40">
         
         {/* Hero Section */}
-        <section className="pt-20 pb-16 px-4">
+        <section className="pt-32 pb-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               variants={staggerContainer}
@@ -142,10 +142,10 @@ export default function DocsPage() {
             >
               <motion.h1 
                 variants={fadeInUp}
-                className="text-5xl md:text-6xl font-bold text-white"
+                className="text-5xl md:text-7xl font-bold mb-8 text-white"
               >
                 Documentation &
-                <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Help Center
                 </span>
               </motion.h1>

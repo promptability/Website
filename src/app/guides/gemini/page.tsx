@@ -10,7 +10,7 @@ import InteractiveElements from './components/InteractiveElements';
 import GuideFooter from './components/GuideFooter';
 
 export const metadata: Metadata = {
-  title: 'Master Google Gemini Prompts | Promptability AI',
+  title: 'Master Google Gemini Prompts | Promptability',
   description: 'The complete guide to getting exceptional results from Google\'s most powerful AI. Learn advanced techniques, tricks, and best practices.',
 };
 

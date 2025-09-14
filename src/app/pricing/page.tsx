@@ -1,7 +1,7 @@
-import Pricing from "../components/Pricing";
+import PricingCards from "../components/PricingCards";
 
 export const metadata = {
-  title: "Pricing | Promptability AI",
+  title: "Pricing | Promptability",
   description: "Choose the plan that fits your workflow.",
 };
 
@@ -21,8 +21,8 @@ export default function PricingPage() {
           />
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 relative z-40">
-        <Pricing />
+      <div className="relative z-40">
+        <PricingCards />
       </div>
     </main>
   );

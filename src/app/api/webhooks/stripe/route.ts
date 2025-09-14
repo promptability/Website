@@ -6,6 +6,7 @@ import {
   updateUser, 
   getUserByEmail, 
   getUserByStripeCustomerId,
+  getUser,
   createSubscription,
   updateSubscription,
   getSubscriptionByStripeId,
@@ -206,6 +207,10 @@ export async function POST(req: Request) {
           const planFromPriceId = getPlanByPriceId(priceId);
           if (planFromPriceId && subscription.status === 'active') {
             await updateUserPlan(user.uid, planFromPriceId);
+            
+            // Also update the user's planType in their profile
+            await updateUser(user.uid, { planType: planFromPriceId });
+            
             console.log(`Updated user ${user.uid} to plan: ${planFromPriceId}`);
           }
         }
@@ -223,6 +228,12 @@ export async function POST(req: Request) {
         if (sub) {
           await updateSubscription(sub.id, { status: 'canceled' });
           
+          // Revert user to free plan
+          await updateUserPlan(sub.userId, 'free');
+          
+          // Update user's planType in their profile
+          await updateUser(sub.userId, { planType: 'free' });
+          
           // Get user to send email
           const user = await getUser(sub.userId);
           if (user) {
@@ -236,9 +247,10 @@ export async function POST(req: Request) {
               ...emailTemplate
             });
           }
+          
+          console.log(`Subscription cancelled and user ${sub.userId} reverted to free plan:`, subscription.id);
         }
         
-        console.log('Subscription cancelled:', subscription.id);
         break;
       }
 
@@ -339,8 +351,3 @@ export async function POST(req: Request) {
   }
 }
 
-// Helper function to get user - add this if not imported
-async function getUser(uid: string) {
-  const { getUser } = await import('@/lib/firebase/firestore');
-  return getUser(uid);
-}

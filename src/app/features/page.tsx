@@ -222,7 +222,7 @@ export default function FeaturesPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 relative">
+      <section className="pt-32 pb-20 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <motion.div
             variants={staggerContainer}
@@ -233,11 +233,11 @@ export default function FeaturesPage() {
           >
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-6xl font-bold mb-6 text-white"
+              className="text-5xl md:text-7xl font-bold mb-8 text-white"
             >
               Features that
-              <span className="block">
-                <span className="text-blue-400">Supercharge</span> Your AI
+              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Supercharge Your AI
               </span>
             </motion.h1>
             <motion.p 

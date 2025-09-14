@@ -80,8 +80,8 @@ function CheckoutForm() {
     },
     team: {
       name: 'Team Plan',
-      monthlyPrice: 99,
-      yearlyPrice: 950,
+      monthlyPrice: 49,
+      yearlyPrice: 470,
       savings: 20,
       features: [
         'Everything in Pro',
@@ -237,7 +237,14 @@ function CheckoutForm() {
       <header className="border-b border-white/10 px-4 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <span className="text-white font-semibold text-lg">Promptability AI</span>
+            <img
+              src="/logo.png"
+              alt="Promptability logo"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
+            <span className="text-white font-semibold text-lg">Promptability</span>
           </Link>
           
           <div className="flex items-center gap-2">

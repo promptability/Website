@@ -16,43 +16,43 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     id: '1',
-    question: 'Is there a free trial?',
-    answer: 'Yes! All paid plans come with a 7-day free trial. No credit card required to start. Check our <a href="/pricing" class="text-purple-400 hover:text-purple-300 underline">pricing plans</a> to see which features you can test.',
+    question: 'Is there a free plan?',
+    answer: 'Yes! We offer a free plan forever with 10 AI-optimized prompts daily. No credit card required to start. Check our <a href="/pricing" class="text-purple-400 hover:text-purple-300 underline">pricing plans</a> to see all available features.',
     category: 'Pricing',
     icon: DollarSign
   },
   {
     id: '2',
     question: 'What features are available?',
-    answer: 'We offer 6 core features: <a href="/features/auto-optimize" class="text-purple-400 hover:text-purple-300 underline">Auto-Optimize Mode</a>, <a href="/features/multi-ai-broadcasting" class="text-purple-400 hover:text-purple-300 underline">Multi-AI Broadcasting</a>, <a href="/features/ai-chat-enhancement" class="text-purple-400 hover:text-purple-300 underline">AI Chat Enhancement</a>, <a href="/features/learns-your-style" class="text-purple-400 hover:text-purple-300 underline">Learns Your Style</a>, <a href="/features/project-memory" class="text-purple-400 hover:text-purple-300 underline">Project Memory</a>, and <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration</a>.',
+    answer: 'We offer 6 core features: <a href="/features/auto-optimize" class="text-purple-400 hover:text-purple-300 underline">Auto-Optimize Mode</a>, Multi-AI Broadcasting, AI Chat Enhancement, Learns Your Style, Project Memory, and <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration</a>. <a href="/features" class="text-purple-400 hover:text-purple-300 underline">View all features</a>.',
     category: 'General',
     icon: HelpCircle
   },
   {
     id: '3',
     question: 'How does team collaboration work?',
-    answer: 'Share optimized prompts with your team and build a knowledge base together. Learn more about <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration features</a> including shared libraries, permissions, and workflows.',
+    answer: 'Share optimized prompts with your team and build a knowledge base together. <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration</a> features include shared libraries, permissions, and workflows.',
     category: 'Teams',
     icon: Users
   },
   {
     id: '4',
     question: 'Which AI platforms do you support?',
-    answer: 'We support ChatGPT, Claude, Gemini, and 30+ other AI platforms. Our <a href="/features/multi-ai-broadcasting" class="text-purple-400 hover:text-purple-300 underline">Multi-AI Broadcasting</a> lets you send prompts to multiple AIs simultaneously.',
+    answer: 'We support ChatGPT, Claude, Gemini, and 30+ other AI platforms. Our <a href="/platforms" class="text-purple-400 hover:text-purple-300 underline">supported platforms</a> page shows the full list. Multi-AI Broadcasting lets you send prompts to multiple AIs simultaneously.',
     category: 'Technical',
     icon: Settings
   },
   {
     id: '5',
     question: 'How does AI learn my style?',
-    answer: 'Our AI adapts to your writing patterns and preferences automatically. See how <a href="/features/learns-your-style" class="text-purple-400 hover:text-purple-300 underline">AI learns your unique style</a> and improves suggestions over time.',
+    answer: 'Our AI adapts to your writing patterns and preferences automatically. The system learns your unique style and improves suggestions over time.',
     category: 'General',
     icon: HelpCircle
   },
   {
     id: '6',
     question: 'Can I organize projects separately?',
-    answer: 'Yes! <a href="/features/project-memory" class="text-purple-400 hover:text-purple-300 underline">Project Memory</a> maintains context across different projects, keeping your work organized and consistent.',
+    answer: 'Yes! Project Memory maintains context across different projects, keeping your work organized and consistent.',
     category: 'Technical',
     icon: Settings
   },
@@ -277,7 +277,7 @@ export default function EnhancedFAQ() {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="mt-16 text-center"
+          className="mt-24 text-center"
         >
           <div>
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4">

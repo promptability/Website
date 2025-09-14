@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Chrome, Play, ArrowRight } from 'lucide-react';
+import { Globe, Play, ArrowRight } from 'lucide-react';
 import { wordAnimation, buttonHover, staggerContainer, fadeInUp } from '@/lib/animations';
 
 export default function Hero() {
@@ -26,7 +26,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-0 sm:pt-0 sm:-mt-20 pb-16">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-8 sm:pt-12 md:pt-16 lg:pt-20 pb-16">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[600px] lg:min-h-[700px]">
@@ -60,10 +60,9 @@ export default function Hero() {
               variants={fadeInUp}
               className="text-base sm:text-lg md:text-xl font-normal leading-normal px-4 sm:px-0 mt-6 mb-0"
             >
-              The Chrome extension that watches how you write prompts and 
-              automatically optimizes them. <br />
-              Getting you 10x better AI responses 
-              without the guesswork.
+              Promptability transforms basic queries into expertly-engineered 
+prompts using advanced AI frameworks. <br></br>Automatically. Every time. <br></br>
+No prompt engineering knowledge required.
             </motion.p>
 
             <motion.div
@@ -76,7 +75,7 @@ export default function Hero() {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold rounded-lg shadow border border-blue-200 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
+                className="bg-white hover:bg-gray-100 text-black font-semibold rounded-lg shadow-lg border border-white/20 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
               >
                 <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                 Start Free
@@ -89,7 +88,7 @@ export default function Hero() {
                 whileTap={{ scale: 0.98 }}
                 className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white font-semibold rounded-lg transition-all hover:scale-105 px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
               >
-                <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
                 Install Extension
               </motion.a>
             </motion.div>
@@ -191,7 +190,7 @@ export default function Hero() {
               initial="initial"
               whileHover="hover"
               whileTap="tap"
-              className="bg-blue-100 hover:bg-blue-200 text-slate-900 font-semibold rounded-lg shadow border border-blue-200 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
+              className="bg-white hover:bg-gray-100 text-black font-semibold rounded-lg shadow-lg border border-white/20 transition-all hover:scale-105 hover:shadow-2xl px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
             >
               <Play className="w-5 h-5 sm:w-6 sm:h-6" />
               Start Free
@@ -204,7 +203,7 @@ export default function Hero() {
               whileTap={{ scale: 0.98 }}
               className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white font-semibold rounded-lg transition-all hover:scale-105 px-10 sm:px-12 py-3 sm:py-4 text-base sm:text-lg gap-2 sm:gap-3 flex items-center justify-center"
             >
-              <Chrome className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
               Install Extension
             </motion.a>
           </motion.div>
@@ -215,7 +214,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 1.5 }}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block"
       >
         <motion.div

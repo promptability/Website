@@ -74,7 +74,7 @@ export default function Features() {
             variants={fadeInUp}
             className="text-xl text-gray-300 max-w-3xl mx-auto"
           >
-            Most people write 5-word prompts and wonder why AI disappoints. 
+            Most people write 5-word prompts and wonder why AI disappoints. <br></br>
             Promptability automatically adds the context, structure, and 
             instructions that make AI actually useful.
           </motion.p>

@@ -24,7 +24,7 @@ const plans: PricingPlan[] = [
     name: 'Free',
     price: '$0',
     period: 'forever',
-    description: 'Perfect for trying out Promptability AI',
+    description: 'Perfect for trying out Promptability',
     features: [
       '10 AI-optimized prompts daily',
       'Works with all major AI platforms',
@@ -59,7 +59,7 @@ const plans: PricingPlan[] = [
     gradient: 'from-white/30 to-white/20',
     icon: Star,
     planType: 'starter',
-    stripePriceId: 'price_starter_monthly'
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PRICE_ID
   },
   {
     name: 'Pro',
@@ -82,7 +82,7 @@ const plans: PricingPlan[] = [
     gradient: 'from-white/20 to-white/10',
     icon: Crown,
     planType: 'pro',
-    stripePriceId: 'price_pro_monthly'
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID
   },
   {
     name: 'Team',
@@ -102,11 +102,11 @@ const plans: PricingPlan[] = [
       'Priority support'
     ],
     popular: false,
-    cta: 'Contact Enterprise',
+    cta: 'Get Started',
     gradient: 'from-white/25 to-white/15',
     icon: Building2,
     planType: 'team',
-    stripePriceId: 'price_team_monthly'
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_TEAM_MONTHLY_PRICE_ID
   }
 ];
 
@@ -114,7 +114,7 @@ export default function PricingCards() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const [teamSeats, setTeamSeats] = useState(5); // Default 5 seats for team plan
+  const [teamSeats, setTeamSeats] = useState(1); // Default 1 seats minimum for team plan
 
   const getAnnualPrice = (monthlyPrice: string) => {
     if (monthlyPrice === '$0') return '$0';
@@ -137,11 +137,6 @@ export default function PricingCards() {
       return;
     }
 
-    if (plan.cta === 'Contact Enterprise') {
-      // Redirect to contact form for enterprise
-      window.location.href = '/contact';
-      return;
-    }
 
     setIsLoading(plan.name);
     
@@ -158,7 +153,7 @@ export default function PricingCards() {
   };
 
   return (
-    <section className="py-20 px-4 relative">
+    <section className="pt-32 pb-20 px-4 relative">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -170,10 +165,10 @@ export default function PricingCards() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
+            className="text-5xl md:text-7xl font-bold mb-8 text-white"
           >
             Simple, Transparent
-            <span className="block text-white/90">
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Pricing
             </span>
           </motion.h2>
@@ -342,7 +337,7 @@ export default function PricingCards() {
                             const value = parseInt(e.target.value) || 3;
                             setTeamSeats(Math.min(100, Math.max(3, value)));
                           }}
-                          className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center focus:outline-none focus:border-blue-400"
+                          className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center focus:outline-none focus:border-blue-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           min="3"
                           max="100"
                         />
@@ -354,14 +349,14 @@ export default function PricingCards() {
                         </button>
                       </div>
                       <div className="text-xs text-gray-500 mt-2 text-center">
-                        ${plan.planType === 'team' ? (isAnnual ? '950' : '99') : '0'} per user
+                        ${plan.planType === 'team' ? (isAnnual ? '470' : '49') : '0'} per user
                       </div>
                     </div>
                   )}
 
                   {/* CTA Button */}
                   <motion.button
-                    variants={plan.cta === 'Contact Enterprise' ? buttonHover : liquidButton}
+                    variants={liquidButton}
                     initial="initial"
                     whileHover="hover"
                     whileTap="tap"
@@ -369,13 +364,9 @@ export default function PricingCards() {
                     disabled={isLoading === plan.name}
                     className={`
                       w-full font-semibold py-3 px-5 rounded-lg transition-all duration-300 relative overflow-hidden text-white
-                      ${plan.cta === 'Contact Enterprise'
-                        ? 'bg-purple-500 hover:bg-purple-600'
-                        : (
-                          isPopular 
-                            ? 'bg-blue-500 hover:bg-blue-600' 
-                            : 'bg-white/10 hover:bg-white/20 border border-white/20'
-                        )
+                      ${isPopular || plan.planType === 'team'
+                        ? 'bg-blue-500 hover:bg-blue-600' 
+                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
                       }
                       ${isLoading === plan.name ? 'opacity-75 cursor-wait' : ''}
                     `}
@@ -414,13 +405,14 @@ export default function PricingCards() {
 
         {/* Trust Indicators removed per request */}
 
+
         {/* Enterprise CTA */}
         <motion.div
           variants={fadeInUp}
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="mt-16 text-center"
+          className="mt-24 text-center"
         >
           <div className="max-w-4xl mx-auto">
             <h3 className="text-xl font-bold text-white mb-3">

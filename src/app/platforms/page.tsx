@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, ExternalLink, Sparkles, TrendingUp, Clock, Users } from 'lucide-react';
+import { Search, Filter, ExternalLink } from 'lucide-react';
 import { aiPlatforms, platformCategories, featureFilters } from '@/lib/platforms';
 import { staggerContainer, fadeInUp, glassCard } from '@/lib/animations';
 import FloatingCard from '@/components/ui/FloatingCard';
@@ -104,22 +104,14 @@ function PlatformsContent() {
             animate="animate"
             className="text-center mb-16"
           >
-            {/* Badge */}
-            <motion.div
-              variants={fadeInUp}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
-            >
-              <Sparkles className="w-4 h-4" />
-              UNIVERSAL COMPATIBILITY
-            </motion.div>
 
             {/* Title */}
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+              className="text-5xl md:text-7xl font-bold mb-8 text-white"
             >
               Works With
-              <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 1000+ AI Platforms
               </span>
             </motion.h1>
@@ -150,24 +142,6 @@ function PlatformsContent() {
               </div>
             </motion.div>
 
-            {/* Quick Stats */}
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-wrap justify-center gap-8 text-sm text-gray-400"
-            >
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
-                <span>{aiPlatforms.length}+ Platforms</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-blue-400" />
-                <span>{platformCategories.length - 1} Categories</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-400" />
-                <span>Real-time Updates</span>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -220,10 +194,6 @@ function PlatformsContent() {
               )}
             </button>
 
-            {/* Results Count */}
-            <div className="ml-auto text-sm text-gray-400">
-              {filteredPlatforms.length} platforms found
-            </div>
           </div>
 
           {/* Feature Filters */}
@@ -425,22 +395,6 @@ function PlatformsContent() {
       </div>
 
 
-      {/* Add Platform Section */}
-      <section className="py-16 px-4 border-t border-white/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl font-bold text-white mb-4">Don't see your platform?</h3>
-          <p className="text-gray-400 mb-6">
-            Help us expand our directory by suggesting new AI platforms
-          </p>
-          <a
-            href="mailto:support@promptability.ai?subject=New AI Platform Suggestion"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-xl hover:bg-white/20 transition-all duration-300"
-          >
-            <Users className="w-4 h-4" />
-            Submit for Review
-          </a>
-        </div>
-      </section>
 
       {/* Use Promptability Modal */}
       <AnimatePresence>
