@@ -22,12 +22,30 @@ interface AnalysisResult {
 }
 
 const examplePrompts = [
-  "write about AI",
-  "help with code",
-  "create content",
-  "analyze data",
-  "design logo",
-  "plan project"
+  {
+    title: "Healthcare AI Blog",
+    prompt: "Write a comprehensive blog post about how artificial intelligence is transforming modern healthcare, including specific examples of diagnostic tools and patient care improvements"
+  },
+  {
+    title: "Debug Python Code",
+    prompt: "Help me debug this Python function that processes customer data and explain why it's returning incorrect results when handling duplicate entries"
+  },
+  {
+    title: "Social Media Content",
+    prompt: "Create engaging social media content for a sustainable fashion brand launching their new eco-friendly collection, targeting environmentally conscious millennials"
+  },
+  {
+    title: "Sales Data Analysis",
+    prompt: "Analyze this quarterly sales dataset to identify trends, seasonal patterns, and provide actionable insights for improving revenue in the next quarter"
+  },
+  {
+    title: "Logo Design Brief",
+    prompt: "Design a modern, minimalist logo for a tech startup focused on renewable energy solutions, incorporating solar and wind elements with a professional color scheme"
+  },
+  {
+    title: "Project Migration Plan",
+    prompt: "Develop a detailed 6-month project plan for migrating our company's legacy CRM system to a cloud-based solution, including timeline, resources, and risk mitigation strategies"
+  }
 ];
 
 export default function DualPromptTester() {
@@ -517,10 +535,11 @@ export default function DualPromptTester() {
                 {examplePrompts.slice(0, 3).map((example, index) => (
                   <button
                     key={index}
-                    onClick={() => loadExample(example, 'optimizer')}
+                    onClick={() => loadExample(example.prompt, 'optimizer')}
                     className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1 text-gray-300 transition-colors"
+                    title={example.prompt}
                   >
-&quot;{example}&quot;
+                    {example.title}
                   </button>
                 ))}
               </div>
@@ -683,10 +702,11 @@ export default function DualPromptTester() {
                 {examplePrompts.slice(3, 6).map((example, index) => (
                   <button
                     key={index}
-                    onClick={() => loadExample(example, 'checker')}
+                    onClick={() => loadExample(example.prompt, 'checker')}
                     className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1 text-gray-300 transition-colors"
+                    title={example.prompt}
                   >
-&quot;{example}&quot;
+                    {example.title}
                   </button>
                 ))}
               </div>

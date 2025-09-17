@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Search, HelpCircle, Shield, Zap, Users, CreditCard, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 const faqCategories = [
   { id: 'all', label: 'All Questions', icon: HelpCircle },
@@ -237,9 +238,11 @@ export default function FAQPage() {
               Our support team is here to help. Get in touch and we&apos;ll respond as soon as possible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-6 py-2.5 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all">
-                Contact Support
-              </button>
+              <Link href="/contact">
+                <button className="px-6 py-2.5 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-all">
+                  Contact Support
+                </button>
+              </Link>
               <button className="px-6 py-2.5 bg-white/10 text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all">
                 View Documentation
               </button>

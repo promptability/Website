@@ -65,6 +65,14 @@ prompts using advanced AI frameworks. <br></br>Automatically. Every time. <br></
 No prompt engineering knowledge required.
             </motion.p>
 
+            <motion.p
+              variants={fadeInUp}
+              className="text-sm sm:text-base text-blue-400 font-medium px-4 sm:px-0 mt-4 flex items-center gap-2 justify-center lg:justify-start"
+            >
+              <span className="text-blue-400">✓</span>
+              <span>No credit card needed</span>
+            </motion.p>
+
             <motion.div
               variants={fadeInUp}
               className="hidden lg:flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 md:mb-16 px-4 sm:px-0 mt-8"

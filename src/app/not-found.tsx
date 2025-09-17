@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, Home, BookOpen, Star, DollarSign, Puzzle, 
-  MessageSquare, ArrowRight, Clock, Zap
+  MessageSquare, ArrowRight, Zap
 } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 import Link from 'next/link';
@@ -62,7 +62,7 @@ export default function NotFoundPage() {
       border: 'border-indigo-500/30'
     },
     {
-      href: '/support',
+      href: '/contact',
       icon: <MessageSquare className="w-6 h-6" />,
       title: 'Get Help',
       description: 'Contact our team',
@@ -211,65 +211,8 @@ export default function NotFoundPage() {
             </div>
           </motion.div>
 
-          {/* Action Buttons */}
-          <motion.div 
-            variants={fadeInUp}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              href="/"
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <Home className="w-5 h-5" />
-              Go to Homepage
-            </Link>
-            <Link
-              href="/support"
-              className="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold py-3 px-8 rounded-xl hover:bg-white/20 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <MessageSquare className="w-5 h-5" />
-              Contact Support
-            </Link>
-          </motion.div>
 
-          {/* Error Details */}
-          <motion.div 
-            variants={fadeInUp}
-            className="pt-8 border-t border-white/10"
-          >
-            <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-              <span>Error Code: 404</span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {new Date().toLocaleTimeString()}
-              </span>
-            </div>
-          </motion.div>
 
-          {/* Fun Stats */}
-          <motion.div 
-            variants={fadeInUp}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6"
-          >
-            <h4 className="text-white font-semibold mb-4 text-center">
-              While you're here, did you know?
-            </h4>
-            <div className="grid grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-lg font-bold text-blue-400">2,000+</div>
-                <div className="text-xs text-gray-400">Users helped daily</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-green-400">50,000+</div>
-                <div className="text-xs text-gray-400">Prompts optimized</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-purple-400">30+</div>
-                <div className="text-xs text-gray-400">AI platforms supported</div>
-              </div>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </main>

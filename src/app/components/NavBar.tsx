@@ -13,6 +13,7 @@ export default function NavBar() {
   const [guidesOpen, setGuidesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [profileHoverTimeout, setProfileHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [scrolled, setScrolled] = useState(false);
   
   // Use real auth state from Firebase
@@ -43,6 +44,21 @@ export default function NavBar() {
     setHoverTimeout(timeout);
   };
 
+  const handleProfileMouseEnter = () => {
+    if (profileHoverTimeout) {
+      clearTimeout(profileHoverTimeout);
+      setProfileHoverTimeout(null);
+    }
+    setProfileOpen(true);
+  };
+
+  const handleProfileMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setProfileOpen(false);
+    }, 200); // 200ms delay before closing
+    setProfileHoverTimeout(timeout);
+  };
+
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -55,15 +71,17 @@ export default function NavBar() {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
-    { href: "/platforms", label: "Supported Platforms" },
+    { href: "/platforms", label: "Platforms" },
     { href: "/pricing", label: "Pricing" },
-    { href: "/faq", label: "FAQ" },
   ];
 
   const guideLinks = [
-    { href: "/guides/gpt", label: "ChatGPT & GPT-4", icon: "🤖" },
-    { href: "/guides/claude", label: "Claude AI", icon: "🧠" },
-    { href: "/guides/gemini", label: "Google Gemini", icon: "✨" },
+    { href: "/guides/gpt", label: "ChatGPT" },
+    { href: "/guides/claude", label: "Claude AI" },
+    { href: "/guides/gemini", label: "Google Gemini" },
+    { href: "/guides/perplexity", label: "Perplexity" },
+    { href: "/guides/midjourney", label: "Midjourney" },
+    { href: "/guides/runway", label: "Runway" },
   ];
 
   // Get display name for the user
@@ -125,24 +143,19 @@ export default function NavBar() {
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center gap-1 text-white/80 hover:text-white transition-colors">
-                <BookOpen className="w-4 h-4" />
                 Guides
                 <ChevronDown className="w-3 h-3" />
               </button>
 
               {guidesOpen && (
-                <div className="absolute top-full mt-2 w-64 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                <div className="absolute top-full mt-2 w-64 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
                   <div className="p-3">
-                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-2 px-3">
-                      AI Platform Guides
-                    </div>
                     {guideLinks.map((guide) => (
                       <Link
                         key={guide.href}
                         href={guide.href}
                         className="flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        <span className="text-lg">{guide.icon}</span>
                         <span>{guide.label}</span>
                         <ArrowRight className="w-3 h-3 ml-auto" />
                       </Link>
@@ -166,9 +179,12 @@ export default function NavBar() {
                   Get Extension
                 </Link>
 
-                <div className="relative">
+                <div 
+                  className="relative"
+                  onMouseEnter={handleProfileMouseEnter}
+                  onMouseLeave={handleProfileMouseLeave}
+                >
                   <button
-                    onClick={() => setProfileOpen(!profileOpen)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
                   >
                     {user.photoURL ? (
@@ -190,7 +206,7 @@ export default function NavBar() {
                   </button>
 
                   {profileOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                    <div className="absolute top-full right-0 mt-2 w-72 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
                       <div className="px-4 py-3 border-b border-white/10">
                         <div className="text-white font-medium">{getDisplayName()}</div>
                         <div className="text-gray-400 text-sm">{user.email}</div>
@@ -247,6 +263,12 @@ export default function NavBar() {
                 >
                   Get Started Free
                 </Link>
+                <Link
+                  href="/chrome-extension"
+                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
+                >
+                  Get Extension
+                </Link>
               </div>
             )}
           </div>
@@ -276,9 +298,6 @@ export default function NavBar() {
               ))}
 
               <div className="border-t border-white/10 my-2 pt-2">
-                <div className="text-xs text-gray-400 uppercase tracking-wider mb-2 px-4">
-                  AI Platform Guides
-                </div>
                 {guideLinks.map((guide) => (
                   <Link
                     key={guide.href}
@@ -286,7 +305,6 @@ export default function NavBar() {
                     className="flex items-center gap-3 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                     onClick={() => setOpen(false)}
                   >
-                    <span className="text-lg">{guide.icon}</span>
                     <span>{guide.label}</span>
                   </Link>
                 ))}
@@ -330,6 +348,13 @@ export default function NavBar() {
                   </>
                 ) : (
                   <>
+                    <Link
+                      href="/chrome-extension"
+                      className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      onClick={() => setOpen(false)}
+                    >
+                      Get Extension
+                    </Link>
                     <Link
                       href="/signin"
                       className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"

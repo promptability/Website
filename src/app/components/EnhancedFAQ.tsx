@@ -2,77 +2,77 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ChevronDown, HelpCircle, DollarSign, Settings, Users } from 'lucide-react';
+import { Search, ChevronDown, HelpCircle, DollarSign, Settings } from 'lucide-react';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
 interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: 'General' | 'Pricing' | 'Technical' | 'Teams';
+  category: 'General' | 'Pricing' | 'Technical';
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const faqData: FAQItem[] = [
   {
     id: '1',
-    question: 'Is there a free plan?',
-    answer: 'Yes! We offer a free plan forever with 10 AI-optimized prompts daily. No credit card required to start. Check our <a href="/pricing" class="text-purple-400 hover:text-purple-300 underline">pricing plans</a> to see all available features.',
+    question: 'Is my data secure?',
+    answer: 'Yes, your data is completely secure. We use enterprise-grade encryption, never store your prompts or AI conversations, and comply with GDPR and SOC 2 standards. Read our <a href="/privacy" class="text-purple-400 hover:text-purple-300 underline">Privacy Policy</a> for full details.',
+    category: 'General',
+    icon: Settings
+  },
+  {
+    id: '2',
+    question: 'Can I cancel anytime?',
+    answer: 'Absolutely! You can cancel your subscription at any time with no questions asked. There are no long-term contracts or cancellation fees. Manage your subscription in your <a href="/account" class="text-purple-400 hover:text-purple-300 underline">Account Settings</a>.',
     category: 'Pricing',
     icon: DollarSign
   },
   {
-    id: '2',
-    question: 'What features are available?',
-    answer: 'We offer 6 core features: <a href="/features/auto-optimize" class="text-purple-400 hover:text-purple-300 underline">Auto-Optimize Mode</a>, Multi-AI Broadcasting, AI Chat Enhancement, Learns Your Style, Project Memory, and <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration</a>. <a href="/features" class="text-purple-400 hover:text-purple-300 underline">View all features</a>.',
-    category: 'General',
-    icon: HelpCircle
-  },
-  {
-    id: '3',
-    question: 'How does team collaboration work?',
-    answer: 'Share optimized prompts with your team and build a knowledge base together. <a href="/features/team-collaboration" class="text-purple-400 hover:text-purple-300 underline">Team Collaboration</a> features include shared libraries, permissions, and workflows.',
-    category: 'Teams',
-    icon: Users
-  },
-  {
     id: '4',
     question: 'Which AI platforms do you support?',
-    answer: 'We support ChatGPT, Claude, Gemini, and 30+ other AI platforms. Our <a href="/platforms" class="text-purple-400 hover:text-purple-300 underline">supported platforms</a> page shows the full list. Multi-AI Broadcasting lets you send prompts to multiple AIs simultaneously.',
+    answer: 'We support ChatGPT, Claude, Gemini, and <a href="/platforms" class="text-purple-400 hover:text-purple-300 underline">1000+ other AI platforms</a>. Promptability works seamlessly with any AI tool you use - just install our <a href="/chrome-extension" class="text-purple-400 hover:text-purple-300 underline">Chrome extension</a> and you\'re ready to go.',
     category: 'Technical',
     icon: Settings
   },
   {
     id: '5',
-    question: 'How does AI learn my style?',
-    answer: 'Our AI adapts to your writing patterns and preferences automatically. The system learns your unique style and improves suggestions over time.',
+    question: 'Who needs Promptability?',
+    answer: 'Promptability is perfect for professionals, content creators, developers, researchers, and anyone who uses AI daily. If you want better AI responses in less time, Promptability is for you. See <a href="/usecases" class="text-purple-400 hover:text-purple-300 underline">real use cases</a> from our users.',
     category: 'General',
     icon: HelpCircle
   },
   {
     id: '6',
-    question: 'Can I organize projects separately?',
-    answer: 'Yes! Project Memory maintains context across different projects, keeping your work organized and consistent.',
+    question: 'Do I need technical knowledge?',
+    answer: 'Not at all! Promptability is designed to be simple and intuitive. Just type naturally and our AI does the optimization for you. No prompt engineering skills required. Watch our <a href="/docs/getting-started" class="text-purple-400 hover:text-purple-300 underline">quick start guide</a> to see how easy it is.',
     category: 'Technical',
     icon: Settings
   },
   {
     id: '7',
-    question: 'What about pricing for teams?',
-    answer: 'We offer flexible team plans starting at $99/month. Check our <a href="/pricing" class="text-purple-400 hover:text-purple-300 underline">pricing page</a> for detailed comparisons and enterprise options.',
+    question: 'Is there a free trial?',
+    answer: 'Yes! Start with our <a href="/signup" class="text-purple-400 hover:text-purple-300 underline">free plan</a> that gives you 10 optimized prompts daily forever. No credit card required. Upgrade to Starter ($9/month) for 150 daily prompts when you need more. See all <a href="/pricing" class="text-purple-400 hover:text-purple-300 underline">pricing options</a>.',
     category: 'Pricing',
     icon: DollarSign
   },
   {
     id: '8',
-    question: 'Can I see real user results?',
-    answer: 'Absolutely! Visit our <a href="/usecases" class="text-purple-400 hover:text-purple-300 underline">use cases page</a> to see real impact stories and success metrics from our users.',
+    question: 'How quickly will I see results?',
+    answer: 'Immediately! From your very first prompt, you\'ll get better AI responses. Users report 10x better results and 75% time savings on average. The AI also learns your style over time for even better results. <a href="/signup" class="text-purple-400 hover:text-purple-300 underline">Try it free now</a>.',
     category: 'General',
     icon: HelpCircle
-  }
+  },
+  {
+    id: '9',
+    question: 'What happens to my data if I cancel?',
+    answer: 'If you cancel, your account data is retained for 30 days in case you want to reactivate. After that, all data is permanently deleted. You can also request immediate deletion at any time through <a href="/contact" class="text-purple-400 hover:text-purple-300 underline">support</a>.',
+    category: 'Pricing',
+    icon: DollarSign
+  },
 ];
 
-const categories = ['All', 'General', 'Pricing', 'Technical', 'Teams'];
+const categories = ['All', 'General', 'Pricing', 'Technical'];
 
 export default function EnhancedFAQ() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -99,7 +99,6 @@ export default function EnhancedFAQ() {
       case 'General': return HelpCircle;
       case 'Pricing': return DollarSign;
       case 'Technical': return Settings;
-      case 'Teams': return Users;
       default: return HelpCircle;
     }
   };
@@ -288,7 +287,7 @@ export default function EnhancedFAQ() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="/support" 
+                href="/contact" 
                 className="bg-white/10 border border-white/20 text-white font-semibold px-6 py-3 rounded-lg hover:bg-white/20 transition-colors"
               >
                 Contact Support

@@ -31,7 +31,7 @@ export default function SignInPage() {
     try {
       await signInWithEmail(formData.email, formData.password);
       await refreshUserProfile();
-      router.push('/dashboard');
+      router.push('/chrome-extension');
     } catch (error: any) {
       console.error('Signin error:', error);
       if (error.code === 'auth/user-not-found') {
@@ -61,7 +61,7 @@ export default function SignInPage() {
         await signInWithGithub();
       }
       await refreshUserProfile();
-      router.push('/dashboard');
+      router.push('/chrome-extension');
     } catch (error: any) {
       console.error('OAuth error:', error);
       setError(error.message || 'Failed to sign in');

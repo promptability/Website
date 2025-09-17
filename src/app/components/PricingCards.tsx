@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star, Zap, Crown, Building2 } from 'lucide-react';
 import { cardTilt, liquidButton, fadeInUp, staggerContainer, buttonHover } from '@/lib/animations';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PricingPlan {
   name: string;
@@ -24,13 +25,10 @@ const plans: PricingPlan[] = [
     name: 'Free',
     price: '$0',
     period: 'forever',
-    description: 'Perfect for trying out Promptability',
+    description: '',
     features: [
       '10 AI-optimized prompts daily',
       'Works with all major AI platforms',
-      'Auto-Optimize Mode (basic optimization)',
-      'Multi-AI Broadcasting',
-      'AI Chat Enhancement',
       'Project Memory'
     ],
     cta: 'Get Started Free',
@@ -42,17 +40,14 @@ const plans: PricingPlan[] = [
     name: 'Starter',
     price: '$9',
     period: 'per month',
-    description: 'Ideal for professionals and content creators',
+    description: '',
     features: [
-      '150 daily prompt optimizations',
+      '50 AI-optimized prompts daily',
       'Works with all major AI platforms',
-      'Auto-Optimize Mode (advanced optimization)',
-      'Multi-AI Broadcasting',
-      'AI Chat Enhancement',
-      'Learns Your Style',
-      'Project Memory (5 active projects)',
-      'Export capabilities',
-      'Priority support'
+      'Auto-Optimize Mode',
+      'Project Memory',
+      'Learn Your Style',
+      'Broadcasting'
     ],
     popular: false,
     cta: 'Get Started',
@@ -65,56 +60,35 @@ const plans: PricingPlan[] = [
     name: 'Pro',
     price: '$32',
     period: 'per month',
-    description: 'For teams and power users',
+    description: '',
     features: [
-      'UNLIMITED prompt optimizations',
+      '200 AI-optimized prompts daily',
       'Works with all major AI platforms',
-      'Auto-Optimize Mode (expert optimization)',
-      'Multi-AI Broadcasting',
+      'Auto-Optimize Mode',
+      'Project Memory',
       'AI Chat Enhancement',
-      'Learns Your Style',
-      'Project Memory (unlimited projects)',
-      'Export capabilities',
-      'Priority support'
+      'Advanced Style Learning',
+      'Team Broadcasting',
+      'Platform Detective'
     ],
     popular: true,
-    cta: 'Get Started',
+    cta: 'Coming Soon',
     gradient: 'from-white/20 to-white/10',
     icon: Crown,
     planType: 'pro',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID
-  },
-  {
-    name: 'Team',
-    price: '$49',
-    period: 'per user/month',
-    description: 'Enterprise-grade solution for larger teams',
-    features: [
-      'UNLIMITED prompt optimizations',
-      'Works with all major AI platforms',
-      'Auto-Optimize Mode (expert optimization)',
-      'Multi-AI Broadcasting',
-      'AI Chat Enhancement',
-      'Learns Your Style',
-      'Project Memory (unlimited projects)',
-      'Team Collaboration & sharing',
-      'Export capabilities',
-      'Priority support'
-    ],
-    popular: false,
-    cta: 'Get Started',
-    gradient: 'from-white/25 to-white/15',
-    icon: Building2,
-    planType: 'team',
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_TEAM_MONTHLY_PRICE_ID
   }
 ];
 
 export default function PricingCards() {
+  const { user, userProfile } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const [teamSeats, setTeamSeats] = useState(1); // Default 1 seats minimum for team plan
+  const [teamSeats, setTeamSeats] = useState(1); // Default 1 seat minimum for team plan
+  
+  // Get current user's plan
+  const currentPlan = userProfile?.planType || null;
 
   const getAnnualPrice = (monthlyPrice: string) => {
     if (monthlyPrice === '$0') return '$0';
@@ -131,12 +105,16 @@ export default function PricingCards() {
   };
 
   const handleCheckout = async (plan: PricingPlan) => {
+    // Check if this is the user's current plan
+    if (user && currentPlan === plan.planType) {
+      return; // Do nothing if it's their current plan
+    }
+
     if (plan.planType === 'free') {
       // Redirect to signup for free plan
       window.location.href = '/signup';
       return;
     }
-
 
     setIsLoading(plan.name);
     
@@ -144,7 +122,8 @@ export default function PricingCards() {
     const params = new URLSearchParams({
       plan: plan.planType || '',
       billing: isAnnual ? 'yearly' : 'monthly',
-      ...(plan.planType === 'team' ? { seats: teamSeats.toString() } : {})
+      ...(plan.planType === 'team' ? { seats: teamSeats.toString() } : {}),
+      ...(currentPlan ? { current: currentPlan } : {})
     });
     
     window.location.href = `/payment/checkout?${params.toString()}`;
@@ -213,7 +192,7 @@ export default function PricingCards() {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto"
+          className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
         >
           {plans.map((plan) => {
             const IconComponent = plan.icon;
@@ -221,40 +200,51 @@ export default function PricingCards() {
             const displayPrice = isAnnual ? getAnnualPrice(plan.price) : plan.price;
             const displayPeriod = isAnnual ? (plan.price === '$0' ? 'forever' : 'per year') : plan.period;
             const savings = isAnnual ? getSavings(plan.price) : '';
+            const isCurrentPlan = user && currentPlan === plan.planType;
+            const isComingSoon = plan.cta === 'Coming Soon';
+            const isDisabled = isCurrentPlan || isComingSoon;
 
             return (
               <motion.div
                 key={plan.name}
-                variants={cardTilt}
+                variants={isDisabled ? undefined : cardTilt}
                 initial="initial"
-                whileHover="hover"
-                onHoverStart={() => setHoveredCard(plan.name)}
-                onHoverEnd={() => setHoveredCard(null)}
-                className={`relative group ${
-                  isPopular ? 'md:scale-105 z-10' : ''
-                }`}
+                whileHover={isDisabled ? undefined : "hover"}
+                onHoverStart={() => !isDisabled && setHoveredCard(plan.name)}
+                onHoverEnd={() => !isDisabled && setHoveredCard(null)}
+                className="relative group"
                 style={{ perspective: '1000px' }}
               >
-                {/* Popular Badge */}
-                {isPopular && (
+                {/* Badge */}
+                {(isCurrentPlan || isPopular || isComingSoon) && (
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20"
                   >
-                    <div className="bg-white/10 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/20">
-                      MOST POPULAR
+                    <div className={`backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border ${
+                      isCurrentPlan
+                        ? 'bg-blue-500/50 border-blue-400/50'
+                        : isComingSoon 
+                        ? 'bg-gray-600/50 border-gray-500/50'
+                        : 'bg-white/10 border-white/20'
+                    }`}>
+                      {isCurrentPlan ? 'CURRENT PLAN' : isComingSoon ? 'COMING SOON' : 'MOST POPULAR'}
                     </div>
                   </motion.div>
                 )}
 
                 <div className={`
                   relative bg-white/5 backdrop-blur-xl border rounded-2xl p-6 h-full transition-all duration-300 flex flex-col
-                  ${isPopular 
-                    ? 'border-white/30' 
-                    : 'border-white/10 hover:border-white/20'
+                  ${isCurrentPlan
+                    ? 'border-blue-400/50 bg-blue-500/10'
+                    : isComingSoon
+                    ? 'border-gray-500/50 opacity-75'
+                    : isPopular 
+                      ? 'border-white/30 hover:scale-105 hover:z-10' 
+                      : 'border-white/10 hover:border-white/20'
                   }
-                  ${hoveredCard === plan.name ? 'bg-white/10' : ''}
+                  ${hoveredCard === plan.name && !isDisabled ? 'bg-white/10' : ''}
                 `}>
                   {/* Card Header */}
                   <div className="text-center mb-6">
@@ -279,6 +269,9 @@ export default function PricingCards() {
                             : `/${displayPeriod}`}
                         </span>
                       </div>
+                      {plan.planType === 'free' && (
+                        <div className="text-blue-400 text-xs font-medium mt-1">✓ No credit card required</div>
+                      )}
                       {savings && (
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
@@ -298,7 +291,9 @@ export default function PricingCards() {
                       )}
                     </div>
                     
-                    <p className="text-gray-400 text-sm">{plan.description}</p>
+                    {plan.description && (
+                      <p className="text-gray-400 text-sm">{plan.description}</p>
+                    )}
                   </div>
 
                   {/* Features */}
@@ -325,7 +320,7 @@ export default function PricingCards() {
                       <label className="text-sm text-gray-400 block mb-2">Number of team members:</label>
                       <div className="flex items-center justify-center gap-3">
                         <button
-                          onClick={() => setTeamSeats(Math.max(3, teamSeats - 1))}
+                          onClick={() => setTeamSeats(Math.max(1, teamSeats - 1))}
                           className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
                         >
                           -
@@ -334,11 +329,11 @@ export default function PricingCards() {
                           type="number"
                           value={teamSeats}
                           onChange={(e) => {
-                            const value = parseInt(e.target.value) || 3;
-                            setTeamSeats(Math.min(100, Math.max(3, value)));
+                            const value = parseInt(e.target.value) || 1;
+                            setTeamSeats(Math.min(100, Math.max(1, value)));
                           }}
                           className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center focus:outline-none focus:border-blue-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          min="3"
+                          min="1"
                           max="100"
                         />
                         <button
@@ -356,17 +351,21 @@ export default function PricingCards() {
 
                   {/* CTA Button */}
                   <motion.button
-                    variants={liquidButton}
+                    variants={isDisabled ? undefined : liquidButton}
                     initial="initial"
-                    whileHover="hover"
-                    whileTap="tap"
-                    onClick={() => handleCheckout(plan)}
-                    disabled={isLoading === plan.name}
+                    whileHover={isDisabled ? undefined : "hover"}
+                    whileTap={isDisabled ? undefined : "tap"}
+                    onClick={() => !isDisabled && handleCheckout(plan)}
+                    disabled={isLoading === plan.name || isDisabled}
                     className={`
                       w-full font-semibold py-3 px-5 rounded-lg transition-all duration-300 relative overflow-hidden text-white
-                      ${isPopular || plan.planType === 'team'
-                        ? 'bg-blue-500 hover:bg-blue-600' 
-                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                      ${isCurrentPlan
+                        ? 'bg-blue-500/50 cursor-not-allowed opacity-75'
+                        : isComingSoon 
+                        ? 'bg-gray-600/50 cursor-not-allowed opacity-75'
+                        : isPopular || plan.planType === 'team'
+                          ? 'bg-blue-500 hover:bg-blue-600' 
+                          : 'bg-white/10 hover:bg-white/20 border border-white/20'
                       }
                       ${isLoading === plan.name ? 'opacity-75 cursor-wait' : ''}
                     `}
@@ -377,25 +376,31 @@ export default function PricingCards() {
                           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                           Processing...
                         </div>
+                      ) : isCurrentPlan ? (
+                        'Current Plan'
                       ) : (
                         plan.cta
                       )}
                     </span>
                     
                     {/* Ripple Effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-white/20 rounded-lg"
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileTap={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
+                    {!isDisabled && (
+                      <motion.div
+                        className="absolute inset-0 bg-white/20 rounded-lg"
+                        initial={{ scale: 0, opacity: 0 }}
+                        whileTap={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
                   </motion.button>
 
                   {/* 3D Glow Effect */}
-                  <div className={`
-                    absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
-                    bg-gradient-to-br from-white/5 to-transparent
-                  `} />
+                  {!isDisabled && (
+                    <div className={`
+                      absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
+                      bg-gradient-to-br from-white/5 to-transparent
+                    `} />
+                  )}
                   
                 </div>
               </motion.div>

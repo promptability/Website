@@ -49,7 +49,7 @@ export default function SignUpPage() {
     try {
       await signUpWithEmail(formData.email, formData.password);
       await refreshUserProfile();
-      router.push('/dashboard');
+      router.push('/chrome-extension');
     } catch (error: any) {
       console.error('Signup error:', error);
       if (error.code === 'auth/email-already-in-use') {
@@ -75,7 +75,7 @@ export default function SignUpPage() {
         await signInWithGithub();
       }
       await refreshUserProfile();
-      router.push('/dashboard');
+      router.push('/chrome-extension');
     } catch (error: any) {
       console.error('OAuth error:', error);
       setErrors({ general: error.message || 'Failed to sign in' });

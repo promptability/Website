@@ -1,11 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight, ExternalLink, X, Download } from 'lucide-react';
 import { aiPlatforms } from '@/lib/platforms';
 import { glassCard, staggerContainer, fadeInUp } from '@/lib/animations';
 
 export default function PlatformsShowcase() {
+  const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
   const visibleCount = 32;
   const mobileVisibleCount = 6; // Only show 6 on mobile
 
@@ -50,16 +52,16 @@ export default function PlatformsShowcase() {
           <div className="md:hidden grid grid-cols-3 gap-3 mb-6">
             <AnimatePresence mode="wait">
               {aiPlatforms.slice(0, mobileVisibleCount).map((platform, index) => (
-              <motion.a
+              <motion.div
                 key={platform.id}
-                href={`/platforms?platform=${platform.id}`}
+                onClick={() => setSelectedPlatform(platform)}
                 variants={glassCard}
                 initial="initial"
                 animate="animate"
                 exit={{ opacity: 0, scale: 0.8 }}
                 whileHover="hover"
                 transition={{ delay: index * 0.05 }}
-                className="group bg-black/40 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:bg-black/60 hover:border-white/10 transition-all duration-300 cursor-pointer relative block"
+                className="group bg-black/40 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:bg-black/60 hover:border-white/10 transition-all duration-300 cursor-pointer relative"
               >
                 {/* External link icon on hover */}
                 <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -100,7 +102,7 @@ export default function PlatformsShowcase() {
                   className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl pointer-events-none"
                   style={{ backgroundColor: platform.color }}
                 />
-              </motion.a>
+              </motion.div>
               ))}
             </AnimatePresence>
           </div>
@@ -120,16 +122,16 @@ export default function PlatformsShowcase() {
           <div className="hidden md:grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
             <AnimatePresence mode="wait">
               {aiPlatforms.slice(0, visibleCount).map((platform, index) => (
-                <motion.a
+                <motion.div
                   key={platform.id}
-                  href={`/platforms?platform=${platform.id}`}
+                  onClick={() => setSelectedPlatform(platform)}
                   variants={glassCard}
                   initial="initial"
                   animate="animate"
                   exit={{ opacity: 0, scale: 0.8 }}
                   whileHover="hover"
                   transition={{ delay: index * 0.05 }}
-                  className="group bg-black/40 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:bg-black/60 hover:border-white/10 transition-all duration-300 cursor-pointer relative block"
+                  className="group bg-black/40 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:bg-black/60 hover:border-white/10 transition-all duration-300 cursor-pointer relative"
                 >
                   {/* External link icon on hover */}
                   <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -170,7 +172,7 @@ export default function PlatformsShowcase() {
                     className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl pointer-events-none"
                     style={{ backgroundColor: platform.color }}
                   />
-                </motion.a>
+                </motion.div>
               ))}
             </AnimatePresence>
           </div>
@@ -194,6 +196,117 @@ export default function PlatformsShowcase() {
           </a>
         </motion.div>
       </div>
+
+      {/* Use Promptability Modal */}
+      <AnimatePresence>
+        {selectedPlatform && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => setSelectedPlatform(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-gradient-to-br from-black/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center">
+                    {selectedPlatform.logo ? (
+                      <img 
+                        src={selectedPlatform.logo} 
+                        alt={`${selectedPlatform.name} logo`}
+                        className="w-8 h-8 object-contain filter brightness-0 invert"
+                      />
+                    ) : (
+                      <span className="text-white font-bold">{selectedPlatform.name.charAt(0)}</span>
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Use Promptability on {selectedPlatform.name}</h2>
+                    <p className="text-gray-400">Get started in 3 simple steps</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedPlatform(null)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Steps */}
+              <div className="space-y-6">
+                {/* Step 1 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/50 flex items-center justify-center text-blue-400 font-semibold">
+                    1
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-semibold text-white mb-2">Install Chrome Extension</h3>
+                    <p className="text-gray-300 mb-4">Get the Promptability extension from Chrome Web Store</p>
+                    <div className="flex gap-3">
+                      <a
+                        href="https://chrome.google.com/webstore/detail/promptability/your-extension-id"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+                      >
+                        <Download className="w-4 h-4" />
+                        Install Extension
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/50 flex items-center justify-center text-blue-400 font-semibold">
+                    2
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-semibold text-white mb-2">Sign Up for Free</h3>
+                    <p className="text-gray-300 mb-4">Create your free account to start optimizing prompts</p>
+                    <a
+                      href="/signup"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Create Account
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/50 flex items-center justify-center text-blue-400 font-semibold">
+                    3
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-lg font-semibold text-white mb-2">Start Using on {selectedPlatform.name}</h3>
+                    <p className="text-gray-300 mb-4">Open {selectedPlatform.name} and watch Promptability enhance your prompts</p>
+                    <a
+                      href={selectedPlatform.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Open {selectedPlatform.name}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -3,8 +3,8 @@
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, ExternalLink } from 'lucide-react';
-import { aiPlatforms, platformCategories, featureFilters } from '@/lib/platforms';
+import { Search, ExternalLink } from 'lucide-react';
+import { aiPlatforms } from '@/lib/platforms';
 import { staggerContainer, fadeInUp, glassCard } from '@/lib/animations';
 import FloatingCard from '@/components/ui/FloatingCard';
 
@@ -12,9 +12,6 @@ function PlatformsContent() {
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState('popular');
-  const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
 
@@ -32,51 +29,30 @@ function PlatformsContent() {
   }, [searchParams]);
 
   const filteredPlatforms = useMemo(() => {
-    let filtered = aiPlatforms.filter(platform => {
-      const matchesSearch = platform.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           platform.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           platform.category.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesCategory = selectedCategory === 'All' || platform.category === selectedCategory;
-      
-      const matchesFeatures = selectedFeatures.length === 0 || selectedFeatures.every(feature => {
-        switch (feature) {
-          case 'Free tier available': return platform.freeTier;
-          case 'API access': return platform.apiAccess;
-          case 'Team collaboration': return platform.teamCollaboration;
-          case 'No signup required': return platform.noSignup;
-          case 'Open source': return platform.openSource;
-          case 'Enterprise ready': return platform.enterprise;
-          default: return false;
-        }
-      });
-
-      return matchesSearch && matchesCategory && matchesFeatures;
-    });
-
-    // Sort platforms
-    switch (sortBy) {
-      case 'popular':
-        return filtered.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
-      case 'alphabetical':
-        return filtered.sort((a, b) => a.name.localeCompare(b.name));
-      case 'category':
-        return filtered.sort((a, b) => a.category.localeCompare(b.category));
-      default:
-        return filtered;
+    // Get only popular platforms
+    let popularPlatforms = aiPlatforms.filter(platform => platform.popular);
+    
+    // Filter by category if not 'All'
+    if (selectedCategory !== 'All') {
+      popularPlatforms = popularPlatforms.filter(platform => 
+        platform.category === selectedCategory
+      );
     }
-  }, [searchQuery, selectedCategory, selectedFeatures, sortBy]);
+    
+    // Filter by search if there's a query
+    if (searchQuery) {
+      popularPlatforms = popularPlatforms.filter(platform => 
+        platform.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        platform.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Return filtered platforms (no limit when category is selected)
+    return popularPlatforms;
+  }, [searchQuery, selectedCategory]);
 
   const paginatedPlatforms = filteredPlatforms.slice(0, currentPage * platformsPerPage);
   const hasMore = filteredPlatforms.length > currentPage * platformsPerPage;
-
-  const toggleFeatureFilter = (feature: string) => {
-    setSelectedFeatures(prev => 
-      prev.includes(feature) 
-        ? prev.filter(f => f !== feature)
-        : [...prev, feature]
-    );
-  };
 
 
   return (
@@ -110,9 +86,9 @@ function PlatformsContent() {
               variants={fadeInUp}
               className="text-5xl md:text-7xl font-bold mb-8 text-white"
             >
-              Works With
+              Popular
               <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                1000+ AI Platforms
+                AI Platforms
               </span>
             </motion.h1>
 
@@ -121,16 +97,16 @@ function PlatformsContent() {
               variants={fadeInUp}
               className="text-xl text-gray-400 max-w-3xl mx-auto mb-8"
             >
-              Optimize prompts for any browser-based AI tool. From ChatGPT to Midjourney, 
-              from coding assistants to research tools.
+              Works seamlessly with the most popular AI platforms. 
+              Promptability supports 1000+ AI tools in total.
             </motion.p>
 
             {/* Search Bar */}
             <motion.div
               variants={fadeInUp}
-              className="max-w-2xl mx-auto mb-8"
+              className="max-w-2xl mx-auto mb-2"
             >
-              <div className="relative">
+              <div className="relative mb-4">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
@@ -140,100 +116,108 @@ function PlatformsContent() {
                   className="w-full pl-12 pr-4 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
                 />
               </div>
+              
+              {/* How to Install Button */}
+              <div className="text-center mb-6">
+                <a
+                  href="/chrome-extension"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-xl transition-all duration-300 font-medium"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  How to Install Promptability
+                </a>
+              </div>
+
+              {/* Category Filters */}
+              <div className="flex flex-wrap justify-center gap-2">
+                <button
+                  onClick={() => setSelectedCategory('All')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'All'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  All Platforms
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Chat AI')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Chat AI'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Chat AI
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Image Generation')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Image Generation'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Image
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Video Generation')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Video Generation'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Video
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Code Assistants')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Code Assistants'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Code
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Audio/Music')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Audio/Music'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Audio
+                </button>
+                <button
+                  onClick={() => setSelectedCategory('Business')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    selectedCategory === 'Business'
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  Business
+                </button>
+              </div>
             </motion.div>
 
           </motion.div>
         </div>
       </section>
 
-      {/* Sticky Filter Bar */}
-      <div className="sticky top-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Category Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">Category:</span>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50"
-              >
-                {platformCategories.map(category => (
-                  <option key={category} value={category} className="bg-black">
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sort Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500/50"
-              >
-                <option value="popular" className="bg-black">Most Popular</option>
-                <option value="alphabetical" className="bg-black">Alphabetical</option>
-                <option value="category" className="bg-black">Category</option>
-              </select>
-            </div>
-
-            {/* Feature Filters Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm hover:bg-white/10 transition-colors"
-            >
-              <Filter className="w-4 h-4" />
-              Features
-              {selectedFeatures.length > 0 && (
-                <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                  {selectedFeatures.length}
-                </span>
-              )}
-            </button>
-
-          </div>
-
-          {/* Feature Filters */}
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-4 pt-4 border-t border-white/10"
-              >
-                <div className="flex flex-wrap gap-2">
-                  {featureFilters.map(feature => (
-                    <button
-                      key={feature}
-                      onClick={() => toggleFeatureFilter(feature)}
-                      className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                        selectedFeatures.includes(feature)
-                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                          : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
-                      }`}
-                    >
-                      {feature}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Platforms Grid */}
         <motion.div
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           <AnimatePresence mode="wait">
             {paginatedPlatforms.map((platform, index) => (
@@ -247,37 +231,45 @@ function PlatformsContent() {
                 className=""
               >
                 <FloatingCard className="p-6 h-full">
-                  <div className="flex flex-col h-full">
+                    <div className="flex flex-col h-full relative">
+                    {/* External Link Icon in Corner */}
+                    <a
+                      href={platform.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-0 right-0 p-2 text-gray-400 hover:text-white transition-colors z-10"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        {/* Platform Icon */}
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center">
-                          {platform.logo ? (
-                            <img 
-                              src={platform.logo} 
-                              alt={`${platform.name} logo`}
-                              className="w-8 h-8 object-contain filter brightness-0 invert"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const fallback = target.nextElementSibling as HTMLElement;
-                                if (fallback) fallback.style.display = 'flex';
-                              }}
-                            />
-                          ) : null}
-                          <span 
-                            className="text-lg text-white"
-                            style={{ display: platform.logo ? 'none' : 'block' }}
-                          >
-                            {platform.name.charAt(0)}
-                          </span>
-                        </div>
-                        
-                        <div>
-                          <h3 className="font-semibold text-white text-lg">{platform.name}</h3>
-                          <span className="text-xs text-gray-400">{platform.category}</span>
-                        </div>
+                    <div className="flex items-start gap-3 mb-4">
+                      {/* Platform Icon */}
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center">
+                        {platform.logo ? (
+                          <img 
+                            src={platform.logo} 
+                            alt={`${platform.name} logo`}
+                            className="w-8 h-8 object-contain filter brightness-0 invert"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallback = target.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <span 
+                          className="text-lg text-white"
+                          style={{ display: platform.logo ? 'none' : 'block' }}
+                        >
+                          {platform.name.charAt(0)}
+                        </span>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-white text-lg">{platform.name}</h3>
                       </div>
                     </div>
 
@@ -286,73 +278,37 @@ function PlatformsContent() {
                       {platform.description}
                     </p>
 
-                    {/* Features */}
-                    {platform.features && platform.features.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {platform.features.slice(0, 3).map(feature => (
-                          <span
-                            key={feature}
-                            className="px-2 py-1 bg-white/10 rounded-md text-xs text-gray-300"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    )}
 
-                    {/* Action Buttons */}
-                    <div className="pt-4 border-t border-white/10 space-y-2">
+                    {/* Guide Button - Only show if guide exists */}
+                    {(() => {
+                      const getGuideUrl = (platformId: string) => {
+                        switch (platformId) {
+                          case 'chatgpt': return '/guides/gpt';
+                          case 'claude': return '/guides/claude';
+                          case 'gemini': return '/guides/gemini';
+                          case 'perplexity': return '/guides/perplexity';
+                          case 'midjourney': return '/guides/midjourney';
+                          case 'runway': return '/guides/runway';
+                          default: return null;
+                        }
+                      };
                       
-                      <div className="grid grid-cols-1 gap-2">
-                        <button 
-                          onClick={() => setSelectedPlatform(platform)}
-                          className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-500/20 transition-colors"
-                        >
-                          Use Promptability on {platform.name}
-                        </button>
-                        
-                        <a
-                          href={platform.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium rounded-lg hover:bg-blue-500/20 transition-colors"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          Open Platform
-                        </a>
-                        
-                        {(() => {
-                          const getGuideUrl = (platformId: string) => {
-                            switch (platformId) {
-                              case 'chatgpt': return '/guides/gpt';
-                              case 'claude': return '/guides/claude';
-                              case 'gemini': return '/guides/gemini';
-                              default: return null;
-                            }
-                          };
-                          
-                          const guideUrl = getGuideUrl(platform.id);
-                          
-                          return guideUrl ? (
-                            <a
-                              href={guideUrl}
-                              className="flex items-center justify-center gap-2 px-3 py-2 bg-white/5 border border-white/10 text-white text-xs font-medium rounded-lg hover:bg-white/10 transition-colors"
-                            >
-                              Learn Prompting
-                            </a>
-                          ) : (
-                            <button 
-                              disabled
-                              className="flex items-center justify-center gap-2 px-3 py-2 bg-white/5 border border-white/10 text-white/50 text-xs font-medium rounded-lg cursor-not-allowed"
-                            >
-                              Guide Coming Soon
-                            </button>
-                          );
-                        })()}
-                      </div>
+                      const guideUrl = getGuideUrl(platform.id);
+                      
+                      return guideUrl ? (
+                        <div className="pt-4 border-t border-white/10">
+                          <a
+                            href={guideUrl}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center justify-center gap-2 px-3 py-2 bg-white/5 border border-white/10 text-white text-xs font-medium rounded-lg hover:bg-white/10 transition-colors w-full"
+                          >
+                            Learn Prompting Guide
+                          </a>
+                        </div>
+                      ) : null;
+                    })()}
                     </div>
-                  </div>
-                </FloatingCard>
+                  </FloatingCard>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -383,8 +339,6 @@ function PlatformsContent() {
             <button
               onClick={() => {
                 setSearchQuery('');
-                setSelectedCategory('All');
-                setSelectedFeatures([]);
               }}
               className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors"
             >
