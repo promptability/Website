@@ -725,30 +725,6 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
               <p className="text-xs text-gray-400">Fast pass: complete required items • autosaves locally</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={exportJSON}
-              type="button"
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
-            >
-              Export JSON
-            </button>
-            <button
-              onClick={handleReset}
-              type="button"
-              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
-            >
-              Reset
-            </button>
-            <button
-              form="survey-form"
-              type="submit"
-              disabled={submitStatus === "sending"}
-              className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
-            </button>
-          </div>
         </div>
       </header>
 
@@ -772,6 +748,32 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                 </li>
               ))}
             </ol>
+            
+            {/* Action Buttons */}
+            <div className="mt-6 pt-6 border-t border-white/10 space-y-2">
+              <button
+                form="survey-form"
+                type="submit"
+                disabled={submitStatus === "sending"}
+                className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
+              </button>
+              <button
+                onClick={exportJSON}
+                type="button"
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20 transition-all duration-300"
+              >
+                Export JSON
+              </button>
+              <button
+                onClick={handleReset}
+                type="button"
+                className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20 transition-all duration-300"
+              >
+                Reset
+              </button>
+            </div>
           </nav>
         </aside>
 
@@ -914,29 +916,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
               </div>
             ))}
 
-            <div className="flex items-center gap-3">
-              <button
-                type="submit"
-                disabled={submitStatus === "sending"}
-                className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
-              </button>
-              <button
-                type="button"
-                onClick={exportJSON}
-                className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
-              >
-                Export JSON
-              </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
-              >
-                Reset
-              </button>
-            </div>
+            {/* Buttons moved to sticky sidebar */}
           </form>
         </section>
       </main>
