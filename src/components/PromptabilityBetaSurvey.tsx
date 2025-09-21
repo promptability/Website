@@ -699,6 +699,23 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       </div>
       
 
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6">
+              Beta
+              <span className="block bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Feedback
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12">
+              Help us improve Promptability by sharing your experience
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Content */}
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr]">
         {/* Sidebar */}
