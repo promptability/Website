@@ -700,8 +700,8 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
+      <section className="relative pt-32 pb-16 px-4 overflow-hidden">
+        <div className="relative z-10 max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-6xl md:text-8xl font-bold mb-6">
               Beta
