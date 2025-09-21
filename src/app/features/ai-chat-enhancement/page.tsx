@@ -139,7 +139,7 @@ export default function AIChatEnhancementPage() {
                 <MessageSquare className="w-5 h-5 text-blue-400" />
                 <span className="text-blue-400 font-semibold">Enhanced Chat Session</span>
                 <div className="ml-auto flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
                   <span className="text-xs text-gray-400">Active</span>
                 </div>
               </div>
@@ -158,15 +158,15 @@ export default function AIChatEnhancementPage() {
                       message.type === 'user' 
                         ? 'bg-blue-500/20 border border-blue-500/30 text-white' 
                         : message.enhanced
-                        ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 text-white'
+                        ? 'bg-gradient-to-br from-blue-500/20 to-blue-500/20 border border-blue-500/30 text-white'
                         : 'bg-white/5 border border-white/10 text-gray-300'
                     }`}>
                       <p className="text-sm">{message.text}</p>
                       <span className="text-xs text-gray-400 mt-2 block">{message.timestamp}</span>
                       {message.enhanced && (
                         <div className="flex items-center gap-1 mt-2">
-                          <Sparkles className="w-3 h-3 text-green-400" />
-                          <span className="text-xs text-green-400">Enhanced</span>
+                          <Sparkles className="w-3 h-3 text-blue-400" />
+                          <span className="text-xs text-blue-400">Enhanced</span>
                         </div>
                       )}
                     </div>
@@ -237,7 +237,7 @@ export default function AIChatEnhancementPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             From Static to
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Dynamic
             </span>
           </motion.h2>
@@ -248,9 +248,9 @@ export default function AIChatEnhancementPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Traditional Prompting
               </h3>
@@ -270,7 +270,7 @@ export default function AIChatEnhancementPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-3 bg-black/40 rounded-lg p-3"
                   >
-                    <X className="w-4 h-4 text-red-400" />
+                    <X className="w-4 h-4 text-purple-400" />
                     <span className="text-gray-300">{step}</span>
                   </motion.div>
                 ))}
@@ -399,7 +399,7 @@ export default function AIChatEnhancementPage() {
               className="text-4xl md:text-5xl font-bold mb-6 text-white"
             >
               Core
-              <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
                 Capabilities
               </span>
             </motion.h2>
@@ -429,19 +429,19 @@ export default function AIChatEnhancementPage() {
                 icon: Brain,
                 title: 'Context Memory',
                 description: 'Remembers full conversation and maintains topic consistency.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Sparkles,
                 title: 'Smart Suggestions',
                 description: 'Proactive enhancement tips and alternative phrasings.',
-                gradient: 'from-yellow-400 to-orange-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Settings,
                 title: 'Multi-Turn Optimization',
                 description: 'Each exchange improves the prompt iteratively.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: Globe,
@@ -453,7 +453,7 @@ export default function AIChatEnhancementPage() {
                 icon: Shield,
                 title: 'Learning Integration',
                 description: 'Saves successful patterns for future conversations.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -498,7 +498,7 @@ export default function AIChatEnhancementPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Enhancement
-            <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Modes
             </span>
           </motion.h2>
@@ -551,7 +551,7 @@ export default function AIChatEnhancementPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Perfect For
-            <span className="block bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Every Scenario
             </span>
           </motion.h2>

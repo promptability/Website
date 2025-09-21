@@ -174,7 +174,7 @@ export default function LearnsYourStylePage() {
                       transition={{ delay: 0.5 + i * 0.2 }}
                       className="flex items-center gap-3"
                     >
-                      <Check className="w-4 h-4 text-green-400" />
+                      <Check className="w-4 h-4 text-blue-400" />
                       <span className="text-gray-300 text-sm">{item}</span>
                     </motion.div>
                   ))}
@@ -234,7 +234,7 @@ export default function LearnsYourStylePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             One Size Doesn't
-            <span className="block bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Fit All
             </span>
           </motion.h2>
@@ -245,9 +245,9 @@ export default function LearnsYourStylePage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Generic AI Tools
               </h3>
@@ -267,7 +267,7 @@ export default function LearnsYourStylePage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-3 bg-black/40 rounded-lg p-3"
                   >
-                    <X className="w-4 h-4 text-red-400" />
+                    <X className="w-4 h-4 text-purple-400" />
                     <span className="text-gray-300">{issue}</span>
                   </motion.div>
                 ))}
@@ -321,7 +321,7 @@ export default function LearnsYourStylePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             How Learning
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Works
             </span>
           </motion.h2>
@@ -432,19 +432,19 @@ export default function LearnsYourStylePage() {
                 icon: Brain,
                 title: 'Domain Expertise',
                 description: 'Technical depth, industry jargon, specific terminology, and knowledge level.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Settings,
                 title: 'Output Preferences',
                 description: 'Format choices, length preferences, structure patterns, and detail level.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: Globe,
                 title: 'Platform Patterns',
                 description: 'ChatGPT habits, Claude preferences, Gemini specifics, cross-platform trends.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: FileText,
@@ -456,7 +456,7 @@ export default function LearnsYourStylePage() {
                 icon: MessageSquare,
                 title: 'Communication Style',
                 description: 'Question phrasing, instruction format, clarification style, feedback patterns.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -501,7 +501,7 @@ export default function LearnsYourStylePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Learning
-            <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Evolution
             </span>
           </motion.h2>
@@ -574,7 +574,7 @@ export default function LearnsYourStylePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Perfect For Every
-            <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Professional
             </span>
           </motion.h2>
@@ -592,7 +592,7 @@ export default function LearnsYourStylePage() {
               >
                 <div className="text-center mb-4">
                   {key === 'technical' && <FileText className="w-12 h-12 mx-auto text-blue-400" />}
-                  {key === 'content' && <PenTool className="w-12 h-12 mx-auto text-green-400" />}
+                  {key === 'content' && <PenTool className="w-12 h-12 mx-auto text-blue-400" />}
                   {key === 'academic' && <Microscope className="w-12 h-12 mx-auto text-purple-400" />}
                   {key === 'developer' && <Code className="w-12 h-12 mx-auto text-cyan-400" />}
                 </div>
@@ -603,7 +603,7 @@ export default function LearnsYourStylePage() {
                 <div className="space-y-2">
                   {useCase.features.map((feature, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <Check className="w-3 h-3 text-green-400" />
+                      <Check className="w-3 h-3 text-blue-400" />
                       <span className="text-gray-400">{feature}</span>
                     </div>
                   ))}
@@ -624,7 +624,7 @@ export default function LearnsYourStylePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Your Data,
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Your Control
             </span>
           </motion.h2>
@@ -634,9 +634,9 @@ export default function LearnsYourStylePage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-8"
+              className="bg-gradient-to-br from-blue-500/10 to-blue-500/10 border border-blue-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-green-400 mb-6">Privacy Protection</h3>
+              <h3 className="text-2xl font-bold text-blue-400 mb-6">Privacy Protection</h3>
               <div className="space-y-4">
                 {[
                   'Data stored locally on your device',
@@ -646,7 +646,7 @@ export default function LearnsYourStylePage() {
                   'GDPR compliant'
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-green-400" />
+                    <Shield className="w-5 h-5 text-blue-400" />
                     <span className="text-gray-300">{item}</span>
                   </div>
                 ))}

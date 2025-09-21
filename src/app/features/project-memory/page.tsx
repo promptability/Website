@@ -172,7 +172,7 @@ export default function ProjectMemoryPage() {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-blue-400 font-semibold">Active Context</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
                     <span className="text-xs text-gray-400">Connected</span>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function ProjectMemoryPage() {
                       transition={{ delay: 1 + i * 0.2 }}
                       className="flex items-center gap-3"
                     >
-                      <Check className="w-4 h-4 text-green-400" />
+                      <Check className="w-4 h-4 text-blue-400" />
                       <span className="text-gray-300 text-sm">{item}</span>
                     </motion.div>
                   ))}
@@ -245,7 +245,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Context Switching
-            <span className="block bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Chaos
             </span>
           </motion.h2>
@@ -256,9 +256,9 @@ export default function ProjectMemoryPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Without Project Memory
               </h3>
@@ -278,7 +278,7 @@ export default function ProjectMemoryPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-3 bg-black/40 rounded-lg p-3"
                   >
-                    <X className="w-4 h-4 text-red-400" />
+                    <X className="w-4 h-4 text-purple-400" />
                     <span className="text-gray-300">{issue}</span>
                   </motion.div>
                 ))}
@@ -332,7 +332,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             How It
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Works
             </span>
           </motion.h2>
@@ -437,19 +437,19 @@ export default function ProjectMemoryPage() {
                 icon: Database,
                 title: 'Context Persistence',
                 description: 'Session memory with cross-platform sync and historical reference.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Settings,
                 title: 'Project Profiles',
                 description: 'Custom settings per project with style guidelines and terminology consistency.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: RotateCcw,
                 title: 'Smart Switching',
                 description: 'Instant context swap with no confusion and maintained separation.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Network,
@@ -461,7 +461,7 @@ export default function ProjectMemoryPage() {
                 icon: Users,
                 title: 'Team Alignment',
                 description: 'Shared project context with consistent outputs and collaborative memory.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -506,7 +506,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Project
-            <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Dashboard
             </span>
           </motion.h2>
@@ -531,7 +531,7 @@ export default function ProjectMemoryPage() {
               {[
                 { name: 'E-commerce Platform', prompts: 47, progress: 85, color: 'blue' },
                 { name: 'AI Research Paper', prompts: 23, progress: 60, color: 'purple' },
-                { name: 'Marketing Campaign', prompts: 89, progress: 95, color: 'green' }
+                { name: 'Marketing Campaign', prompts: 89, progress: 95, color: 'blue' }
               ].map((project, i) => (
                 <motion.div
                   key={i}
@@ -590,7 +590,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Perfect For
-            <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Every Industry
             </span>
           </motion.h2>
@@ -645,7 +645,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Organization
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Tools
             </span>
           </motion.h2>
@@ -668,19 +668,19 @@ export default function ProjectMemoryPage() {
                 icon: Folder,
                 title: 'Custom Categories',
                 description: 'Organize projects with flexible categorization and nested structures.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Tag,
                 title: 'Tag System',
                 description: 'Advanced tagging with autocomplete and smart suggestions.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: Archive,
                 title: 'Archive Function',
                 description: 'Store completed projects while maintaining searchable history.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Search,
@@ -692,7 +692,7 @@ export default function ProjectMemoryPage() {
                 icon: Star,
                 title: 'Favorites & Pins',
                 description: 'Quick access to most important projects and frequent contexts.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -737,7 +737,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Privacy &
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Isolation
             </span>
           </motion.h2>
@@ -747,9 +747,9 @@ export default function ProjectMemoryPage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-8"
+              className="bg-gradient-to-br from-blue-500/10 to-blue-500/10 border border-blue-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-green-400 mb-6">Security Features</h3>
+              <h3 className="text-2xl font-bold text-blue-400 mb-6">Security Features</h3>
               <div className="space-y-4">
                 {[
                   'Complete project isolation',
@@ -759,7 +759,7 @@ export default function ProjectMemoryPage() {
                   'Privacy-first architecture'
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-green-400" />
+                    <Shield className="w-5 h-5 text-blue-400" />
                     <span className="text-gray-300">{item}</span>
                   </div>
                 ))}
@@ -802,7 +802,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Team
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Collaboration
             </span>
           </motion.h2>
@@ -836,7 +836,7 @@ export default function ProjectMemoryPage() {
                 <div className="space-y-2">
                   {item.features.map((feature, j) => (
                     <div key={j} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-green-400" />
+                      <Check className="w-4 h-4 text-blue-400" />
                       <span className="text-gray-400 text-sm">{feature}</span>
                     </div>
                   ))}
@@ -865,9 +865,9 @@ export default function ProjectMemoryPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { name: 'All AI Platforms', icon: <Brain className="w-8 h-8" />, color: 'blue' },
-              { name: 'Cloud Storage', icon: <Database className="w-8 h-8" />, color: 'green' },
+              { name: 'Cloud Storage', icon: <Database className="w-8 h-8" />, color: 'blue' },
               { name: 'Project Management', icon: <Settings className="w-8 h-8" />, color: 'purple' },
-              { name: 'Version Control', icon: <GitBranch className="w-8 h-8" />, color: 'orange' }
+              { name: 'Version Control', icon: <GitBranch className="w-8 h-8" />, color: 'purple' }
             ].map((integration, i) => (
               <motion.div
                 key={i}
@@ -897,7 +897,7 @@ export default function ProjectMemoryPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Frequently Asked
-            <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Questions
             </span>
           </motion.h2>

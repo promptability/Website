@@ -54,7 +54,7 @@ export default function TeamCollaborationPage() {
     admin: {
       title: 'Admin',
       permissions: ['Full workspace control', 'Manage team members', 'Edit all prompts', 'View analytics', 'Export data'],
-      color: 'red'
+      color: 'purple'
     },
     editor: {
       title: 'Editor',
@@ -64,7 +64,7 @@ export default function TeamCollaborationPage() {
     contributor: {
       title: 'Contributor',
       permissions: ['Suggest prompts', 'Comment on prompts', 'View library', 'Submit for review', 'Basic analytics'],
-      color: 'green'
+      color: 'blue'
     },
     viewer: {
       title: 'Viewer',
@@ -187,16 +187,16 @@ export default function TeamCollaborationPage() {
                       <div className="relative">
                         <span className="text-2xl">{member.avatar}</span>
                         {member.online && (
-                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-black" />
+                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-blue-400 rounded-full border-2 border-black" />
                         )}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-sm">{member.name}</span>
                           <span className={`text-xs px-2 py-1 rounded-full ${
-                            member.role === 'Admin' ? 'bg-red-500/20 text-red-400' :
+                            member.role === 'Admin' ? 'bg-purple-500/20 text-purple-400' :
                             member.role === 'Editor' ? 'bg-blue-500/20 text-blue-400' :
-                            member.role === 'Contributor' ? 'bg-green-500/20 text-green-400' :
+                            member.role === 'Contributor' ? 'bg-blue-500/20 text-blue-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
                             {member.role}
@@ -214,7 +214,7 @@ export default function TeamCollaborationPage() {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-purple-400 font-semibold">Live Collaboration</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
                     <span className="text-xs text-gray-400">{teamMembers.filter(m => m.online).length} online</span>
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export default function TeamCollaborationPage() {
                       transition={{ delay: 1 + i * 0.2 }}
                       className="flex items-center gap-3"
                     >
-                      <Check className="w-4 h-4 text-green-400" />
+                      <Check className="w-4 h-4 text-blue-400" />
                       <span className="text-gray-300 text-sm">{item}</span>
                     </motion.div>
                   ))}
@@ -287,7 +287,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Stop Reinventing
-            <span className="block bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               the Wheel
             </span>
           </motion.h2>
@@ -298,9 +298,9 @@ export default function TeamCollaborationPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Current Team Challenges
               </h3>
@@ -320,7 +320,7 @@ export default function TeamCollaborationPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-3 bg-black/40 rounded-lg p-3"
                   >
-                    <X className="w-4 h-4 text-red-400" />
+                    <X className="w-4 h-4 text-purple-400" />
                     <span className="text-gray-300">{issue}</span>
                   </motion.div>
                 ))}
@@ -374,7 +374,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             How It
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Works
             </span>
           </motion.h2>
@@ -479,19 +479,19 @@ export default function TeamCollaborationPage() {
                 icon: Zap,
                 title: 'Real-time Sync',
                 description: 'Instant updates across all team members with conflict resolution.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Shield,
                 title: 'Permission System',
                 description: 'Granular access controls with admin, editor, contributor, and viewer roles.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: GitBranch,
                 title: 'Version History',
                 description: 'Track all changes with ability to restore previous versions and see contributors.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: BarChart3,
@@ -503,7 +503,7 @@ export default function TeamCollaborationPage() {
                 icon: Settings,
                 title: 'Workflow Integration',
                 description: 'Built-in approval process with review system and quality standards.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -548,7 +548,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Team
-            <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Dashboard
             </span>
           </motion.h2>
@@ -579,8 +579,8 @@ export default function TeamCollaborationPage() {
               {[
                 { label: 'Team Members', value: '12', icon: <Users className="w-5 h-5" />, color: 'purple' },
                 { label: 'Shared Prompts', value: '247', icon: <Database className="w-5 h-5" />, color: 'blue' },
-                { label: 'This Month', value: '89', icon: <TrendingUp className="w-5 h-5" />, color: 'green' },
-                { label: 'Success Rate', value: '94%', icon: <Award className="w-5 h-5" />, color: 'orange' }
+                { label: 'This Month', value: '89', icon: <TrendingUp className="w-5 h-5" />, color: 'blue' },
+                { label: 'Success Rate', value: '94%', icon: <Award className="w-5 h-5" />, color: 'purple' }
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -614,9 +614,9 @@ export default function TeamCollaborationPage() {
                 ].map((activity, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                     <div className={`w-2 h-2 rounded-full ${
-                      activity.type === 'create' ? 'bg-green-400' :
+                      activity.type === 'create' ? 'bg-blue-400' :
                       activity.type === 'edit' ? 'bg-blue-400' :
-                      activity.type === 'comment' ? 'bg-yellow-400' :
+                      activity.type === 'comment' ? 'bg-purple-400' :
                       'bg-purple-400'
                     }`} />
                     <div className="flex-1">
@@ -643,7 +643,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Perfect For
-            <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Every Team
             </span>
           </motion.h2>
@@ -698,7 +698,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Roles &
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Permissions
             </span>
           </motion.h2>
@@ -711,7 +711,7 @@ export default function TeamCollaborationPage() {
                 onClick={() => setSelectedRole(role)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 ${
                   selectedRole === role
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                    ? 'bg-gradient-to-r from-purple-500 to-purple-500 text-white'
                     : 'bg-white/10 text-gray-300 hover:bg-white/20'
                 }`}
               >
@@ -731,7 +731,7 @@ export default function TeamCollaborationPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8"
+              className="bg-gradient-to-br from-purple-500/10 to-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
                 {roles[selectedRole as keyof typeof roles].title} Permissions
@@ -745,7 +745,7 @@ export default function TeamCollaborationPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-3 bg-black/40 rounded-lg p-3"
                   >
-                    <Check className="w-4 h-4 text-green-400" />
+                    <Check className="w-4 h-4 text-blue-400" />
                     <span className="text-gray-300">{permission}</span>
                   </motion.div>
                 ))}
@@ -765,7 +765,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Collaboration
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Tools
             </span>
           </motion.h2>
@@ -788,19 +788,19 @@ export default function TeamCollaborationPage() {
                 icon: AtSign,
                 title: '@Mentions',
                 description: 'Tag team members to get their attention and notify about updates.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Bell,
                 title: 'Notifications',
                 description: 'Stay updated with real-time notifications for all team activity.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: Activity,
                 title: 'Activity Feed',
                 description: 'Track all team actions with detailed activity history.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Flag,
@@ -812,7 +812,7 @@ export default function TeamCollaborationPage() {
                 icon: Heart,
                 title: 'Favorites & Ratings',
                 description: 'Like and rate prompts to surface the best content for the team.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               }
             ].map((feature, index) => (
               <motion.div
@@ -857,7 +857,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Enterprise
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Security
             </span>
           </motion.h2>
@@ -867,9 +867,9 @@ export default function TeamCollaborationPage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-8"
+              className="bg-gradient-to-br from-blue-500/10 to-blue-500/10 border border-blue-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-green-400 mb-6">Security Features</h3>
+              <h3 className="text-2xl font-bold text-blue-400 mb-6">Security Features</h3>
               <div className="space-y-4">
                 {[
                   'SSO integration (SAML/OAuth)',
@@ -879,7 +879,7 @@ export default function TeamCollaborationPage() {
                   'Data residency options'
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-green-400" />
+                    <Shield className="w-5 h-5 text-blue-400" />
                     <span className="text-gray-300">{item}</span>
                   </div>
                 ))}
@@ -922,7 +922,7 @@ export default function TeamCollaborationPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Calculate Your
-            <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               ROI
             </span>
           </motion.h2>
@@ -931,7 +931,7 @@ export default function TeamCollaborationPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-8"
+            className="bg-gradient-to-br from-purple-500/10 to-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
           >
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-white mb-4">Team Size Calculator</h3>
@@ -962,7 +962,7 @@ export default function TeamCollaborationPage() {
               </div>
 
               <div className="bg-black/40 border border-white/20 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-yellow-400 mb-2">
+                <div className="text-4xl font-bold text-purple-400 mb-2">
                   ${calculateROI()}
                 </div>
                 <div className="text-sm text-gray-400 mb-4">Estimated monthly savings</div>

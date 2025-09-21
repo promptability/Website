@@ -72,22 +72,22 @@ function PlatformsContent() {
       </div>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-32">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
           <motion.div
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="text-center mb-16"
+            className="text-center"
           >
 
             {/* Title */}
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-7xl font-bold mb-8 text-white"
+              className="text-6xl md:text-8xl font-bold mb-6 text-white"
             >
               Popular
-              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 AI Platforms
               </span>
             </motion.h1>
@@ -95,7 +95,7 @@ function PlatformsContent() {
             {/* Subtitle */}
             <motion.p 
               variants={fadeInUp}
-              className="text-xl text-gray-400 max-w-3xl mx-auto mb-8"
+              className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12"
             >
               Works seamlessly with the most popular AI platforms. 
               Promptability supports 1000+ AI tools in total.

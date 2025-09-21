@@ -9,13 +9,13 @@ const features = [
     icon: RefreshCw,
     title: 'Automatic Enhancement',
     description: 'Every prompt is automatically optimized before sending - no clicks required.',
-    gradient: 'from-green-400 to-emerald-500',
+    gradient: 'from-blue-400 to-blue-500',
   },
   {
     icon: Zap,
     title: 'Instant Processing',
     description: 'Optimization happens in milliseconds, maintaining your natural workflow.',
-    gradient: 'from-yellow-400 to-orange-500',
+    gradient: 'from-purple-400 to-purple-500',
   },
   {
     icon: Globe,
@@ -27,19 +27,19 @@ const features = [
     icon: Brain,
     title: 'Context Awareness',
     description: 'Understands your intent and optimizes based on the specific AI platform.',
-    gradient: 'from-purple-400 to-pink-500',
+    gradient: 'from-purple-400 to-purple-500',
   },
   {
     icon: Shield,
     title: 'Privacy Protected',
     description: 'All processing happens locally - your prompts never leave your device.',
-    gradient: 'from-indigo-400 to-purple-500',
+    gradient: 'from-purple-400 to-purple-500',
   },
   {
     icon: Settings,
     title: 'Customizable Levels',
     description: 'Adjust optimization intensity from light touch to comprehensive enhancement.',
-    gradient: 'from-pink-400 to-red-500',
+    gradient: 'from-purple-400 to-purple-500',
   },
 ];
 
@@ -59,7 +59,7 @@ export default function AutoOptimizeFeatures() {
             className="text-4xl md:text-5xl font-bold mb-6 text-white"
           >
             How Auto-Optimize
-            <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Works
             </span>
           </motion.h2>

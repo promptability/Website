@@ -154,9 +154,9 @@ export default function AutoOptimizePage() {
             {/* Left: User typing */}
             <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-3 h-3 bg-red-500 rounded-full" />
-                <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-                <div className="w-3 h-3 bg-green-500 rounded-full" />
+                <div className="w-3 h-3 bg-purple-500 rounded-full" />
+                <div className="w-3 h-3 bg-purple-500 rounded-full" />
+                <div className="w-3 h-3 bg-blue-500 rounded-full" />
                 <span className="ml-2 text-sm text-gray-400">You Type</span>
               </div>
               <div className="font-mono text-lg text-gray-300">
@@ -171,10 +171,10 @@ export default function AutoOptimizePage() {
             </div>
 
             {/* Right: Optimized prompt */}
-            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border border-green-500/20 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-blue-500/10 to-blue-500/10 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-8">
               <div className="flex items-center gap-2 mb-4">
-                <RefreshCw className={`w-4 h-4 text-green-400 ${isOptimizing ? 'animate-spin' : ''}`} />
-                <span className="text-sm text-green-400">Auto-Optimized</span>
+                <RefreshCw className={`w-4 h-4 text-blue-400 ${isOptimizing ? 'animate-spin' : ''}`} />
+                <span className="text-sm text-blue-400">Auto-Optimized</span>
               </div>
               <AnimatePresence mode="wait">
                 {optimizedText && (
@@ -218,7 +218,7 @@ export default function AutoOptimizePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             The Problem It
-            <span className="block bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Solves
             </span>
           </motion.h2>
@@ -229,9 +229,9 @@ export default function AutoOptimizePage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Before Auto-Optimize
               </h3>
@@ -252,16 +252,16 @@ export default function AutoOptimizePage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-4"
                   >
-                    <span className="text-red-400 font-mono text-sm w-16">{step.time}</span>
+                    <span className="text-purple-400 font-mono text-sm w-16">{step.time}</span>
                     <div className="flex-1 bg-black/40 rounded-lg p-3">
                       <p className="text-gray-300">{step.task}</p>
                     </div>
-                    {step.status === 'failed' && <X className="w-5 h-5 text-red-400" />}
+                    {step.status === 'failed' && <X className="w-5 h-5 text-purple-400" />}
                   </motion.div>
                 ))}
               </div>
               <div className="mt-6 text-center">
-                <p className="text-3xl font-bold text-red-400">13+ minutes</p>
+                <p className="text-3xl font-bold text-purple-400">13+ minutes</p>
                 <p className="text-gray-400">per prompt</p>
               </div>
             </motion.div>
@@ -271,9 +271,9 @@ export default function AutoOptimizePage() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-green-500/10 border border-green-500/20 rounded-2xl p-8"
+              className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-green-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
                 <Check className="w-6 h-6" />
                 After Auto-Optimize
               </h3>
@@ -291,17 +291,17 @@ export default function AutoOptimizePage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-center gap-4"
                   >
-                    <span className="text-green-400 font-mono text-sm w-16">{step.time}</span>
+                    <span className="text-blue-400 font-mono text-sm w-16">{step.time}</span>
                     <div className="flex-1 bg-black/40 rounded-lg p-3">
                       <p className="text-gray-300">{step.task}</p>
                     </div>
-                    {step.status === 'success' && <Check className="w-5 h-5 text-green-400" />}
-                    {step.status === 'auto' && <RefreshCw className="w-5 h-5 text-green-400 animate-spin" />}
+                    {step.status === 'success' && <Check className="w-5 h-5 text-blue-400" />}
+                    {step.status === 'auto' && <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" />}
                   </motion.div>
                 ))}
               </div>
               <div className="mt-6 text-center">
-                <p className="text-3xl font-bold text-green-400">30 seconds</p>
+                <p className="text-3xl font-bold text-blue-400">30 seconds</p>
                 <p className="text-gray-400">total time</p>
               </div>
               
@@ -313,8 +313,8 @@ export default function AutoOptimizePage() {
                 transition={{ delay: 0.5, type: "spring" }}
                 className="mt-8 text-center"
               >
-                <Sparkles className="w-16 h-16 mx-auto text-yellow-400 animate-pulse" />
-                <p className="text-xl font-bold text-transparent bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text mt-2">
+                <Sparkles className="w-16 h-16 mx-auto text-purple-400 animate-pulse" />
+                <p className="text-xl font-bold text-transparent bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text mt-2">
                   26x Faster!
                 </p>
               </motion.div>
@@ -375,16 +375,16 @@ export default function AutoOptimizePage() {
                 className="relative"
               >
                 <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
-                  <div className="text-green-400 mb-4 flex justify-center">
+                  <div className="text-blue-400 mb-4 flex justify-center">
                     {item.icon}
                   </div>
-                  <div className="text-sm text-green-400 font-semibold mb-2">STEP {item.step}</div>
+                  <div className="text-sm text-blue-400 font-semibold mb-2">STEP {item.step}</div>
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                   <p className="text-gray-400 text-sm">{item.description}</p>
                 </div>
                 {i < 3 && (
                   <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
-                    <ChevronRight className="w-6 h-6 text-green-400" />
+                    <ChevronRight className="w-6 h-6 text-blue-400" />
                   </div>
                 )}
               </motion.div>
@@ -396,7 +396,7 @@ export default function AutoOptimizePage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-8"
+            className="bg-gradient-to-br from-blue-500/10 to-blue-500/10 border border-blue-500/20 rounded-2xl p-8"
           >
             <h3 className="text-2xl font-bold mb-6 text-center">Try It Yourself</h3>
             
@@ -407,18 +407,18 @@ export default function AutoOptimizePage() {
                   value={demoInput}
                   onChange={(e) => setDemoInput(e.target.value)}
                   placeholder="Type any prompt here..."
-                  className="w-full h-32 bg-black/40 border border-white/20 rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                  className="w-full h-32 bg-black/40 border border-white/20 rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Auto-Optimized Result</label>
-                <div className="w-full h-32 bg-black/40 border border-green-500/30 rounded-xl p-4 text-white overflow-y-auto">
+                <div className="w-full h-32 bg-black/40 border border-blue-500/30 rounded-xl p-4 text-white overflow-y-auto">
                   {demoInput ? (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="text-green-400"
+                      className="text-blue-400"
                     >
                       {optimizeDemo(demoInput)}
                     </motion.div>
@@ -433,7 +433,7 @@ export default function AutoOptimizePage() {
             <div className="mt-8">
               <div className="flex justify-between mb-2">
                 <label className="text-sm font-medium text-gray-300">Optimization Level</label>
-                <span className="text-sm text-green-400">{optimizationLevel}%</span>
+                <span className="text-sm text-blue-400">{optimizationLevel}%</span>
               </div>
               <input
                 type="range"
@@ -466,7 +466,7 @@ export default function AutoOptimizePage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Real-World
-            <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Scenarios
             </span>
           </motion.h2>
@@ -479,7 +479,7 @@ export default function AutoOptimizePage() {
                 onClick={() => setActiveScenario(scenario)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
                   activeScenario === scenario
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-500 text-white'
                     : 'bg-white/10 text-gray-300 hover:bg-white/20'
                 }`}
               >
@@ -498,10 +498,10 @@ export default function AutoOptimizePage() {
               className="grid lg:grid-cols-2 gap-8"
             >
               {/* Original */}
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
+              <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <X className="w-5 h-5 text-red-400" />
-                  <span className="text-red-400 font-semibold">Original Prompt</span>
+                  <X className="w-5 h-5 text-purple-400" />
+                  <span className="text-purple-400 font-semibold">Original Prompt</span>
                 </div>
                 <p className="text-xl text-gray-300 font-mono">
                   "{scenarios[activeScenario as keyof typeof scenarios].original}"
@@ -509,10 +509,10 @@ export default function AutoOptimizePage() {
               </div>
 
               {/* Optimized */}
-              <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6">
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Check className="w-5 h-5 text-green-400" />
-                  <span className="text-green-400 font-semibold">Auto-Optimized</span>
+                  <Check className="w-5 h-5 text-blue-400" />
+                  <span className="text-blue-400 font-semibold">Auto-Optimized</span>
                 </div>
                 <p className="text-xl text-white font-mono">
                   "{scenarios[activeScenario as keyof typeof scenarios].optimized}"
@@ -529,18 +529,18 @@ export default function AutoOptimizePage() {
             className="grid grid-cols-3 gap-8 mt-12 text-center"
           >
             <div>
-              <Timer className="w-8 h-8 mx-auto mb-2 text-green-400" />
-              <p className="text-3xl font-bold text-green-400">8 min</p>
+              <Timer className="w-8 h-8 mx-auto mb-2 text-blue-400" />
+              <p className="text-3xl font-bold text-blue-400">8 min</p>
               <p className="text-gray-400">Time saved</p>
             </div>
             <div>
-              <Zap className="w-8 h-8 mx-auto mb-2 text-green-400" />
-              <p className="text-3xl font-bold text-green-400">3x</p>
+              <Zap className="w-8 h-8 mx-auto mb-2 text-blue-400" />
+              <p className="text-3xl font-bold text-blue-400">3x</p>
               <p className="text-gray-400">Quality boost</p>
             </div>
             <div>
-              <BarChart3 className="w-8 h-8 mx-auto mb-2 text-green-400" />
-              <p className="text-3xl font-bold text-green-400">95%</p>
+              <BarChart3 className="w-8 h-8 mx-auto mb-2 text-blue-400" />
+              <p className="text-3xl font-bold text-blue-400">95%</p>
               <p className="text-gray-400">Success rate</p>
             </div>
           </motion.div>
@@ -554,7 +554,7 @@ export default function AutoOptimizePage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-3xl p-12"
+            className="bg-gradient-to-br from-blue-500/20 to-blue-500/20 border border-blue-500/30 rounded-3xl p-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Enable Auto-Optimize Now
@@ -574,15 +574,15 @@ export default function AutoOptimizePage() {
 
             <div className="flex justify-center gap-8 text-sm text-gray-400">
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-blue-400" />
                 <span>30-day guarantee</span>
               </div>
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-blue-400" />
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-4 h-4 text-blue-400" />
                 <span>Cancel anytime</span>
               </div>
             </div>

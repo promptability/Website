@@ -56,8 +56,8 @@ export default function AutoOptimizeHero() {
                   transition={{ delay: index * 0.3 }}
                   className={`inline-block mr-4 ${
                     word === "Auto" ? "text-white" :
-                    word === "Optimize" ? "bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent" :
-                    "bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent text-8xl"
+                    word === "Optimize" ? "bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent" :
+                    "bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent text-8xl"
                   }`}
                   style={{ transformOrigin: 'center bottom' }}
                 >
@@ -84,7 +84,7 @@ export default function AutoOptimizeHero() {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-3 text-lg shadow-lg shadow-green-500/25"
+                className="bg-gradient-to-r from-blue-500 to-blue-500 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-3 text-lg shadow-lg shadow-blue-500/25"
               >
                 <Play className="w-6 h-6" />
                 Enable Auto-Optimize
@@ -109,14 +109,14 @@ export default function AutoOptimizeHero() {
                 variants={counterAnimation}
                 className="flex items-center gap-2"
               >
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                 <span>{counters.optimized.toLocaleString()}+ Prompts Optimized</span>
               </motion.div>
               <motion.div 
                 variants={counterAnimation}
                 className="flex items-center gap-2"
               >
-                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                 <span>{counters.timeSaved}% Time Saved</span>
               </motion.div>
               <motion.div 
@@ -138,7 +138,7 @@ export default function AutoOptimizeHero() {
           >
             {/* Background Glow Effects */}
             <div className="absolute inset-0 scale-110">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-emerald-500/20 to-cyan-500/30 rounded-3xl blur-3xl animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-blue-500/20 to-blue-500/30 rounded-3xl blur-3xl animate-pulse"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-3xl"></div>
             </div>
 
@@ -151,7 +151,7 @@ export default function AutoOptimizeHero() {
                   opacity: [0.3, 0.8, 0.3]
                 }}
                 transition={{ duration: 3, repeat: Infinity, delay: 0 }}
-                className="absolute top-1/4 left-1/4 w-2 h-2 bg-green-400 rounded-full blur-sm"
+                className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full blur-sm"
               />
               <motion.div
                 animate={{ 
@@ -159,7 +159,7 @@ export default function AutoOptimizeHero() {
                   opacity: [0.4, 1, 0.4]
                 }}
                 transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
-                className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-emerald-400 rounded-full blur-sm"
+                className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-blue-400 rounded-full blur-sm"
               />
               <motion.div
                 animate={{ 
@@ -206,7 +206,7 @@ export default function AutoOptimizeHero() {
               </div>
 
               {/* Additional Glow Layer */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500/20 via-emerald-500/10 to-cyan-500/20 blur-xl scale-110 -z-10"></div>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 via-blue-500/10 to-blue-500/20 blur-xl scale-110 -z-10"></div>
             </motion.div>
           </motion.div>
         </div>

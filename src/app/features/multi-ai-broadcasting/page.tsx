@@ -17,12 +17,12 @@ export default function MultiAIBroadcastingPage() {
   const [activeUseCase, setActiveUseCase] = useState('research');
 
   const platforms = [
-    { id: 'chatgpt', name: 'ChatGPT', status: 'online', color: 'green' },
-    { id: 'claude', name: 'Claude', status: 'online', color: 'orange' },
+    { id: 'chatgpt', name: 'ChatGPT', status: 'online', color: 'blue' },
+    { id: 'claude', name: 'Claude', status: 'online', color: 'purple' },
     { id: 'gemini', name: 'Gemini', status: 'online', color: 'blue' },
     { id: 'perplexity', name: 'Perplexity', status: 'online', color: 'purple' },
     { id: 'mistral', name: 'Mistral', status: 'online', color: 'cyan' },
-    { id: 'llama', name: 'Llama', status: 'online', color: 'pink' }
+    { id: 'llama', name: 'Llama', status: 'online', color: 'purple' }
   ];
 
   const useCases = {
@@ -147,7 +147,7 @@ export default function MultiAIBroadcastingPage() {
                   >
                     <div className="text-center">
                       <div className={`w-2 h-2 rounded-full mx-auto mb-2 ${
-                        platform.status === 'online' ? 'bg-green-400' : 'bg-red-400'
+                        platform.status === 'online' ? 'bg-blue-400' : 'bg-purple-400'
                       }`} />
                       <span className="text-xs font-medium">{platform.name}</span>
                     </div>
@@ -192,8 +192,8 @@ export default function MultiAIBroadcastingPage() {
                     <div className="flex items-center justify-between mb-4">
                       <span className="font-semibold">{response.platform?.name}</span>
                       <div className="flex items-center gap-2">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm text-yellow-400">{response.score}</span>
+                        <Star className="w-4 h-4 text-purple-400" />
+                        <span className="text-sm text-purple-400">{response.score}</span>
                       </div>
                     </div>
                     <p className="text-gray-300 text-sm mb-4">{response.response}</p>
@@ -236,7 +236,7 @@ export default function MultiAIBroadcastingPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             The Challenge of
-            <span className="block bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               AI Shopping
             </span>
           </motion.h2>
@@ -247,9 +247,9 @@ export default function MultiAIBroadcastingPage() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8"
+              className="bg-purple-500/10 border border-purple-500/20 rounded-2xl p-8"
             >
-              <h3 className="text-2xl font-bold text-red-400 mb-6 flex items-center gap-2">
+              <h3 className="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-2">
                 <X className="w-6 h-6" />
                 Traditional Approach
               </h3>
@@ -271,14 +271,14 @@ export default function MultiAIBroadcastingPage() {
                   >
                     <div className="flex justify-between items-center">
                       <span className="text-gray-300">{step.task}</span>
-                      <span className="text-red-400 text-sm font-mono">{step.time}</span>
+                      <span className="text-purple-400 text-sm font-mono">{step.time}</span>
                     </div>
                     <p className="text-gray-400 text-sm mt-1">{step.result}</p>
                   </motion.div>
                 ))}
               </div>
               <div className="mt-6 text-center">
-                <p className="text-3xl font-bold text-red-400">15+ minutes</p>
+                <p className="text-3xl font-bold text-purple-400">15+ minutes</p>
                 <p className="text-gray-400">per comparison</p>
               </div>
             </motion.div>
@@ -351,7 +351,7 @@ export default function MultiAIBroadcastingPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             How It
-            <span className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-purple-400 to-purple-400 bg-clip-text text-transparent">
               Works
             </span>
           </motion.h2>
@@ -456,25 +456,25 @@ export default function MultiAIBroadcastingPage() {
                 icon: BarChart3,
                 title: 'Response Scoring',
                 description: 'Automatic quality assessment and ranking of all responses.',
-                gradient: 'from-green-400 to-emerald-500',
+                gradient: 'from-blue-400 to-blue-500',
               },
               {
                 icon: Settings,
                 title: 'Format Standardization',
                 description: 'Consistent formatting across different AI platform responses.',
-                gradient: 'from-purple-400 to-pink-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Clock,
                 title: 'History Tracking',
                 description: 'Save and review all broadcast sessions for future reference.',
-                gradient: 'from-orange-400 to-red-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Users,
                 title: 'Team Sharing',
                 description: 'Share broadcast results with team members instantly.',
-                gradient: 'from-indigo-400 to-purple-500',
+                gradient: 'from-purple-400 to-purple-500',
               },
               {
                 icon: Globe,
@@ -525,7 +525,7 @@ export default function MultiAIBroadcastingPage() {
             className="text-4xl md:text-5xl font-bold text-center mb-16"
           >
             Perfect For
-            <span className="block bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent">
               Every Use Case
             </span>
           </motion.h2>
