@@ -717,10 +717,12 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       </section>
 
       {/* Content */}
-      <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr] relative">
-        {/* Sidebar */}
-        <aside className="sticky top-6 self-start z-10">
-          <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
+      <main className="mx-auto max-w-7xl px-4 py-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
+          {/* Sidebar */}
+          <aside className="order-2 md:order-1">
+            <div className="sticky top-6 z-20">
+              <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
             {/* Overall Progress */}
             <div className="mb-4 px-2">
               <div className="flex items-center justify-between mb-2">
@@ -763,11 +765,12 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                 Reset
               </button>
             </div>
-          </nav>
-        </aside>
+              </nav>
+            </div>
+          </aside>
 
-        {/* Form */}
-        <section className="min-h-screen">
+          {/* Form */}
+          <section className="order-1 md:order-2">
           <form id="survey-form" onSubmit={handleSubmit} className="space-y-8">
             {/* Respondent */}
             <div className="scroll-mt-24">
@@ -907,7 +910,8 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
 
             {/* Buttons moved to sticky sidebar */}
           </form>
-        </section>
+          </section>
+        </div>
       </main>
 
       {/* Footer */}
