@@ -698,23 +698,11 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
         </div>
       </div>
       
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500" />
-            <div>
-              <h1 className="text-lg font-semibold leading-tight">Promptability — Beta Feedback</h1>
-              <p className="text-xs text-gray-400">Fast pass: complete required items • autosaves locally</p>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Content */}
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr]">
         {/* Sidebar */}
-        <aside className="md:sticky md:top-16 md:self-start">
+        <aside className="md:sticky md:top-6 md:self-start">
           <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
             {/* Overall Progress */}
             <div className="mb-4 px-2">
