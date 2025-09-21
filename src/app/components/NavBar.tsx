@@ -252,12 +252,6 @@ export default function NavBar() {
             ) : (
               <div className="flex items-center gap-3">
                 <Link
-                  href="/signin"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  Sign In
-                </Link>
-                <Link
                   href="/signup"
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                 >
@@ -354,13 +348,6 @@ export default function NavBar() {
                       onClick={() => setOpen(false)}
                     >
                       Get Extension
-                    </Link>
-                    <Link
-                      href="/signin"
-                      className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                      onClick={() => setOpen(false)}
-                    >
-                      Sign In
                     </Link>
                     <Link
                       href="/signup"

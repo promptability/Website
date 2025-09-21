@@ -3,106 +3,118 @@
 import { motion } from 'framer-motion';
 import { 
   RefreshCw, Send, MessageSquare, Brain, Folder, Users,
-  History, BarChart3, Settings, Keyboard, FileText, Globe,
-  Check, ArrowRight, Sparkles, Zap, Target
+  Check, ArrowRight, Sparkles, Zap, Star, Search
 } from 'lucide-react';
 import { fadeInUp, staggerContainer, cardTilt } from '@/lib/animations';
 
 const coreFeatures = [
+  // Free Features
+  {
+    id: 'prompt-engineering',
+    icon: Zap,
+    badge: '',
+    title: 'Prompt Engineering Technology',
+    description: 'Transforms any highlighted web text into optimized, professional-grade AI prompts tailored to each platform\'s specific guidelines and best practices.',
+    benefits: ['Platform-specific optimization', 'Professional-grade results', 'Works with highlighted text'],
+    ctaText: '',
+    demoType: 'engineering',
+    plan: 'free'
+  },
+  // Starter Features
+  {
+    id: 'project-memory',
+    icon: Folder,
+    badge: '',
+    title: 'Project Memory',
+    description: 'Remembers context across projects, maintaining consistency in your prompts.',
+    benefits: ['Unlimited project spaces', 'Auto-context injection', 'Switch projects instantly'],
+    ctaText: '',
+    demoType: 'projects',
+    plan: 'starter'
+  },
+  {
+    id: 'smart-favorites',
+    icon: Star,
+    badge: '',
+    title: 'Favorites Instructions',
+    description: 'Save your most effective instruction templates as favorites and quickly reuse them whenever needed.',
+    benefits: ['Quick access to best prompts', 'Organize by category', 'One-click reuse'],
+    ctaText: '',
+    demoType: 'favorites',
+    plan: 'starter'
+  },
   {
     id: 'auto-optimize',
     icon: RefreshCw,
-    badge: '✨ Your AI Autopilot',
+    badge: '',
     title: 'Auto-Optimize Mode',
-    description: 'Never send a weak prompt again. Our AI watches your writing and enhances it in real-time - adding context, clarity, and structure automatically.',
+    description: 'Automatically optimizes every prompt before sending to any AI chat - no extra clicks needed.',
     benefits: ['Zero clicks required', 'Works on every AI platform', 'Learns from your edits'],
-    ctaText: 'See Live Demo',
-    demoType: 'transformation'
-  },
-  {
-    id: 'multi-broadcast',
-    icon: Send,
-    badge: '🚀 One Prompt, Every AI, Best Answer',
-    title: 'Multi-AI Broadcasting',
-    description: 'Why guess which AI gives the best answer? Send your prompt to ChatGPT, Claude, and Gemini simultaneously. Compare responses side-by-side instantly.',
-    benefits: ['Up to 5 AIs at once', 'Real-time comparisons', 'Pick the best or combine'],
-    ctaText: 'Try It Now',
-    demoType: 'broadcast'
-  },
-  {
-    id: 'ai-chat',
-    icon: MessageSquare,
-    badge: '💬 Your Prompt Gets Smarter As You Chat',
-    title: 'AI Chat Enhancement',
-    description: 'Start with a basic idea. Our AI asks the right questions to build the perfect prompt through natural conversation.',
-    benefits: ['Interactive refinement', 'Suggests improvements', 'No prompt engineering needed'],
-    ctaText: 'Start a Chat',
-    demoType: 'chat'
+    ctaText: '',
+    demoType: 'transformation',
+    plan: 'starter'
   },
   {
     id: 'learns-style',
     icon: Brain,
-    badge: '🧠 AI That Actually Knows You',
+    badge: '',
     title: 'Learns Your Style',
-    description: 'Stop repeating yourself. Promptability learns your writing patterns, preferred formats, and common contexts to customize every optimization.',
+    description: 'AI adapts to your writing patterns and preferences, getting better with every use.',
     benefits: ['Adapts to your voice', 'Remembers preferences', 'Gets smarter daily'],
-    ctaText: 'View Learning Stats',
-    demoType: 'learning'
+    ctaText: '',
+    demoType: 'learning',
+    plan: 'starter'
   },
   {
-    id: 'project-memory',
-    icon: Folder,
-    badge: '📁 Context That Never Forgets',
-    title: 'Project Memory',
-    description: 'Working on a big project? Promptability remembers all context across sessions. No more copy-pasting background info.',
-    benefits: ['Unlimited project spaces', 'Auto-context injection', 'Switch projects instantly'],
-    ctaText: 'Manage Projects',
-    demoType: 'projects'
+    id: 'multi-broadcast',
+    icon: Send,
+    badge: '',
+    title: 'Multi-AI Broadcasting',
+    description: 'Send the same prompt to multiple AI tools simultaneously and compare responses.',
+    benefits: ['Up to 5 AIs at once', 'Real-time comparisons', 'Pick the best or combine'],
+    ctaText: '',
+    demoType: 'broadcast',
+    plan: 'starter'
+  },
+  // Pro Features (Coming Soon)
+  {
+    id: 'ai-chat',
+    icon: MessageSquare,
+    badge: '',
+    title: 'AI Chat Enhancement',
+    description: 'Improve your prompts in real-time through interactive AI chat conversations.',
+    benefits: ['Interactive refinement', 'Suggests improvements', 'No prompt engineering needed'],
+    ctaText: '',
+    demoType: 'chat',
+    plan: 'pro',
+    comingSoon: true
   },
   {
     id: 'team-collaboration',
     icon: Users,
-    badge: '👥 Shared AI Intelligence',
+    badge: '',
     title: 'Team Collaboration',
-    description: 'Level up your entire team. Share optimized prompts, build collective knowledge, and maintain consistency across all AI usage.',
+    description: 'Share optimized prompts with your team and build a knowledge base together.',
     benefits: ['Shared prompt library', 'Team analytics', 'Permission controls'],
-    ctaText: 'Invite Team',
-    demoType: 'team'
+    ctaText: '',
+    demoType: 'team',
+    plan: 'pro',
+    comingSoon: true
+  },
+  {
+    id: 'platform-detective',
+    icon: Search,
+    badge: '',
+    title: 'Platform Detective',
+    description: 'Intelligently broadcasts your prompts to the best AI platforms based on your specific needs. Find the perfect AI for every task automatically.',
+    benefits: ['Smart platform matching', 'Automatic AI selection', 'Best results every time'],
+    ctaText: '',
+    demoType: 'detective',
+    plan: 'pro',
+    comingSoon: true
   }
 ];
 
-const additionalFeatures = [
-  {
-    icon: History,
-    title: 'Prompt History',
-    description: 'Search all past prompts\nVersion control\nReuse favorites'
-  },
-  {
-    icon: BarChart3,
-    title: 'Analytics Dashboard',
-    description: 'Track AI usage\nROI metrics\nOptimization scores'
-  },
-  {
-    icon: Settings,
-    title: 'Custom Rules',
-    description: 'Set your guidelines\nIndustry templates\nBrand voice settings'
-  },
-  {
-    icon: Keyboard,
-    title: 'Keyboard Shortcuts',
-    description: 'Quick optimize: Cmd+K\nBroadcast: Cmd+B\nHistory: Cmd+H'
-  },
-  {
-    icon: FileText,
-    title: 'Export Functions',
-    description: 'CSV/JSON export\nAPI integration\nBulk operations'
-  },
-  {
-    icon: Globe,
-    title: 'Platform Integrations',
-    description: 'Slack/Discord\nGoogle Workspace\nMicrosoft Teams'
-  }
-];
 
 export default function FeaturesPage() {
   const DemoComponent = ({ type, isVisible }: { type: string; isVisible: boolean }) => {
@@ -276,7 +288,21 @@ export default function FeaturesPage() {
                         <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
                           <IconComponent className="w-6 h-6 text-white/80" />
                         </div>
-                        <span className="text-sm text-blue-400 font-medium">{feature.badge}</span>
+                        {feature.badge && <span className="text-sm text-blue-400 font-medium">{feature.badge}</span>}
+                        {/* Plan Badge */}
+                        {feature.plan === 'free' ? (
+                          <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
+                            Free
+                          </span>
+                        ) : feature.plan === 'starter' ? (
+                          <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
+                            Starter
+                          </span>
+                        ) : feature.comingSoon ? (
+                          <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
+                            Pro • Coming Soon
+                          </span>
+                        ) : null}
                       </div>
                       <h2 className="text-3xl font-bold text-white mb-4">{feature.title}</h2>
                       <p className="text-gray-300 text-lg leading-relaxed mb-6">{feature.description}</p>
@@ -291,10 +317,12 @@ export default function FeaturesPage() {
                       ))}
                     </div>
                     
-                    <button className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors group">
-                      {feature.ctaText}
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    {feature.ctaText && (
+                      <button className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors group">
+                        {feature.ctaText}
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -317,59 +345,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Additional Features */}
-      <section className="py-20 px-4 relative">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.h2 
-              variants={fadeInUp}
-              className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-6 text-white"
-            >
-              More Powerful
-              <span className="block text-white/90">Features</span>
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {additionalFeatures.map((feature, index) => {
-              const IconComponent = feature.icon;
-              
-              return (
-                <motion.div
-                  key={index}
-                  variants={cardTilt}
-                  whileHover="hover"
-                  className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 h-full hover:bg-white/10 hover:border-white/20 transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center mb-4">
-                    <IconComponent className="w-6 h-6 text-white/80" />
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                  
-                  <div className="space-y-2">
-                    {feature.description.split('\n').map((line, i) => (
-                      <p key={i} className="text-gray-400 text-sm">{line}</p>
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Bottom CTA */}
       <section className="py-20 px-4 relative">

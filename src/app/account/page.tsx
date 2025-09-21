@@ -70,7 +70,7 @@ export default function AccountPage() {
     plan: userProfile.planType || 'free',
     status: (userProfile as any).subscriptionStatus || 'active',
     promptsUsed: (userProfile as any).promptsUsedToday || 0,
-    promptsLimit: userProfile.planType === 'starter' ? 50 : userProfile.planType === 'pro' ? 200 : 10
+    promptsLimit: userProfile.planType === 'starter' ? 50 : userProfile.planType === 'pro' ? 999999 : 10
   };
 
   // Real billing data
@@ -110,7 +110,7 @@ export default function AccountPage() {
     const features: { [key: string]: string[] } = {
       free: ['10 prompts daily', 'All AI platforms', 'Basic optimization'],
       starter: ['50 prompts daily', 'All AI platforms', 'Auto-optimize', 'Project memory', 'Style learning', 'Broadcasting'],
-      pro: ['200 prompts daily', 'All AI platforms', 'Auto-optimize', 'Project memory', 'AI chat enhancement', 'Advanced style learning', 'Team broadcasting', 'Platform detective']
+      pro: ['Unlimited prompts', 'All AI platforms', 'Auto-optimize', 'Project memory', 'AI chat enhancement', 'Advanced style learning', 'Team broadcasting', 'Platform detective']
     };
     return features[userData.plan] || features.free;
   };
@@ -134,7 +134,7 @@ export default function AccountPage() {
     const allPlans = [
       { id: 'free', name: 'Free', price: '$0', features: ['10 prompts daily', 'All AI platforms', 'Basic optimization'] },
       { id: 'starter', name: 'Starter', price: '$9', features: ['50 prompts daily', 'All AI platforms', 'Auto-optimize', 'Project memory', 'Style learning', 'Broadcasting'] },
-      { id: 'pro', name: 'Pro', price: '$32', features: ['200 prompts daily', 'All AI platforms', 'Auto-optimize', 'Project memory', 'AI chat enhancement', 'Advanced style learning', 'Team broadcasting', 'Platform detective'], disabled: true, comingSoon: true }
+      { id: 'pro', name: 'Pro', price: '$32', features: ['Unlimited prompts', 'All AI platforms', 'Auto-optimize', 'Project memory', 'AI chat enhancement', 'Advanced style learning', 'Team broadcasting', 'Platform detective'], disabled: true, comingSoon: true }
     ];
     
     // Mark current plan as disabled and current
@@ -201,7 +201,7 @@ export default function AccountPage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-4 md:max-w-md md:ml-auto">
+              <div className="flex-1 grid grid-cols-2 gap-4 md:max-w-md md:ml-auto">
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-3 text-center">
                   <div className="text-lg font-bold text-white">{userData.promptsUsed}</div>
                   <div className="text-xs text-gray-400">Prompts Used</div>
@@ -209,10 +209,6 @@ export default function AccountPage() {
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-3 text-center">
                   <div className="text-lg font-bold text-white capitalize">{userData.plan}</div>
                   <div className="text-xs text-gray-400">Plan</div>
-                </div>
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-green-400">Active</div>
-                  <div className="text-xs text-gray-400">Status</div>
                 </div>
               </div>
             </motion.div>
@@ -436,10 +432,6 @@ export default function AccountPage() {
                             <span className="text-white font-medium">{billing.nextBilling}</span>
                           </div>
                         )}
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-300">Status</span>
-                          <span className="text-green-400 font-medium capitalize">{billing.status}</span>
-                        </div>
                       </div>
                       
                       {userData.plan !== 'free' && (

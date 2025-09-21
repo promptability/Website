@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star, Zap, Crown, Building2 } from 'lucide-react';
 import { cardTilt, liquidButton, fadeInUp, staggerContainer, buttonHover } from '@/lib/animations';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface PricingPlan {
   name: string;
@@ -25,11 +24,11 @@ const plans: PricingPlan[] = [
     name: 'Free',
     price: '$0',
     period: 'forever',
-    description: '',
+    description: 'Perfect for trying out Promptability',
     features: [
       '10 AI-optimized prompts daily',
-      'Works with all major AI platforms',
-      'Project Memory'
+      'Prompt Engineering Technology',
+      'Works with all major AI platforms'
     ],
     cta: 'Get Started Free',
     gradient: 'from-white/20 to-white/10',
@@ -40,14 +39,16 @@ const plans: PricingPlan[] = [
     name: 'Starter',
     price: '$9',
     period: 'per month',
-    description: '',
+    description: 'Ideal for professionals and content creators',
     features: [
       '50 AI-optimized prompts daily',
-      'Works with all major AI platforms',
-      'Auto-Optimize Mode',
+      'Prompt Engineering Technology',
       'Project Memory',
-      'Learn Your Style',
-      'Broadcasting'
+      'Favorites Instructions',
+      'Auto-Optimize Mode',
+      'Learns Your Style',
+      'Multi-AI Broadcasting',
+      'Works with all major AI platforms'
     ],
     popular: false,
     cta: 'Get Started',
@@ -60,16 +61,19 @@ const plans: PricingPlan[] = [
     name: 'Pro',
     price: '$32',
     period: 'per month',
-    description: '',
+    description: 'For teams and power users',
     features: [
-      '200 AI-optimized prompts daily',
-      'Works with all major AI platforms',
-      'Auto-Optimize Mode',
+      'Unlimited AI-optimized prompts',
+      'Prompt Engineering Technology',
       'Project Memory',
+      'Favorites Instructions',
+      'Auto-Optimize Mode',
+      'Learns Your Style',
+      'Multi-AI Broadcasting',
       'AI Chat Enhancement',
-      'Advanced Style Learning',
-      'Team Broadcasting',
-      'Platform Detective'
+      'Team Collaboration',
+      'Platform Detective',
+      'Works with all major AI platforms'
     ],
     popular: true,
     cta: 'Coming Soon',
@@ -81,14 +85,10 @@ const plans: PricingPlan[] = [
 ];
 
 export default function PricingCards() {
-  const { user, userProfile } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [teamSeats, setTeamSeats] = useState(1); // Default 1 seat minimum for team plan
-  
-  // Get current user's plan
-  const currentPlan = userProfile?.planType || null;
 
   const getAnnualPrice = (monthlyPrice: string) => {
     if (monthlyPrice === '$0') return '$0';
@@ -105,16 +105,12 @@ export default function PricingCards() {
   };
 
   const handleCheckout = async (plan: PricingPlan) => {
-    // Check if this is the user's current plan
-    if (user && currentPlan === plan.planType) {
-      return; // Do nothing if it's their current plan
-    }
-
     if (plan.planType === 'free') {
       // Redirect to signup for free plan
       window.location.href = '/signup';
       return;
     }
+
 
     setIsLoading(plan.name);
     
@@ -122,8 +118,7 @@ export default function PricingCards() {
     const params = new URLSearchParams({
       plan: plan.planType || '',
       billing: isAnnual ? 'yearly' : 'monthly',
-      ...(plan.planType === 'team' ? { seats: teamSeats.toString() } : {}),
-      ...(currentPlan ? { current: currentPlan } : {})
+      ...(plan.planType === 'team' ? { seats: teamSeats.toString() } : {})
     });
     
     window.location.href = `/payment/checkout?${params.toString()}`;
@@ -200,51 +195,44 @@ export default function PricingCards() {
             const displayPrice = isAnnual ? getAnnualPrice(plan.price) : plan.price;
             const displayPeriod = isAnnual ? (plan.price === '$0' ? 'forever' : 'per year') : plan.period;
             const savings = isAnnual ? getSavings(plan.price) : '';
-            const isCurrentPlan = user && currentPlan === plan.planType;
-            const isComingSoon = plan.cta === 'Coming Soon';
-            const isDisabled = isCurrentPlan || isComingSoon;
 
             return (
               <motion.div
                 key={plan.name}
-                variants={isDisabled ? undefined : cardTilt}
+                variants={plan.cta === 'Coming Soon' ? undefined : cardTilt}
                 initial="initial"
-                whileHover={isDisabled ? undefined : "hover"}
-                onHoverStart={() => !isDisabled && setHoveredCard(plan.name)}
-                onHoverEnd={() => !isDisabled && setHoveredCard(null)}
+                whileHover={plan.cta === 'Coming Soon' ? undefined : "hover"}
+                onHoverStart={() => plan.cta !== 'Coming Soon' && setHoveredCard(plan.name)}
+                onHoverEnd={() => plan.cta !== 'Coming Soon' && setHoveredCard(null)}
                 className="relative group"
                 style={{ perspective: '1000px' }}
               >
                 {/* Badge */}
-                {(isCurrentPlan || isPopular || isComingSoon) && (
+                {(isPopular || plan.cta === 'Coming Soon') && (
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20"
                   >
                     <div className={`backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border ${
-                      isCurrentPlan
-                        ? 'bg-blue-500/50 border-blue-400/50'
-                        : isComingSoon 
+                      plan.cta === 'Coming Soon' 
                         ? 'bg-gray-600/50 border-gray-500/50'
                         : 'bg-white/10 border-white/20'
                     }`}>
-                      {isCurrentPlan ? 'CURRENT PLAN' : isComingSoon ? 'COMING SOON' : 'MOST POPULAR'}
+                      {plan.cta === 'Coming Soon' ? 'COMING SOON' : 'MOST POPULAR'}
                     </div>
                   </motion.div>
                 )}
 
                 <div className={`
                   relative bg-white/5 backdrop-blur-xl border rounded-2xl p-6 h-full transition-all duration-300 flex flex-col
-                  ${isCurrentPlan
-                    ? 'border-blue-400/50 bg-blue-500/10'
-                    : isComingSoon
+                  ${plan.cta === 'Coming Soon'
                     ? 'border-gray-500/50 opacity-75'
                     : isPopular 
                       ? 'border-white/30 hover:scale-105 hover:z-10' 
                       : 'border-white/10 hover:border-white/20'
                   }
-                  ${hoveredCard === plan.name && !isDisabled ? 'bg-white/10' : ''}
+                  ${hoveredCard === plan.name && plan.cta !== 'Coming Soon' ? 'bg-white/10' : ''}
                 `}>
                   {/* Card Header */}
                   <div className="text-center mb-6">
@@ -272,7 +260,7 @@ export default function PricingCards() {
                       {plan.planType === 'free' && (
                         <div className="text-blue-400 text-xs font-medium mt-1">✓ No credit card required</div>
                       )}
-                      {savings && (
+                   {savings && (
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -291,9 +279,7 @@ export default function PricingCards() {
                       )}
                     </div>
                     
-                    {plan.description && (
-                      <p className="text-gray-400 text-sm">{plan.description}</p>
-                    )}
+                    <p className="text-gray-400 text-sm">{plan.description}</p>
                   </div>
 
                   {/* Features */}
@@ -351,17 +337,15 @@ export default function PricingCards() {
 
                   {/* CTA Button */}
                   <motion.button
-                    variants={isDisabled ? undefined : liquidButton}
+                    variants={plan.cta === 'Coming Soon' ? undefined : liquidButton}
                     initial="initial"
-                    whileHover={isDisabled ? undefined : "hover"}
-                    whileTap={isDisabled ? undefined : "tap"}
-                    onClick={() => !isDisabled && handleCheckout(plan)}
-                    disabled={isLoading === plan.name || isDisabled}
+                    whileHover={plan.cta === 'Coming Soon' ? undefined : "hover"}
+                    whileTap={plan.cta === 'Coming Soon' ? undefined : "tap"}
+                    onClick={() => plan.cta !== 'Coming Soon' && handleCheckout(plan)}
+                    disabled={isLoading === plan.name || plan.cta === 'Coming Soon'}
                     className={`
                       w-full font-semibold py-3 px-5 rounded-lg transition-all duration-300 relative overflow-hidden text-white
-                      ${isCurrentPlan
-                        ? 'bg-blue-500/50 cursor-not-allowed opacity-75'
-                        : isComingSoon 
+                      ${plan.cta === 'Coming Soon' 
                         ? 'bg-gray-600/50 cursor-not-allowed opacity-75'
                         : isPopular || plan.planType === 'team'
                           ? 'bg-blue-500 hover:bg-blue-600' 
@@ -376,15 +360,13 @@ export default function PricingCards() {
                           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                           Processing...
                         </div>
-                      ) : isCurrentPlan ? (
-                        'Current Plan'
                       ) : (
                         plan.cta
                       )}
                     </span>
                     
                     {/* Ripple Effect */}
-                    {!isDisabled && (
+                    {plan.cta !== 'Coming Soon' && (
                       <motion.div
                         className="absolute inset-0 bg-white/20 rounded-lg"
                         initial={{ scale: 0, opacity: 0 }}
@@ -395,7 +377,7 @@ export default function PricingCards() {
                   </motion.button>
 
                   {/* 3D Glow Effect */}
-                  {!isDisabled && (
+                  {plan.cta !== 'Coming Soon' && (
                     <div className={`
                       absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
                       bg-gradient-to-br from-white/5 to-transparent

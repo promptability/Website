@@ -79,7 +79,7 @@ export default function NotFoundPage() {
   }, []);
 
   return (
-    <main className="min-h-screen text-white relative flex items-center justify-center overflow-x-hidden">
+    <main className="min-h-screen text-white relative overflow-x-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 opacity-[0.3]">
@@ -93,7 +93,7 @@ export default function NotFoundPage() {
           />
         </div>
       </div>
-      <div className="relative z-40 w-full max-w-4xl mx-auto px-4 py-12">
+      <div className="relative z-40 w-full max-w-4xl mx-auto px-4 pt-32 pb-20">
         
         <motion.div
           variants={staggerContainer}

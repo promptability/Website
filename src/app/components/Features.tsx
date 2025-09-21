@@ -1,18 +1,54 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Brain, Folder, RefreshCw, Send, MessageSquare, Users } from 'lucide-react';
+import { Brain, Folder, RefreshCw, Send, MessageSquare, Users, Star, Zap, Search } from 'lucide-react';
 import { fadeInUp, staggerContainer, cardTilt } from '@/lib/animations';
 import Link from 'next/link';
 
 const features = [
+  {
+    icon: Zap,
+    title: 'Prompt Engineering Technology',
+    description: 'Transforms any highlighted web text into optimized, professional-grade AI prompts tailored to each platform\'s specific guidelines and best practices.',
+    gradient: 'from-cyan-400 to-blue-500',
+    href: '/features/prompt-engineering',
+    plan: 'free',
+    badge: 'Free'
+  },
+  {
+    icon: Star,
+    title: 'Favorites Instructions',
+    description: 'Save your most effective instruction templates as favorites and quickly reuse them whenever needed.',
+    gradient: 'from-yellow-400 to-orange-500',
+    href: '/features/smart-favorites',
+    plan: 'starter',
+    badge: 'Starter'
+  },
+  {
+    icon: Folder,
+    title: 'Project Memory',
+    description: 'Remembers context across projects, maintaining consistency in your prompts.',
+    gradient: 'from-orange-400 to-red-500',
+    href: '/features/project-memory',
+    plan: 'starter',
+    badge: 'Starter'
+  },
   {
     icon: RefreshCw,
     title: 'Auto-Optimize Mode',
     description: 'Automatically optimizes every prompt before sending to any AI chat - no extra clicks needed.',
     gradient: 'from-green-400 to-emerald-500',
     href: '/features/auto-optimize',
-    plan: 'starter', // Available in Starter and Pro
+    plan: 'starter',
+    badge: 'Starter'
+  },
+  {
+    icon: Brain,
+    title: 'Learns Your Style',
+    description: 'AI adapts to your writing patterns and preferences, getting better with every use.',
+    gradient: 'from-indigo-400 to-purple-500',
+    href: '/features/learns-your-style',
+    plan: 'starter',
     badge: 'Starter'
   },
   {
@@ -35,29 +71,21 @@ const features = [
     comingSoon: true
   },
   {
-    icon: Brain,
-    title: 'Learns Your Style',
-    description: 'AI adapts to your writing patterns and preferences, getting better with every use.',
-    gradient: 'from-indigo-400 to-purple-500',
-    href: '/features/learns-your-style',
-    plan: 'starter',
-    badge: 'Starter'
-  },
-  {
-    icon: Folder,
-    title: 'Project Memory',
-    description: 'Remembers context across projects, maintaining consistency in your prompts.',
-    gradient: 'from-orange-400 to-red-500',
-    href: '/features/project-memory',
-    plan: 'free',
-    badge: 'Free'
-  },
-  {
     icon: Users,
     title: 'Team Collaboration',
     description: 'Share optimized prompts with your team and build a knowledge base together.',
     gradient: 'from-pink-400 to-red-500',
     href: '/features/team-collaboration',
+    plan: 'pro',
+    badge: 'Pro',
+    comingSoon: true
+  },
+  {
+    icon: Search,
+    title: 'Platform Detective',
+    description: 'Intelligently broadcasts your prompts to the best AI platforms based on your specific needs. Find the perfect AI for every task automatically.',
+    gradient: 'from-purple-400 to-blue-400',
+    href: '/features/platform-detective',
     plan: 'pro',
     badge: 'Pro',
     comingSoon: true
@@ -99,25 +127,21 @@ export default function Features() {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {features.map((feature, index) => (
             <motion.div
               key={index}
               variants={cardTilt}
               initial="initial"
-              whileHover="hover"
+              whileHover={feature.comingSoon ? undefined : "hover"}
               className="group"
             >
-              <Link href={feature.href} className="block h-full">
-                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 h-full hover:bg-white/10 transition-all duration-300 hover:border-white/20 cursor-pointer relative">
+              {feature.comingSoon ? (
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 cursor-default relative flex flex-col h-64">
                   {/* Plan Badge */}
                   <div className="absolute top-4 right-4">
-                    {feature.comingSoon ? (
-                      <span className="text-xs px-2 py-1 bg-gray-500/20 text-gray-400 rounded-full border border-gray-500/30">
-                        Coming Soon
-                      </span>
-                    ) : feature.plan === 'free' ? (
+                    {feature.plan === 'free' ? (
                       <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
                         {feature.badge}
                       </span>
@@ -133,85 +157,99 @@ export default function Features() {
                   </div>
 
                   {/* Icon */}
-                  <div className="relative mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-                      <feature.icon className="w-8 h-8 text-white" />
+                  <div className="relative mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                      <feature.icon className="w-6 h-6 text-white" />
                     </div>
                     
                     {/* Glow effect */}
-                    <div className={`absolute inset-0 w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.gradient} opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300`} />
+                    <div className={`absolute inset-0 w-12 h-12 rounded-xl bg-gradient-to-r ${feature.gradient} opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300`} />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
+                  <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
                     {feature.title}
                   </h3>
                   
-                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300 text-sm flex-1">
                     {feature.description}
                   </p>
 
-                  {/* Hover indicator */}
-                  <div className="mt-6 flex items-center text-sm text-gray-500 group-hover:text-purple-400 transition-colors duration-300">
-                    <span>Learn more</span>
-                    <motion.div
-                      initial={{ x: 0 }}
-                      whileHover={{ x: 5 }}
-                      className="ml-2"
-                    >
-                      →
-                    </motion.div>
-                  </div>
+                  {/* Hover indicator or Coming Soon */}
+                  {feature.comingSoon ? (
+                    <div className="mt-4 flex items-center text-sm">
+                      <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent font-semibold">Coming Soon</span>
+                    </div>
+                  ) : (
+                    <div className="mt-4 flex items-center text-sm text-gray-500 group-hover:text-purple-400 transition-colors duration-300">
+                      <span>Learn more</span>
+                      <motion.div
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 5 }}
+                        className="ml-2"
+                      >
+                        →
+                      </motion.div>
+                    </div>
+                  )}
                 </div>
-              </Link>
+              ) : (
+                <Link href={feature.href} className="block">
+                  <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 hover:bg-white/10 transition-all duration-300 hover:border-white/20 cursor-pointer relative flex flex-col h-64">
+                    {/* Plan Badge */}
+                    <div className="absolute top-4 right-4">
+                      {feature.plan === 'free' ? (
+                        <span className="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
+                          {feature.badge}
+                        </span>
+                      ) : feature.plan === 'starter' ? (
+                        <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
+                          {feature.badge}
+                        </span>
+                      ) : feature.plan === 'pro' ? (
+                        <span className="text-xs px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
+                          {feature.badge}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {/* Icon */}
+                    <div className="relative mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                        <feature.icon className="w-6 h-6 text-white" />
+                      </div>
+                      
+                      {/* Glow effect */}
+                      <div className={`absolute inset-0 w-12 h-12 rounded-xl bg-gradient-to-r ${feature.gradient} opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300`} />
+                    </div>
+
+                    {/* Content */}
+                    <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
+                      {feature.title}
+                    </h3>
+                    
+                    <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300 text-sm flex-1">
+                      {feature.description}
+                    </p>
+
+                    {/* Hover indicator */}
+                    <div className="mt-4 flex items-center text-sm text-gray-500 group-hover:text-purple-400 transition-colors duration-300">
+                      <span>Learn more</span>
+                      <motion.div
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 5 }}
+                        className="ml-2"
+                      >
+                        →
+                      </motion.div>
+                    </div>
+                  </div>
+                </Link>
+              )}
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Platform Detective - Special Pro Feature */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-12 max-w-4xl mx-auto"
-        >
-          <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 hover:bg-white/10 transition-all duration-300">
-            {/* Coming Soon Badge */}
-            <div className="absolute top-6 right-6">
-              <span className="text-sm px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full border border-purple-500/30">
-                Pro • Coming Soon
-              </span>
-            </div>
-            
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              {/* Icon */}
-              <div className="relative">
-                <div className="w-20 h-20 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-gradient-to-r from-purple-400 to-blue-400 opacity-20 blur-xl" />
-              </div>
-              
-              {/* Content */}
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  Platform Detective
-                </h3>
-                <p className="text-gray-300 mb-4">
-                  Intelligently broadcasts your prompts to the best AI platforms based on your specific needs. 
-                  Find the perfect AI for every task automatically.
-                </p>
-                <div className="flex items-center gap-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent text-sm font-medium">
-                  <span>✨</span>
-                  <span>Exclusive Pro feature - The ultimate prompt optimization & platform matching</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
 
         {/* Subtle CTA after features */}
         <motion.div
