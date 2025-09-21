@@ -681,23 +681,6 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
     }
   }
 
-  function exportJSON() {
-    const payload = {
-      collectedAt: new Date().toISOString(),
-      responses,
-      meta: {
-        sections: sections.map(([s]) => s),
-        totalQuestions: QUESTIONS.length,
-      },
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `promptability-beta-responses-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <div className="min-h-screen text-white relative overflow-x-hidden">
@@ -733,6 +716,14 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
         {/* Sidebar */}
         <aside className="md:sticky md:top-16 md:self-start">
           <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
+            {/* Overall Progress */}
+            <div className="mb-4 px-2">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Overall Progress</p>
+                <OverallProgress />
+              </div>
+              <OverallProgressBar />
+            </div>
             <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-gray-400">Sections</p>
             <ol className="space-y-1 text-sm">
               {sections.map(([section]) => (
@@ -758,13 +749,6 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                 className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
-              </button>
-              <button
-                onClick={exportJSON}
-                type="button"
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20 transition-all duration-300"
-              >
-                Export JSON
               </button>
               <button
                 onClick={handleReset}
@@ -955,6 +939,33 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       <span className="rounded-full bg-blue-500/20 px-2 py-1 text-xs text-blue-400">
         {done}/{total} required answered
       </span>
+    );
+  }
+
+  function OverallProgress() {
+    const totalRequired = QUESTIONS.filter((q) => q.required).length;
+    const totalAnswered = QUESTIONS.filter((q) => q.required && !!responses[q.id]).length;
+    const pct = totalRequired === 0 ? 100 : Math.round((totalAnswered / totalRequired) * 100);
+    
+    return (
+      <span className="text-xs font-semibold text-blue-400">
+        {totalAnswered}/{totalRequired} ({pct}%)
+      </span>
+    );
+  }
+
+  function OverallProgressBar() {
+    const totalRequired = QUESTIONS.filter((q) => q.required).length;
+    const totalAnswered = QUESTIONS.filter((q) => q.required && !!responses[q.id]).length;
+    const pct = totalRequired === 0 ? 100 : (totalAnswered / totalRequired) * 100;
+    
+    return (
+      <div className="w-full bg-white/10 rounded-full h-2">
+        <div 
+          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
     );
   }
 }
