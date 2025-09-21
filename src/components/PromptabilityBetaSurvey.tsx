@@ -717,9 +717,9 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       </section>
 
       {/* Content */}
-      <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr]">
+      <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr] relative">
         {/* Sidebar */}
-        <aside className="md:sticky md:top-6 md:self-start">
+        <aside className="sticky top-6 self-start z-10">
           <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
             {/* Overall Progress */}
             <div className="mb-4 px-2">
@@ -767,7 +767,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
         </aside>
 
         {/* Form */}
-        <section>
+        <section className="min-h-screen">
           <form id="survey-form" onSubmit={handleSubmit} className="space-y-8">
             {/* Respondent */}
             <div className="scroll-mt-24">
