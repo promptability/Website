@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from "next/dynamic";
 
 const Survey = dynamic(() => import("@/components/PromptabilityBetaSurvey"), { ssr: false });
