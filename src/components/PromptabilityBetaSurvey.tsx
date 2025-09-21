@@ -700,29 +700,43 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+    <div className="min-h-screen text-white relative overflow-x-hidden">
+      {/* Background Effects - matching other pages */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 opacity-[0.3]">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+      </div>
+      
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-2xl bg-neutral-900" />
+            <div className="h-8 w-8 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500" />
             <div>
               <h1 className="text-lg font-semibold leading-tight">Promptability — Beta Feedback</h1>
-              <p className="text-xs text-neutral-500">Fast pass: complete required items • autosaves locally</p>
+              <p className="text-xs text-gray-400">Fast pass: complete required items • autosaves locally</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={exportJSON}
               type="button"
-              className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
             >
               Export JSON
             </button>
             <button
               onClick={handleReset}
               type="button"
-              className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+              className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
             >
               Reset
             </button>
@@ -730,7 +744,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
               form="survey-form"
               type="submit"
               disabled={submitStatus === "sending"}
-              className="rounded-xl bg-neutral-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
             </button>
@@ -742,14 +756,14 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[260px_1fr]">
         {/* Sidebar */}
         <aside className="md:sticky md:top-16 md:self-start">
-          <nav className="rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
-            <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-neutral-500">Sections</p>
+          <nav className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl p-3 shadow-sm">
+            <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-gray-400">Sections</p>
             <ol className="space-y-1 text-sm">
               {sections.map(([section]) => (
                 <li key={section}>
                   <a
                     href={`#${slugify(section)}`}
-                    className="flex items-center justify-between rounded-xl px-2 py-2 hover:bg-neutral-50"
+                    className="flex items-center justify-between rounded-xl px-2 py-2 text-gray-300 hover:bg-white/10"
                   >
                     <span>{section}</span>
                     {/* Completion dot */}
@@ -768,22 +782,22 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
             <div className="scroll-mt-24">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-base font-semibold">Respondent</h2>
-                <span className="rounded-full bg-neutral-100 px-2 py-1 text-xs text-neutral-600">Optional email • Consent required</span>
+                <span className="rounded-full bg-blue-500/20 px-2 py-1 text-xs text-blue-400">Optional email • Consent required</span>
               </div>
-              <div className="divide-y divide-neutral-200 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+              <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl">
                 <div className="p-4 md:p-5">
-                  <label className="block text-sm font-medium">Email (optional)</label>
+                  <label className="block text-sm font-medium text-gray-300">Email (optional)</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="mt-2 w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-800/20"
+                    className="mt-2 w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                   />
-                  <p className="mt-2 text-xs text-neutral-500">Used only to contact you about this beta (never shared).</p>
+                  <p className="mt-2 text-xs text-gray-400">Used only to contact you about this beta (never shared).</p>
                 </div>
                 <div className="p-4 md:p-5">
-                  <label id="consent-box" className="flex items-start gap-3 text-sm">
+                  <label id="consent-box" className="flex items-start gap-3 text-sm text-gray-300">
                     <input
                       type="checkbox"
                       checked={consent}
@@ -802,10 +816,10 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                   <h2 className="text-base font-semibold">{section}</h2>
                   <SectionBadge section={section} />
                 </div>
-                <div className="divide-y divide-neutral-200 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+                <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl">
                   {qs.map((q, idx) => (
                     <div key={q.id} data-qid={q.id} className="p-4 md:p-5">
-                      <label className="block text-sm font-medium">
+                      <label className="block text-sm font-medium text-gray-300">
                         {q.text}
                         {q.required && <span className="ml-1 align-super text-xs text-rose-600">*</span>}
                       </label>
@@ -814,7 +828,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                         {q.type === "multiple_choice" && q.options && (
                           <div className="grid gap-2 sm:grid-cols-2">
                             {q.options.map((opt) => (
-                              <label key={opt} className="flex cursor-pointer items-center gap-3 rounded-xl border border-neutral-200 bg-white px-3 py-2 shadow-sm hover:bg-neutral-50">
+                              <label key={opt} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-3 py-2 shadow-sm hover:bg-white/20">
                                 <input
                                   type="radio"
                                   name={q.id}
@@ -825,7 +839,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                                   className="h-4 w-4"
                                   required={q.required}
                                 />
-                                <span className="text-sm">{opt}</span>
+                                <span className="text-sm text-white">{opt}</span>
                               </label>
                             ))}
                           </div>
@@ -840,8 +854,8 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                             rows={4}
                             placeholder="Type your answer..."
                             className={classNames(
-                              "w-full resize-y rounded-xl border px-3 py-2 text-sm shadow-sm focus:outline-none",
-                              "border-neutral-200 focus:ring-2 focus:ring-neutral-800/20",
+                              "w-full resize-y rounded-xl border px-3 py-2 text-sm shadow-sm focus:outline-none bg-white/10 text-white placeholder-gray-400",
+                              "border-white/20 focus:ring-2 focus:ring-blue-500/50",
                               submitted && q.required && !responses[q.id] && "border-rose-400 focus:ring-rose-500/20"
                             )}
                           />
@@ -849,7 +863,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
 
                         {q.type === "linear" && (
                           <div className="">
-                            <div className="flex items-center justify-between text-xs text-neutral-500">
+                            <div className="flex items-center justify-between text-xs text-gray-400">
                               <span>
                                 {q.scaleMin} ({q.scaleLabel?.split(" to ")[0] || "Low"})
                               </span>
@@ -867,8 +881,8 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
                                     className={classNames(
                                       "flex cursor-pointer items-center justify-center rounded-lg border px-2 py-2 text-sm shadow-sm",
                                       selected
-                                        ? "border-neutral-900 bg-neutral-900 text-white"
-                                        : "border-neutral-200 bg-white hover:bg-neutral-50"
+                                        ? "border-blue-500 bg-gradient-to-r from-blue-500 to-purple-500 text-white"
+                                        : "border-white/20 bg-white/10 text-gray-300 hover:bg-white/20"
                                     )}
                                   >
                                     <input
@@ -904,21 +918,21 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
               <button
                 type="submit"
                 disabled={submitStatus === "sending"}
-                className="rounded-xl bg-neutral-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-blue-600 hover:to-purple-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitStatus === "sending" ? "Submitting…" : submitStatus === "ok" ? "Submitted" : "Submit"}
               </button>
               <button
                 type="button"
                 onClick={exportJSON}
-                className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+                className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
               >
                 Export JSON
               </button>
               <button
                 type="button"
                 onClick={handleReset}
-                className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-medium shadow-sm hover:bg-neutral-50"
+                className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-white/20"
               >
                 Reset
               </button>
@@ -928,7 +942,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
       </main>
 
       {/* Footer */}
-      <footer className="mx-auto max-w-7xl px-4 pb-10 pt-4 text-xs text-neutral-500">
+      <footer className="mx-auto max-w-7xl px-4 pb-10 pt-4 text-xs text-gray-400">
         <p>
           Tip: you can embed this form in your extension's Options page or ship it as a hosted survey. Responses are exportable as JSON. For Google Forms/Typeform imports, I can auto-generate files from this schema on request.
         </p>
@@ -946,7 +960,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
         title={`${done}/${total} required answered`}
         className={classNames(
           "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px]",
-          pct === 100 ? "bg-emerald-100 text-emerald-700" : "bg-neutral-100 text-neutral-600"
+          pct === 100 ? "bg-blue-100 text-blue-700" : "bg-white/10 text-gray-400"
         )}
       >
         {pct}%
@@ -958,7 +972,7 @@ export default function App({ submitUrl = "/api/beta/submit", apiKey }: { submit
     const total = QUESTIONS.filter((q) => q.section === section && q.required).length;
     const done = QUESTIONS.filter((q) => q.section === section && q.required && !!responses[q.id]).length;
     return (
-      <span className="rounded-full bg-neutral-100 px-2 py-1 text-xs text-neutral-600">
+      <span className="rounded-full bg-blue-500/20 px-2 py-1 text-xs text-blue-400">
         {done}/{total} required answered
       </span>
     );
