@@ -1,6 +1,8 @@
 import { getApps, initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
+export const dynamic = 'force-dynamic';
+
 function initAdmin() {
   if (getApps().length === 0) {
     initializeApp({
