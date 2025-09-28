@@ -546,7 +546,7 @@ export default function PricingCards() {
                     whileHover={plan.cta === 'Coming Soon' || isCurrentPlan(plan.planType || '') ? undefined : "hover"}
                     whileTap={plan.cta === 'Coming Soon' || isCurrentPlan(plan.planType || '') ? undefined : "tap"}
                     onClick={() => !isCurrentPlan(plan.planType || '') && plan.cta !== 'Coming Soon' && handleCheckout(plan)}
-                    disabled={Boolean(isLoading === plan.name) || plan.cta === 'Coming Soon' || isCurrentPlan(plan.planType || '')}
+                    disabled={Boolean(isLoading === plan.name) || plan.cta === 'Coming Soon' || Boolean(isCurrentPlan(plan.planType || ''))}
                     className={`
                       w-full font-semibold py-3 px-5 rounded-lg transition-all duration-300 relative overflow-hidden text-white
                       ${plan.cta === 'Coming Soon' 
