@@ -355,7 +355,7 @@ export default function PricingCards() {
                     {/* Mobile CTA Button */}
                     <button
                       onClick={() => !isCurrentPlan(plan.planType || '') && plan.cta !== 'Coming Soon' && handleCheckout(plan)}
-                      disabled={Boolean(isLoading === plan.name) || plan.cta === 'Coming Soon' || isCurrentPlan(plan.planType || '')}
+                      disabled={Boolean(isLoading === plan.name) || plan.cta === 'Coming Soon' || Boolean(isCurrentPlan(plan.planType || ''))}
                       className={`
                         w-full font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm text-white
                         ${plan.cta === 'Coming Soon' 
