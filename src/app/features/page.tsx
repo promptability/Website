@@ -234,18 +234,17 @@ export default function FeaturesPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 relative">
+      <section className="pt-24 sm:pt-28 pb-20 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <motion.div
             variants={staggerContainer}
             initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="text-center mb-20"
+            animate="animate"
+            className="text-center mb-16"
           >
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-7xl font-bold mb-8 text-white"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
             >
               Features that
               <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -254,7 +253,7 @@ export default function FeaturesPage() {
             </motion.h1>
             <motion.p 
               variants={fadeInUp}
-              className="text-xl text-gray-300 max-w-3xl mx-auto"
+              className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto px-4"
             >
               Every feature is designed to make AI work harder for you, not the other way around
             </motion.p>

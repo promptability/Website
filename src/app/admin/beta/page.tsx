@@ -36,16 +36,16 @@ export default async function Page() {
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium text-gray-700">Time</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-700">Type</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700">Email</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700">Tester/Cohort</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700">Source</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700">Key Responses</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                       No responses yet
                     </td>
                   </tr>
@@ -54,6 +54,13 @@ export default async function Page() {
                     <tr key={r.id} className={i % 2 ? "bg-gray-50" : "bg-white"}>
                       <td className="px-4 py-3 text-gray-900">
                         {r.meta?.receivedAt ? new Date(r.meta.receivedAt).toLocaleString() : "-"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          r.surveyType === 'short' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {r.surveyType === 'short' ? 'Short' : 'Full'}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-gray-900">{r.email || "-"}</td>
                       <td className="px-4 py-3 text-gray-600">

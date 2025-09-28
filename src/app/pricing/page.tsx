@@ -21,7 +21,7 @@ export default function PricingPage() {
           />
         </div>
       </div>
-      <div className="relative z-40">
+      <div className="relative z-40 pt-20 sm:pt-20">
         <PricingCards />
       </div>
     </main>

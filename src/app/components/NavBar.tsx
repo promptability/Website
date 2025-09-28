@@ -11,6 +11,7 @@ import { auth } from "@/lib/firebase";
 export default function NavBar() {
   const [open, setOpen] = useState(false);
   const [guidesOpen, setGuidesOpen] = useState(false);
+  const [mobileGuidesOpen, setMobileGuidesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const [profileHoverTimeout, setProfileHoverTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -28,6 +29,30 @@ export default function NavBar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when screen size changes
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setOpen(false);
+        setMobileGuidesOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
 
   const handleMouseEnter = () => {
     if (hoverTimeout) {
@@ -103,120 +128,121 @@ export default function NavBar() {
   };
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="Promptability logo"
-              width={40}
-              height={40}
-              className="rounded-lg"
-            />
-            <span className="text-white font-bold text-xl">Promptability</span>
-          </Link>
+    <>
+      <nav 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled 
+            ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 sm:h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 sm:gap-3">
+              <Image
+                src="/logo.png"
+                alt="Promptability logo"
+                width={40}
+                height={40}
+                className="rounded-lg w-8 h-8 sm:w-10 sm:h-10"
+              />
+              <span className="text-white font-bold text-lg sm:text-xl">Promptability</span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            {/* Guides Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <button className="flex items-center gap-1 text-white/80 hover:text-white transition-colors">
-                Guides
-                <ChevronDown className="w-3 h-3" />
-              </button>
-
-              {guidesOpen && (
-                <div className="absolute top-full mt-2 w-64 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
-                  <div className="p-3">
-                    {guideLinks.map((guide) => (
-                      <Link
-                        key={guide.href}
-                        href={guide.href}
-                        className="flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                      >
-                        <span>{guide.label}</span>
-                        <ArrowRight className="w-3 h-3 ml-auto" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* User Menu */}
-            {loading ? (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gray-700 rounded-full animate-pulse"></div>
-              </div>
-            ) : user ? (
-              <div className="flex items-center gap-3">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-8">
+              {navItems.map((item) => (
                 <Link
-                  href="/chrome-extension"
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
+                  key={item.href}
+                  href={item.href}
+                  className="text-white/80 hover:text-white transition-colors"
                 >
-                  Get Extension
+                  {item.label}
                 </Link>
+              ))}
 
-                <div 
-                  className="relative"
-                  onMouseEnter={handleProfileMouseEnter}
-                  onMouseLeave={handleProfileMouseLeave}
-                >
-                  <button
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              {/* Guides Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <button className="flex items-center gap-1 text-white/80 hover:text-white transition-colors">
+                  Guides
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+
+                {guidesOpen && (
+                  <div className="absolute top-full mt-2 w-64 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
+                    <div className="p-3">
+                      {guideLinks.map((guide) => (
+                        <Link
+                          key={guide.href}
+                          href={guide.href}
+                          className="flex items-center gap-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <span>{guide.label}</span>
+                          <ArrowRight className="w-3 h-3 ml-auto" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* User Menu */}
+              {loading ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gray-700 rounded-full animate-pulse"></div>
+                </div>
+              ) : user ? (
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/chrome-extension"
+                    className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
                   >
-                    {user.photoURL ? (
-                      <Image
-                        src={user.photoURL}
-                        alt="Profile"
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-medium">
-                          {getDisplayName()[0].toUpperCase()}
-                        </span>
-                      </div>
-                    )}
-                    <ChevronDown className="w-3 h-3 text-white/60" />
-                  </button>
+                    Get Extension
+                  </Link>
 
-                  {profileOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-72 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
-                      <div className="px-4 py-3 border-b border-white/10">
-                        <div className="text-white font-medium">{getDisplayName()}</div>
-                        <div className="text-gray-400 text-sm">{user.email}</div>
-                        <div className="flex items-center gap-1 mt-1">
-                          {getUserPlan() !== 'Free' && (
-                            <Crown className="w-3 h-3 text-yellow-400" />
-                          )}
-                          <span className="text-xs text-yellow-400">{getUserPlan()} Plan</span>
+                  <div 
+                    className="relative"
+                    onMouseEnter={handleProfileMouseEnter}
+                    onMouseLeave={handleProfileMouseLeave}
+                  >
+                    <button
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      {user.photoURL ? (
+                        <Image
+                          src={user.photoURL}
+                          alt="Profile"
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-medium">
+                            {getDisplayName()[0].toUpperCase()}
+                          </span>
                         </div>
-                      </div>
+                      )}
+                      <ChevronDown className="w-3 h-3 text-white/60" />
+                    </button>
+
+                    {profileOpen && (
+                      <div className="absolute top-full right-0 mt-2 w-72 bg-black/95 backdrop-blur-xl border border-gray-800/50 rounded-xl shadow-xl overflow-hidden">
+                        <div className="px-4 py-3 border-b border-white/10">
+                          <div className="text-white font-medium">{getDisplayName()}</div>
+                          <div className="text-gray-400 text-sm">{user.email}</div>
+                          <div className="flex items-center gap-1 mt-1">
+                            {getUserPlan() !== 'Free' && (
+                              <Crown className="w-3 h-3 text-yellow-400" />
+                            )}
+                            <span className="text-xs text-yellow-400">{getUserPlan()} Plan</span>
+                          </div>
+                        </div>
                       
                       <Link
                         href="/account"
@@ -267,102 +293,170 @@ export default function NavBar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="lg:hidden text-white"
-          >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="lg:hidden text-white p-2 -mr-2 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
-        {open && (
-          <div className="lg:hidden py-4 border-t border-white/10">
-            <div className="flex flex-col gap-2">
+      {/* Mobile Navigation - Fullscreen Overlay */}
+      {open && (
+        <div 
+          className="lg:hidden fixed bg-black/95 backdrop-blur-xl overflow-y-auto"
+          style={{ 
+            position: 'fixed', 
+            top: '0px', 
+            left: '0px', 
+            right: '0px', 
+            bottom: '0px', 
+            height: '100vh', 
+            width: '100vw',
+            zIndex: 999
+          }}
+        >
+          <div className="flex flex-col min-h-screen">
+            {/* Top bar with logo and close button */}
+            <div className="h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2 sm:gap-3" onClick={() => setOpen(false)}>
+                <Image
+                  src="/logo.png"
+                  alt="Promptability logo"
+                  width={40}
+                  height={40}
+                  className="rounded-lg w-8 h-8 sm:w-10 sm:h-10"
+                />
+                <span className="text-white font-bold text-lg sm:text-xl">Promptability</span>
+              </Link>
+              
+              {/* Close/Burger button */}
+              <button
+                onClick={() => setOpen(false)}
+                className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Close menu"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
+            
+            {/* Menu content */}
+            <div className="flex flex-col flex-1 p-4 gap-1 pb-8">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-base font-medium"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="border-t border-white/10 my-2 pt-2">
-                {guideLinks.map((guide) => (
-                  <Link
-                    key={guide.href}
-                    href={guide.href}
-                    className="flex items-center gap-3 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span>{guide.label}</span>
-                  </Link>
-                ))}
-              </div>
+              {/* Mobile Guides Dropdown */}
+              <button
+                onClick={() => setMobileGuidesOpen(!mobileGuidesOpen)}
+                className="flex items-center justify-between px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-base font-medium"
+              >
+                <span>Guides</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${mobileGuidesOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-              <div className="border-t border-white/10 my-2 pt-2">
+              {mobileGuidesOpen && (
+                <div className="ml-4 mb-2">
+                  {guideLinks.map((guide) => (
+                    <Link
+                      key={guide.href}
+                      href={guide.href}
+                      className="flex items-center gap-3 px-4 py-2.5 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
+                      onClick={() => setOpen(false)}
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>{guide.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              <div className="border-t border-white/10 mt-4 pt-4">
                 {loading ? (
-                  <div className="px-4 py-2">
-                    <div className="w-24 h-8 bg-gray-700 rounded animate-pulse"></div>
+                  <div className="px-4 py-3">
+                    <div className="w-32 h-10 bg-gray-700 rounded-lg animate-pulse"></div>
                   </div>
                 ) : user ? (
                   <>
-                    <div className="px-4 py-2 mb-2">
-                      <div className="text-white font-medium">{getDisplayName()}</div>
-                      <div className="text-gray-400 text-sm">{user.email}</div>
-                      <div className="flex items-center gap-1 mt-1">
+                    <div className="px-4 py-3 mb-2 bg-white/5 rounded-lg">
+                      <div className="text-white font-medium text-base">{getDisplayName()}</div>
+                      <div className="text-gray-400 text-sm mt-1">{user.email}</div>
+                      <div className="flex items-center gap-1.5 mt-2">
                         {getUserPlan() !== 'Free' && (
-                          <Crown className="w-3 h-3 text-yellow-400" />
+                          <Crown className="w-4 h-4 text-yellow-400" />
                         )}
-                        <span className="text-xs text-yellow-400">{getUserPlan()} Plan</span>
+                        <span className="text-sm text-yellow-400 font-medium">{getUserPlan()} Plan</span>
                       </div>
                     </div>
                     <Link
                       href="/account"
-                      className="flex items-center gap-3 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-base"
                       onClick={() => setOpen(false)}
                     >
-                      <User className="w-4 h-4" />
-                      Account
+                      <User className="w-5 h-5" />
+                      <span>Account</span>
+                    </Link>
+                    <Link
+                      href="/chrome-extension"
+                      className="block px-4 py-3 mb-2 text-center rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
+                      onClick={() => setOpen(false)}
+                    >
+                      Get Extension
                     </Link>
                     <button
                       onClick={() => {
                         handleSignOut();
                         setOpen(false);
                       }}
-                      className="flex items-center gap-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors w-full text-left"
+                      className="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors w-full text-left text-base"
                     >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
+                      <LogOut className="w-5 h-5" />
+                      <span>Sign Out</span>
                     </button>
                   </>
                 ) : (
                   <>
                     <Link
-                      href="/chrome-extension"
-                      className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      href="/signin"
+                      className="block px-4 py-3 mb-2 text-center rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all duration-300"
                       onClick={() => setOpen(false)}
                     >
-                      Get Extension
+                      Sign In
                     </Link>
                     <Link
                       href="/signup"
-                      className="block px-4 py-2 mt-2 text-center rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold"
+                      className="block px-4 py-3 mb-2 text-center rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                       onClick={() => setOpen(false)}
                     >
                       Get Started Free
                     </Link>
+                    <Link
+                      href="/chrome-extension"
+                      className="block px-4 py-3 text-center rounded-lg border border-white/20 hover:bg-white/10 text-white font-medium transition-all duration-300"
+                      onClick={() => setOpen(false)}
+                    >
+                      Get Extension
+                    </Link>
                   </>
                 )}
+                </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </nav>
+        )
+      }
+    </>
   );
 }

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Bad payload" }, { status: 400 });
     }
 
-    const { email, consent, responses, meta } = body ?? {};
+    const { email, consent, responses, meta, surveyType } = body ?? {};
     if (!consent) return NextResponse.json({ error: "Consent required" }, { status: 400 });
     if (!responses || typeof responses !== "object") {
       return NextResponse.json({ error: "Missing responses" }, { status: 400 });
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       email: email || null,
       consent: consent || false,
       responses,
+      surveyType: surveyType || "full", // Mark survey type (full/short)
       meta: {
         collectedAt: meta?.collectedAt || null,
         durationMs: meta?.durationMs ?? null,

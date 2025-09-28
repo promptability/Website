@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +26,16 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  verification: {
+    google: "eC2ESpjkk1_blap_8F1VEOivQlUShdqeB1dC24BuLVU",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -34,14 +45,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen overflow-x-hidden`}>
         <AuthProvider>
-          <div className="relative z-20">
+          <div className="relative z-20 min-h-screen flex flex-col">
             <NavBar />
-            {children}
+            <main className="flex-1 pt-16 sm:pt-20">
+              {children}
+            </main>
             <Footer />
           </div>
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

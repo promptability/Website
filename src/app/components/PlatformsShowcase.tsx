@@ -108,12 +108,12 @@ export default function PlatformsShowcase() {
           </div>
 
           {/* Mobile "See More" Button */}
-          <div className="md:hidden text-center mb-8">
+          <div className="md:hidden text-center">
             <a
               href="/platforms"
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 font-medium"
             >
-              See All {aiPlatforms.length} Platforms
+              See All Platforms
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>

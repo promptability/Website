@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { staggerContainer, fadeInUp } from '@/lib/animations';
 import FloatingCard from '@/components/ui/FloatingCard';
+import NavBar from '@/app/components/NavBar';
 import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -28,12 +29,11 @@ function CheckoutForm() {
   
   const planType = searchParams.get('plan') || 'pro';
   const billingCycle = searchParams.get('billing') || 'monthly';
-  const seats = parseInt(searchParams.get('seats') || '1');
   
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'team'>(planType as any);
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro'>(planType === 'team' ? 'pro' : planType as any);
   const [selectedBilling, setSelectedBilling] = useState(billingCycle);
-  const [teamSeats, setTeamSeats] = useState(seats);
   const [showPromoCode, setShowPromoCode] = useState(false);
+  const [showPlanDropdown, setShowPlanDropdown] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -48,6 +48,18 @@ function CheckoutForm() {
   });
   const [errors, setErrors] = useState<any>({});
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showPlanDropdown && !(event.target as Element).closest('.plan-dropdown')) {
+        setShowPlanDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showPlanDropdown]);
 
   const plans = {
     starter: {
@@ -77,26 +89,12 @@ function CheckoutForm() {
         'Priority support',
         'Unlimited projects'
       ]
-    },
-    team: {
-      name: 'Team Plan',
-      monthlyPrice: 49,
-      yearlyPrice: 470,
-      savings: 20,
-      features: [
-        'Everything in Pro',
-        'Team collaboration',
-        'Shared workspace',
-        'Admin dashboard',
-        'Priority support',
-        'Custom integrations'
-      ]
     }
   };
 
   const currentPlan = plans[selectedPlan];
   const basePrice = selectedBilling === 'monthly' ? currentPlan.monthlyPrice : currentPlan.yearlyPrice;
-  const currentPrice = selectedPlan === 'team' ? basePrice * teamSeats : basePrice;
+  const currentPrice = basePrice;
   const savings = selectedBilling === 'yearly' ? currentPlan.savings : 0;
 
   const progressSteps = [
@@ -170,7 +168,7 @@ function CheckoutForm() {
         body: JSON.stringify({
           planType: selectedPlan,
           billingCycle: selectedBilling,
-          quantity: selectedPlan === 'team' ? teamSeats : 1,
+          quantity: 1,
           email: formData.email,
           metadata: {
             firstName: formData.firstName,
@@ -233,29 +231,19 @@ function CheckoutForm() {
         </div>
       </div>
 
-      {/* Simplified Header */}
-      <header className="border-b border-white/10 px-4 py-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="Promptability logo"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <span className="text-white font-semibold text-lg">Promptability</span>
-          </Link>
-          
-          <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-green-400" />
-            <span className="text-sm text-gray-400">Secure Checkout</span>
-          </div>
+      {/* Navigation Header */}
+      <NavBar />
+      
+      {/* Secure Checkout Indicator */}
+      <div className="border-b border-white/10 px-4 py-3 bg-black/30">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2">
+          <Lock className="w-4 h-4 text-green-400" />
+          <span className="text-sm text-gray-400">Secure Checkout</span>
         </div>
-      </header>
+      </div>
 
-      {/* Progress Indicator */}
-      <div className="border-b border-white/10 px-4 py-4">
+      {/* Progress Indicator - Desktop Only */}
+      <div className="hidden sm:block border-b border-white/10 px-4 py-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center gap-4">
             {progressSteps.map((step, index) => (
@@ -281,14 +269,125 @@ function CheckoutForm() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-5 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-5 gap-6 lg:gap-8">
+          {/* Mobile Order Summary - Show first on mobile */}
+          <div className="lg:hidden lg:col-span-2 order-1">
+            <div className="sticky top-4">
+              <FloatingCard className="p-4 sm:p-6 mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Order Summary</h3>
+
+                {/* Plan Selection */}
+                <div className="space-y-4 mb-6">
+                  {/* Mobile Custom Dropdown */}
+                  <div className="relative plan-dropdown">
+                    <button
+                      type="button"
+                      onClick={() => setShowPlanDropdown(!showPlanDropdown)}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-blue-500/50 transition-all flex items-center justify-between hover:bg-white/15"
+                    >
+                      <span className="font-medium">{plans[selectedPlan].name}</span>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showPlanDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {showPlanDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-white/20 rounded-lg shadow-lg z-50 overflow-hidden">
+                        {Object.entries(plans).map(([key, plan]) => (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPlan(key as any);
+                              setShowPlanDropdown(false);
+                            }}
+                            className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors flex items-center justify-between ${
+                              selectedPlan === key ? 'bg-blue-500/20 text-blue-400' : 'text-white'
+                            }`}
+                          >
+                            <span className="font-medium">{plan.name}</span>
+                            {selectedPlan === key && <CheckCircle className="w-4 h-4 text-blue-400" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Billing Cycle */}
+                  <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedBilling('monthly')}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                        selectedBilling === 'monthly' 
+                          ? 'bg-blue-500/20 text-blue-400' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      Monthly
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedBilling('yearly')}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                        selectedBilling === 'yearly' 
+                          ? 'bg-blue-500/20 text-blue-400' 
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      Yearly {savings > 0 && <span className="text-xs">(Save {savings}%)</span>}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Pricing Breakdown */}
+                <div className="space-y-3 mb-6 pb-6 border-b border-white/10">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm">
+                      {currentPlan.name} ({selectedBilling})
+                    </span>
+                    <span className="text-white font-semibold">${currentPrice.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-lg font-bold">
+                    <span className="text-white">Total</span>
+                    <span className="text-white">${currentPrice.toFixed(2)}/{selectedBilling === 'monthly' ? 'mo' : 'yr'}</span>
+                  </div>
+                </div>
+
+                {/* What's Included */}
+                <div className="mb-6">
+                  <h4 className="font-semibold text-white mb-3 text-sm">What's Included</h4>
+                  <div className="space-y-2">
+                    {currentPlan.features.slice(0, 4).map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-xs">
+                        <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">{feature}</span>
+                      </div>
+                    ))}
+                    {currentPlan.features.length > 4 && (
+                      <div className="text-gray-400 text-xs">
+                        +{currentPlan.features.length - 4} more features
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Trust Elements */}
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 text-xs">
+                    <Shield className="w-3 h-3" />
+                    Secure & encrypted payment
+                  </div>
+                </div>
+              </FloatingCard>
+            </div>
+          </div>
+          
           {/* Left Column - Payment Form */}
-          <div className="lg:col-span-3">
-            <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="lg:col-span-3 order-2 lg:order-1">
+            <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
               {/* Billing Information */}
-              <FloatingCard className="p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Billing Information</h2>
+              <FloatingCard className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Billing Information</h2>
                 
                 <div className="space-y-4">
                   {/* Email */}
@@ -310,7 +409,7 @@ function CheckoutForm() {
                   </div>
 
                   {/* Name */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         First name *
@@ -356,7 +455,7 @@ function CheckoutForm() {
                         required
                       />
                     </div>
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           City *
@@ -405,8 +504,8 @@ function CheckoutForm() {
               </FloatingCard>
 
               {/* Payment Method */}
-              <FloatingCard className="p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Payment Method</h2>
+              <FloatingCard className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Payment Method</h2>
                 
                 <div className="space-y-6">
                   {/* Card Element */}
@@ -460,7 +559,7 @@ function CheckoutForm() {
               <button
                 type="submit"
                 disabled={!formData.agreeTerms || isProcessing || !stripe}
-                className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                className="w-full py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-base sm:text-lg rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
               >
                 {isProcessing ? (
                   <>
@@ -471,61 +570,66 @@ function CheckoutForm() {
                   <>
                     <Lock className="w-5 h-5" />
                     Complete Purchase - ${currentPrice.toFixed(2)}
-                    {selectedPlan === 'team' && ` for ${teamSeats} users`}
                   </>
                 )}
               </button>
             </form>
           </div>
 
-          {/* Right Column - Order Summary */}
-          <div className="lg:col-span-2">
+          {/* Right Column - Order Summary - Desktop Only */}
+          <div className="hidden lg:block lg:col-span-2 order-3 lg:order-2">
             <div className="sticky top-8">
-              <FloatingCard className="p-6 mb-6">
-                <h3 className="text-xl font-bold text-white mb-6">Order Summary</h3>
+              <FloatingCard className="p-4 sm:p-6 mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Order Summary</h3>
 
                 {/* Plan Selection */}
                 <div className="space-y-4 mb-6">
-                  <select
-                    value={selectedPlan}
-                    onChange={(e) => setSelectedPlan(e.target.value as any)}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50"
-                  >
-                    <option value="starter" className="bg-black">Starter Plan</option>
-                    <option value="pro" className="bg-black">Pro Plan</option>
-                    <option value="team" className="bg-black">Team Plan</option>
-                  </select>
-
-                  {/* Team Seats Selector */}
-                  {selectedPlan === 'team' && (
-                    <div>
-                      <label className="text-sm text-gray-400 block mb-2">Number of team members:</label>
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setTeamSeats(Math.max(3, teamSeats - 1))}
-                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          value={teamSeats}
-                          onChange={(e) => setTeamSeats(Math.min(100, Math.max(3, parseInt(e.target.value) || 3)))}
-                          className="w-20 px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-center"
-                          min="3"
-                          max="100"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setTeamSeats(Math.min(100, teamSeats + 1))}
-                          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-colors"
-                        >
-                          +
-                        </button>
+                  {/* Mobile Custom Dropdown */}
+                  <div className="relative md:hidden plan-dropdown">
+                    <button
+                      type="button"
+                      onClick={() => setShowPlanDropdown(!showPlanDropdown)}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-blue-500/50 transition-all flex items-center justify-between hover:bg-white/15"
+                    >
+                      <span className="font-medium">{plans[selectedPlan].name}</span>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showPlanDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {showPlanDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-white/20 rounded-lg shadow-lg z-50 overflow-hidden">
+                        {Object.entries(plans).map(([key, plan]) => (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPlan(key as any);
+                              setShowPlanDropdown(false);
+                            }}
+                            className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors flex items-center justify-between ${
+                              selectedPlan === key ? 'bg-blue-500/20 text-blue-400' : 'text-white'
+                            }`}
+                          >
+                            <span className="font-medium">{plan.name}</span>
+                            {selectedPlan === key && <CheckCircle className="w-4 h-4 text-blue-400" />}
+                          </button>
+                        ))}
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+
+                  {/* Desktop Select */}
+                  <div className="relative hidden md:block">
+                    <select
+                      value={selectedPlan}
+                      onChange={(e) => setSelectedPlan(e.target.value as any)}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer hover:bg-white/15"
+                    >
+                      <option value="starter" className="bg-gray-900 text-white py-2">Starter Plan</option>
+                      <option value="pro" className="bg-gray-900 text-white py-2">Pro Plan</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+
 
                   {/* Billing Cycle */}
                   <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
@@ -559,7 +663,6 @@ function CheckoutForm() {
                   <div className="flex justify-between">
                     <span className="text-gray-400">
                       {currentPlan.name} ({selectedBilling})
-                      {selectedPlan === 'team' && ` × ${teamSeats} users`}
                     </span>
                     <span className="text-white font-semibold">${currentPrice.toFixed(2)}</span>
                   </div>
@@ -584,9 +687,9 @@ function CheckoutForm() {
 
                 {/* Trust Elements */}
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm">
-                    <CheckCircle className="w-4 h-4" />
-                    30-day money-back guarantee
+                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400 text-sm">
+                    <Shield className="w-4 h-4" />
+                    Secure & encrypted payment
                   </div>
                 </div>
               </FloatingCard>

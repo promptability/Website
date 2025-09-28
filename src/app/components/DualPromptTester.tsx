@@ -51,6 +51,9 @@ const examplePrompts = [
 export default function DualPromptTester() {
   const { user } = useAuth();
   
+  // Mobile tab state
+  const [activeTab, setActiveTab] = useState<'optimizer' | 'checker'>('optimizer');
+  
   // Optimizer state
   const [optimizerInput, setOptimizerInput] = useState('');
   const [optimizerPlatform, setOptimizerPlatform] = useState('chatgpt');
@@ -156,13 +159,15 @@ export default function DualPromptTester() {
     if (tool === 'optimizer') {
       setOptimizerInput(example);
       setOptimizerResult(null);
+      setActiveTab('optimizer'); // Switch to optimizer tab on mobile
     } else {
       setCheckerInput(example);
       setAnalysisResult(null);
+      setActiveTab('checker'); // Switch to checker tab on mobile
     }
   };
 
-  const CircularProgressBar = ({ value, size = 120 }: { value: number; size?: number }) => {
+  const CircularProgressBar = ({ value, size = 100 }: { value: number; size?: number }) => {
     const radius = (size - 8) / 2;
     const circumference = radius * 2 * Math.PI;
     const strokeDasharray = circumference;
@@ -176,7 +181,7 @@ export default function DualPromptTester() {
             cy={size / 2}
             r={radius}
             stroke="rgba(255,255,255,0.1)"
-            strokeWidth="8"
+            strokeWidth="6"
             fill="none"
           />
           <motion.circle
@@ -184,7 +189,7 @@ export default function DualPromptTester() {
             cy={size / 2}
             r={radius}
             stroke={value >= 80 ? "#00FF88" : value >= 60 ? "#00BBFF" : "#FF3366"}
-            strokeWidth="8"
+            strokeWidth="6"
             fill="none"
             strokeLinecap="round"
             strokeDasharray={strokeDasharray}
@@ -196,7 +201,7 @@ export default function DualPromptTester() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <motion.div
-              className="text-2xl font-bold text-white"
+              className="text-xl sm:text-2xl font-bold text-white"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
@@ -236,24 +241,24 @@ export default function DualPromptTester() {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-left text-white hover:bg-white/10 transition-colors flex items-center justify-between"
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-left text-white hover:bg-white/10 transition-colors flex items-center justify-between"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {selectedPlatform && (
               selectedPlatform.logo ? (
                 <img
                   src={selectedPlatform.logo}
                   alt={`${selectedPlatform.label} logo`}
-                  className="w-5 h-5 object-contain"
+                  className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
                 />
               ) : (
                 <div 
-                  className="w-5 h-5 rounded-full border border-white/20"
+                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-white/20"
                   style={{ backgroundColor: selectedPlatform.color || '#6B7280' }}
                 />
               )
             )}
-            <span>{selectedPlatform?.label}</span>
+            <span className="text-sm sm:text-base">{selectedPlatform?.label}</span>
           </div>
           <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
@@ -266,89 +271,33 @@ export default function DualPromptTester() {
               exit={{ opacity: 0, y: -10 }}
               className="absolute top-full left-0 right-0 mt-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto"
             >
-              {/* Mobile: Show first 6 platforms */}
-              <div className="md:hidden">
-                {mobilePlatforms.map((platform) => (
-                  <button
-                    key={platform.value}
-                    onClick={() => {
-                      onChange(platform.value);
-                      setIsOpen(false);
-                    }}
-                    className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
-                  >
-                    {platform.logo ? (
-                      <img
-                        src={platform.logo}
-                        alt={`${platform.label} logo`}
-                        className="w-5 h-5 object-contain flex-shrink-0"
-                      />
-                    ) : (
-                      <div 
-                        className="w-5 h-5 rounded-full border border-white/20 flex-shrink-0"
-                        style={{ backgroundColor: platform.color || '#6B7280' }}
-                      />
-                    )}
-                    <div className="flex-1">
-                      <div className="font-medium">{platform.label}</div>
-                      <div className="text-xs text-gray-400">{platform.category}</div>
-                    </div>
-                  </button>
-                ))}
-                
-                {/* "See All" button on mobile */}
-                <a
-                  href="/platforms"
-                  className="w-full px-4 py-3 text-left text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors border-t border-white/10 flex items-center gap-3 font-medium"
+              {mobilePlatforms.map((platform) => (
+                <button
+                  key={platform.value}
+                  onClick={() => {
+                    onChange(platform.value);
+                    setIsOpen(false);
+                  }}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
                 >
-                  <div className="w-4 h-4 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  {platform.logo ? (
+                    <img
+                      src={platform.logo}
+                      alt={`${platform.label} logo`}
+                      className="w-4 h-4 sm:w-5 sm:h-5 object-contain flex-shrink-0"
+                    />
+                  ) : (
+                    <div 
+                      className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-white/20 flex-shrink-0"
+                      style={{ backgroundColor: platform.color || '#6B7280' }}
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-medium text-sm sm:text-base">{platform.label}</div>
+                    <div className="text-xs text-gray-400">{platform.category}</div>
                   </div>
-                  <span>See All {platformOptions.length} Platforms →</span>
-                </a>
-              </div>
-
-              {/* Desktop: Show same 6 popular platforms as mobile */}
-              <div className="hidden md:block">
-                {mobilePlatforms.map((platform) => (
-                  <button
-                    key={platform.value}
-                    onClick={() => {
-                      onChange(platform.value);
-                      setIsOpen(false);
-                    }}
-                    className="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 flex items-center gap-3"
-                  >
-                    {platform.logo ? (
-                      <img
-                        src={platform.logo}
-                        alt={`${platform.label} logo`}
-                        className="w-5 h-5 object-contain flex-shrink-0"
-                      />
-                    ) : (
-                      <div 
-                        className="w-5 h-5 rounded-full border border-white/20 flex-shrink-0"
-                        style={{ backgroundColor: platform.color || '#6B7280' }}
-                      />
-                    )}
-                    <div className="flex-1">
-                      <div className="font-medium">{platform.label}</div>
-                      <div className="text-xs text-gray-400">{platform.category}</div>
-                    </div>
-                  </button>
-                ))}
-                
-                {/* "See All" button on desktop */}
-                <a
-                  href="/platforms"
-                  className="w-full px-4 py-3 text-left text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors border-t border-white/10 flex items-center gap-3 font-medium"
-                >
-                  <div className="w-5 h-5 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  </div>
-                  <span>See All {platformOptions.length} Platforms →</span>
-                </a>
-              </div>
+                </button>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
@@ -367,30 +316,290 @@ export default function DualPromptTester() {
           transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
           className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight mb-3 sm:mb-4 md:mb-8">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-3 sm:mb-4 md:mb-8">
             <span className="text-white">Test Your </span>
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Prompts</span>
             <br />
             <span className="text-white">Online and </span>
             <span className="text-purple-400">Free!</span>
           </h2>
-          <p className="text-base sm:text-lg md:text-xl font-normal leading-normal text-white max-w-4xl mx-auto mt-6">
-            Experience the power of AI-driven prompt optimization with our interactive demo. <br />
-            Optimize weak prompts or analyze existing ones for strength in real-time.
+          <p className="text-sm sm:text-base md:text-xl font-normal leading-normal text-white max-w-4xl mx-auto mt-4 sm:mt-6">
+            Experience the power of AI-driven prompt optimization. <br className="hidden sm:block" />
+            Optimize weak prompts or analyze existing ones for strength.
           </p>
           
           {/* Blue spotlight effects */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
-            <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-blue-400/3 rounded-full blur-2xl animate-pulse"></div>
-            <div className="absolute bottom-1/3 right-1/3 w-48 h-48 bg-cyan-400/4 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-12 relative">
-          {/* Central connecting element */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-px h-32 bg-gradient-to-b from-transparent via-blue-400/50 to-transparent z-10 hidden lg:block"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full z-20 hidden lg:block animate-pulse"></div>
+        {/* Mobile Tab Interface */}
+        <div className="md:hidden">
+          {/* Tab Buttons */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setActiveTab('optimizer')}
+              className={`flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'optimizer' 
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white' 
+                  : 'bg-white/10 text-gray-300 border border-white/10'
+              }`}
+            >
+              <Zap className="w-4 h-4 inline mr-2" />
+              Optimizer
+            </button>
+            <button
+              onClick={() => setActiveTab('checker')}
+              className={`flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                activeTab === 'checker' 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                  : 'bg-white/10 text-gray-300 border border-white/10'
+              }`}
+            >
+              <Target className="w-4 h-4 inline mr-2" />
+              Checker
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <AnimatePresence mode="wait">
+            {activeTab === 'optimizer' ? (
+              <motion.div
+                key="optimizer"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-4 shadow-xl"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Prompt Optimizer</h3>
+                    <p className="text-xs text-gray-300">Transform weak prompts</p>
+                  </div>
+                </div>
+
+                {/* Platform Selector */}
+                <div className="mb-3">
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">AI Platform</label>
+                  <PlatformDropdown
+                    value={optimizerPlatform}
+                    onChange={setOptimizerPlatform}
+                    isOpen={showOptimizerDropdown}
+                    setIsOpen={setShowOptimizerDropdown}
+                  />
+                </div>
+
+                {/* Input */}
+                <div className="mb-4">
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">Enter your weak prompt</label>
+                  <textarea
+                    value={optimizerInput}
+                    onChange={(e) => setOptimizerInput(e.target.value)}
+                    placeholder="Type your prompt here..."
+                    className="w-full h-24 bg-gradient-to-br from-black/30 to-black/20 border border-white/20 rounded-lg p-3 text-sm text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/70"
+                  />
+                </div>
+
+                {/* Optimize Button */}
+                <button
+                  onClick={handleOptimize}
+                  disabled={!optimizerInput.trim() || isOptimizing}
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mb-4 text-sm"
+                >
+                  {isOptimizing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Optimizing...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-4 h-4" />
+                      Optimize Prompt
+                    </>
+                  )}
+                </button>
+
+                {/* Results */}
+                {optimizerResult && (
+                  <div className="space-y-3">
+                    <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold text-green-400 uppercase">Optimized Result</span>
+                        <button
+                          onClick={() => handleCopy(optimizerResult.optimizedPrompt, 'optimizer')}
+                          className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                        >
+                          {copiedText === 'optimizer' ? (
+                            <Check className="w-4 h-4 text-green-400" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-gray-300" />
+                          )}
+                        </button>
+                      </div>
+                      <p className="text-sm text-white leading-relaxed">{optimizerResult.optimizedPrompt}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-center bg-blue-500/10 border border-blue-400/20 rounded-lg p-2">
+                        <div className="text-lg font-bold text-blue-400">{optimizerResult.improvements.clarity}%</div>
+                        <div className="text-xs text-gray-300">Clarity</div>
+                      </div>
+                      <div className="text-center bg-green-500/10 border border-green-400/20 rounded-lg p-2">
+                        <div className="text-lg font-bold text-green-400">{optimizerResult.improvements.tokensSaved}</div>
+                        <div className="text-xs text-gray-300">Tokens</div>
+                      </div>
+                      <div className="text-center bg-cyan-500/10 border border-cyan-400/20 rounded-lg p-2">
+                        <div className="text-lg font-bold text-cyan-400">{optimizerResult.improvements.improvementScore}%</div>
+                        <div className="text-xs text-gray-300">Better</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Example Prompts */}
+                <div className="mt-4">
+                  <p className="text-xs text-gray-400 mb-2">Try these examples:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {examplePrompts.slice(0, 3).map((example, index) => (
+                      <button
+                        key={index}
+                        onClick={() => loadExample(example.prompt, 'optimizer')}
+                        className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-2.5 py-1 text-gray-300 transition-colors"
+                      >
+                        {example.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="checker"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-2xl border border-white/20 rounded-xl p-4 shadow-xl"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Target className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Strength Checker</h3>
+                    <p className="text-xs text-gray-300">Analyze effectiveness</p>
+                  </div>
+                </div>
+
+                {/* Platform Selector */}
+                <div className="mb-3">
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">AI Platform</label>
+                  <PlatformDropdown
+                    value={checkerPlatform}
+                    onChange={setCheckerPlatform}
+                    isOpen={showCheckerDropdown}
+                    setIsOpen={setShowCheckerDropdown}
+                  />
+                </div>
+
+                {/* Input */}
+                <div className="mb-4">
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">Test your prompt strength</label>
+                  <textarea
+                    value={checkerInput}
+                    onChange={(e) => setCheckerInput(e.target.value)}
+                    placeholder="Paste your prompt here..."
+                    className="w-full h-24 bg-gradient-to-br from-black/30 to-black/20 border border-white/20 rounded-lg p-3 text-sm text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/70"
+                  />
+                </div>
+
+                {/* Analyze Button */}
+                <button
+                  onClick={handleAnalyze}
+                  disabled={!checkerInput.trim() || isAnalyzing}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mb-4 text-sm"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4" />
+                      Analyze Strength
+                    </>
+                  )}
+                </button>
+
+                {/* Results */}
+                {analysisResult && (
+                  <div className="space-y-3">
+                    {/* Score */}
+                    <div className="flex justify-center">
+                      <CircularProgressBar value={analysisResult.strengthScore} size={80} />
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="space-y-2">
+                      {Object.entries(analysisResult.metrics).slice(0, 2).map(([key, value]) => (
+                        <div key={key} className="flex items-center justify-between">
+                          <span className="text-xs text-gray-300 capitalize">{key}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                              <motion.div
+                                className={`h-full ${value >= 80 ? 'bg-green-400' : value >= 60 ? 'bg-blue-400' : 'bg-red-400'}`}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${value}%` }}
+                                transition={{ duration: 1, delay: 0.2 }}
+                              />
+                            </div>
+                            <span className="text-xs text-white w-8">{value}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Suggestions */}
+                    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-lg p-3">
+                      <h4 className="text-sm font-bold text-white mb-2">Suggestions</h4>
+                      <ul className="space-y-1.5">
+                        {analysisResult.suggestions.slice(0, 2).map((suggestion, index) => (
+                          <li key={index} className="text-xs text-gray-200 flex items-start gap-2">
+                            <div className="w-1 h-1 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></div>
+                            <span>{suggestion}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* Example Prompts */}
+                <div className="mt-4">
+                  <p className="text-xs text-gray-400 mb-2">Try these examples:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {examplePrompts.slice(3, 6).map((example, index) => (
+                      <button
+                        key={index}
+                        onClick={() => loadExample(example.prompt, 'checker')}
+                        className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-2.5 py-1 text-gray-300 transition-colors"
+                      >
+                        {example.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Desktop Grid (unchanged) */}
+        <div className="hidden md:grid lg:grid-cols-2 gap-6 md:gap-12 relative">
           {/* TOOL 1 - PROMPT OPTIMIZER */}
           <motion.div
             variants={glassCard}
@@ -457,25 +666,13 @@ export default function DualPromptTester() {
 
             {/* Results */}
             <AnimatePresence mode="wait">
-              {isOptimizing ? (
-                <motion.div
-                  variants={skeletonPulse}
-                  initial="initial"
-                  animate="animate"
-                  className="space-y-3"
-                >
-                  <div className="h-4 bg-white/10 rounded animate-pulse"></div>
-                  <div className="h-4 bg-white/10 rounded animate-pulse w-3/4"></div>
-                  <div className="h-4 bg-white/10 rounded animate-pulse w-1/2"></div>
-                </motion.div>
-              ) : optimizerResult ? (
+              {optimizerResult && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-4"
                 >
                   <div className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-400/30 rounded-xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-green-400/5 rounded-full blur-2xl"></div>
                     <div className="flex items-center justify-between mb-4 relative z-10">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
@@ -509,22 +706,7 @@ export default function DualPromptTester() {
                       <div className="text-sm text-gray-300 font-medium">Better</div>
                     </div>
                   </div>
-
-                  {/* Subtle CTA in optimizer results */}
-                  <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-400 mb-2">Love this optimization?</p>
-                    <a
-                      href="/chrome-extension"
-                      className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 text-sm underline transition-colors"
-                    >
-                      Get instant optimization with our extension
-                    </a>
-                  </div>
                 </motion.div>
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  Your optimized prompt will appear here
-                </div>
               )}
             </AnimatePresence>
 
@@ -537,7 +719,6 @@ export default function DualPromptTester() {
                     key={index}
                     onClick={() => loadExample(example.prompt, 'optimizer')}
                     className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1 text-gray-300 transition-colors"
-                    title={example.prompt}
                   >
                     {example.title}
                   </button>
@@ -612,22 +793,7 @@ export default function DualPromptTester() {
 
             {/* Results */}
             <AnimatePresence mode="wait">
-              {isAnalyzing ? (
-                <motion.div
-                  variants={skeletonPulse}
-                  initial="initial"
-                  animate="animate"
-                  className="space-y-4"
-                >
-                  <div className="flex justify-center">
-                    <div className="w-24 h-24 bg-white/10 rounded-full animate-pulse"></div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-3 bg-white/10 rounded animate-pulse"></div>
-                    <div className="h-3 bg-white/10 rounded animate-pulse w-3/4"></div>
-                  </div>
-                </motion.div>
-              ) : analysisResult ? (
+              {analysisResult && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -635,7 +801,7 @@ export default function DualPromptTester() {
                 >
                   {/* Circular Progress */}
                   <div className="flex justify-center">
-                    <CircularProgressBar value={analysisResult.strengthScore} />
+                    <CircularProgressBar value={analysisResult.strengthScore} size={120} />
                   </div>
 
                   {/* Metrics Breakdown */}
@@ -659,13 +825,9 @@ export default function DualPromptTester() {
                   </div>
 
                   {/* Suggestions */}
-                  <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-xl"></div>
-                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                      Suggestions for Improvement
-                    </h4>
-                    <ul className="space-y-3 relative z-10">
+                  <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-400/30 rounded-xl p-6">
+                    <h4 className="text-lg font-bold text-white mb-4">Suggestions for Improvement</h4>
+                    <ul className="space-y-3">
                       {analysisResult.suggestions.map((suggestion, index) => (
                         <li key={index} className="text-gray-200 flex items-start gap-3 bg-white/5 rounded-lg p-3 border border-white/10">
                           <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -676,22 +838,7 @@ export default function DualPromptTester() {
                       ))}
                     </ul>
                   </div>
-
-                  {/* Subtle CTA in results */}
-                  <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-400 mb-3">Want automatic optimization like this?</p>
-                    <a
-                      href="/signup"
-                      className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm underline transition-colors"
-                    >
-                      Start optimizing for free
-                    </a>
-                  </div>
                 </motion.div>
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  Your strength analysis will appear here
-                </div>
               )}
             </AnimatePresence>
 
@@ -704,7 +851,6 @@ export default function DualPromptTester() {
                     key={index}
                     onClick={() => loadExample(example.prompt, 'checker')}
                     className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1 text-gray-300 transition-colors"
-                    title={example.prompt}
                   >
                     {example.title}
                   </button>

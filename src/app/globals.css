@@ -23,6 +23,34 @@ body {
   background: #000000;
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Better mobile tap targets */
+@media (max-width: 768px) {
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent horizontal scroll */
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Better focus states for accessibility */
+:focus-visible {
+  outline: 2px solid rgb(59, 130, 246);
+  outline-offset: 2px;
+}
+
+/* Improved text selection */
+::selection {
+  background-color: rgb(59, 130, 246, 0.3);
+  color: white;
 }
 
 @keyframes spotlightMove {
@@ -37,10 +65,27 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 800px;
-  height: 600px;
+  width: min(800px, 100vw);
+  height: min(600px, 80vh);
   background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%);
   border-radius: 50%;
   animation: spotlightMove 20s infinite ease-in-out;
   transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Reduce animation on mobile for performance */
+@media (max-width: 768px) {
+  .animate-spotlight {
+    width: min(400px, 90vw);
+    height: min(300px, 60vh);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, transparent 70%);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-spotlight {
+    animation: none;
+  }
 }
