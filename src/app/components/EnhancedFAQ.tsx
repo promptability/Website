@@ -20,8 +20,8 @@ const faqData: FAQItem[] = [
     id: '1',
     question: 'Is my data secure?',
     shortQuestion: 'Data security?',
-    answer: 'Yes, your data is completely secure. We use enterprise-grade encryption, never store your prompts or AI conversations, and comply with GDPR and SOC 2 standards. Read our <a href="/privacy" class="text-purple-400 hover:text-purple-300 underline">Privacy Policy</a> for full details.',
-    shortAnswer: 'Yes! Enterprise encryption, GDPR compliant, prompts never stored.',
+    answer: 'Yes, your data is secure. We use enterprise-grade encryption for all stored data, secure cloud infrastructure, and comply with GDPR and SOC 2 standards. Your prompts are encrypted and only accessible to you. Read our <a href="/privacy" class="text-purple-400 hover:text-purple-300 underline">Privacy Policy</a> for full details.',
+    shortAnswer: 'Yes! Enterprise encryption, GDPR compliant, secure cloud storage.',
     category: 'General',
     icon: Settings
   },

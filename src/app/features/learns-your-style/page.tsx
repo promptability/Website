@@ -639,8 +639,8 @@ export default function LearnsYourStylePage() {
               <h3 className="text-2xl font-bold text-blue-400 mb-6">Privacy Protection</h3>
               <div className="space-y-4">
                 {[
-                  'Data stored locally on your device',
-                  'No cloud storage of personal patterns',
+                  'Encrypted cloud storage',
+                  'Your data is never shared',
                   'End-to-end encryption',
                   'Complete data ownership',
                   'GDPR compliant'

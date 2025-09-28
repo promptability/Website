@@ -32,7 +32,7 @@ const features = [
   {
     icon: Shield,
     title: 'Privacy Protected',
-    description: 'All processing happens locally - your prompts never leave your device.',
+    description: 'Enterprise-grade encryption protects your prompts with secure cloud storage.',
     gradient: 'from-purple-400 to-purple-500',
   },
   {

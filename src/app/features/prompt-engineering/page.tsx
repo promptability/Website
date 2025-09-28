@@ -368,7 +368,7 @@ export default function PromptEngineeringPage() {
               {
                 icon: <Shield className="w-8 h-8" />,
                 title: 'Privacy First',
-                description: 'Your prompts are enhanced locally, never stored or shared'
+                description: 'Your prompts are encrypted and secure, never shared with third parties'
               },
               {
                 icon: <Lightbulb className="w-8 h-8" />,

@@ -37,8 +37,8 @@ const features = [
     description: 'ChatGPT, Claude, Gemini, and 1000+ AI platforms'
   },
   {
-    title: 'Completely Private',
-    description: 'All processing happens locally on your device'
+    title: 'Privacy-Focused',
+    description: 'Enterprise-grade security with encrypted data storage'
   }
 ];
 
@@ -112,7 +112,7 @@ export default function ChromeExtensionPage() {
             </div>
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4" />
-              <span>100% private</span>
+              <span>Secure & encrypted</span>
             </div>
           </motion.div>
         </div>

@@ -76,6 +76,7 @@ export default function PlatformsShowcase() {
                         src={platform.logo} 
                         alt={`${platform.name} logo`}
                         className="w-10 h-10 object-contain"
+                        loading="lazy"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -146,6 +147,7 @@ export default function PlatformsShowcase() {
                           src={platform.logo} 
                           alt={`${platform.name} logo`}
                           className="w-10 h-10 object-contain"
+                          loading="lazy"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';

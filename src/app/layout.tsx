@@ -45,6 +45,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://firebase.googleapis.com" />
+        <link rel="preconnect" href="https://promptability-a35a1.firebaseapp.com" />
+        <link rel="dns-prefetch" href="https://upload.wikimedia.org" />
+        <link rel="dns-prefetch" href="https://download.logo.wine" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen overflow-x-hidden`}>
         <AuthProvider>
           <div className="relative z-20 min-h-screen flex flex-col">

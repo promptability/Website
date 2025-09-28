@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
   images: {
     remotePatterns: [
       {
@@ -23,6 +29,28 @@ const nextConfig: NextConfig = {
         pathname: '/v0/b/**/o/**',
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:all*(svg|jpg|png|gif|webp|mp4|webm)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
 };
 

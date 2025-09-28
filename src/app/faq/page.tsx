@@ -43,7 +43,7 @@ const faqs = [
   {
     category: 'features',
     question: 'Does it work offline?',
-    answer: 'The core functionality works offline as processing happens locally in your browser. However, features like cloud sync, team collaboration, and advanced analytics require an internet connection.'
+    answer: 'An internet connection is required to use Promptability as it connects to our secure cloud infrastructure for prompt optimization, favorites syncing, and other features.'
   },
   {
     category: 'pricing',
@@ -63,7 +63,7 @@ const faqs = [
   {
     category: 'security',
     question: 'Is my data safe and private?',
-    answer: 'Your privacy is our top priority. All prompt processing happens locally in your browser by default. If you choose to enable cloud features, your data is encrypted end-to-end and never shared with third parties.'
+    answer: 'Your privacy is our top priority. We use enterprise-grade encryption for all data storage, secure cloud infrastructure, and your data is never shared with third parties. We comply with GDPR and SOC 2 standards.'
   },
   {
     category: 'security',
